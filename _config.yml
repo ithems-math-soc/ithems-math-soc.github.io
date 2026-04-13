@@ -1,0 +1,67 @@
+# Site wide configuration
+
+title: "Mathematical Social Science"
+description: "A research team at iTHEMS Wako, Japan."
+logo: bio.png
+teaser: bio.png
+locale: en
+url: "https://dynamics-social-behavior.github.io"
+baseurl: ''
+feed:
+  path: atom.xml
+
+# Jekyll configuration
+
+sass:
+  sass_dir: _sass
+  style: compressed
+permalink: /:categories/:title/
+kramdown:
+  toc_levels: 1..2
+highlighter: rouge
+plugins:
+  - jekyll-sitemap
+  - jekyll-gist
+  - jekyll-feed
+
+imagesurl: "/feed-imgs/"
+
+# Site owner
+owner:
+  name:
+  email:
+  twitter:
+  google:
+    ad-client:
+    ad-slot:
+  bio:
+  avatar: bio-photo.jpg # 160x160 px image for author byline
+  disqus-shortname:
+
+
+include:
+  - .htaccess
+exclude:
+  - "*.less"
+  - "*.sublime-project"
+  - "*.sublime-workspace"
+  - .asset-cache
+  - .bundle
+  - .jekyll-assets-cache
+  - .sass-cache
+  - CHANGELOG
+  - Capfile
+  - Gemfile
+  - Gruntfile.js
+  - LICENSE
+  - README
+  - Rakefile
+  - config
+  - gulpfile.js
+  - lib
+  - log
+  - node_modules
+  - package.json
+  - spec
+  - tmp
+  - vendor
