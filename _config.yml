@@ -5,7 +5,7 @@ description: "A research team at iTHEMS Wako, Japan."
 logo: bio.png
 teaser: bio.png
 locale: en
-url: "https://dynamics-social-behavior.github.io"
+url: "https://ithems-math-soc.github.io"
 baseurl: ''
 feed:
   path: atom.xml
