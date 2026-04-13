@@ -1,0 +1,130 @@
+---
+sitemap: false
+---
+
+/*
+ *
+ *  Skinny Bones Jekyll Starter
+ *
+ *  Designer: Michael Rose
+ *  Twitter: http://twitter.com/mmistakes
+ *
+*/
+
+@import "variables";
+
+/*
+   Vendor
+   ========================================================================== */
+
+@import "vendor/bourbon/bourbon";
+@import "grid-settings";
+@import "vendor/neat/neat";
+@import "vendor/font-awesome/font-awesome";
+
+/*
+   Global
+   ========================================================================== */
+
+@import "mixins";
+@import "reset";
+@import "base";
+
+/*
+   Components
+   ========================================================================== */
+
+@import "helpers";
+@import "buttons";
+@import "badges";
+@import "bullets";
+@import "sliding-menu";
+@import "menu-navicons"; /* animated 3 line menu icon */
+@import "notices";
+@import "animations";
+@import "tiles";
+@import "footnotes";
+@import "toc"; /* table of contents */
+@import "breadcrumbs";
+@import "syntax";
+
+/*
+   Page specific
+   ========================================================================== */
+
+@import "layout";
+
+br {
+   line-height: 550%;
+}
+
+.center {
+   display: block;
+   margin-left: auto;
+   margin-right: auto;
+   width: 50%;
+}
+
+.circular--portrait {
+   position: relative;
+   width: 200px;
+   height: 200px;
+   overflow: hidden;
+   border-radius: 50%;
+ }
+ 
+ .circular--portrait img {
+   width: 100%;
+   height: auto;
+ }
+
+.article--img {
+   width:  250px;
+   height: 200px;
+}
+
+.roundrect {
+   border-radius: 15px;
+   }
+
+
+#alumni { 
+   float:left;
+   width:100%;
+   clear:both;
+}
+
+.h_iframe iframe {
+   position:absolute;
+   top:0;
+   left:0;
+   width:100%;
+   height:100%;
+}
+
+/*! div style */
+.image-gallery {
+   width: 100%;
+   display: grid;
+   grid-template-columns: repeat(auto-fill,minmax(300px, 1fr));
+   justify-content: center;
+   padding: 4px;
+   }
+
+   .box {
+      flex-basis: 25%;
+      width: 100%;
+      padding: 10px;
+      margin: 2px;
+   }
+
+   .img-gallery {
+   width: 100%;
+   height: 250px;
+   object-fit: cover;
+   transform: scale(1);
+   transition: all 0.3s ease-in-out;
+   &:hover {
+   transform: scale(1.05);
+   }
+}
