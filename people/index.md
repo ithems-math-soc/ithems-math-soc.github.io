@@ -8,7 +8,7 @@ image:
   teaser:
 ---
 
-<!-- <h5>Current</h5> -->
+<h5>Current</h5>
 
 <div class="tiles">
 {% for post in site.categories.current reversed%}

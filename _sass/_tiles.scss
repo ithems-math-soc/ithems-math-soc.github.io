@@ -5,6 +5,12 @@
 .tile {
   @include outer-container;
   margin-bottom: $gutter;
+  padding: 1rem;
+  background: rgba($white, 0.94);
+  border: 1px solid lighten($border-color, 4);
+  border-top: 3px solid transparent;
+  box-shadow: 0 12px 30px rgba($black, 0.05);
+  @include transition(transform 0.2s ease-out, box-shadow 0.2s ease-out, border-color 0.2s ease-out);
   @include media($micro) {
     @include fill-parent;
   }
@@ -18,8 +24,10 @@
   }
   .post-title {
     @include font-size(18,no);
-    :hover {
+    a:hover,
+    &:hover {
       text-decoration: underline;
+      color: $primary-color;
     }
   }
   .post-excerpt {
@@ -40,6 +48,9 @@
       @include transition(background 0.3s);
     }
     &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 36px rgba($black, 0.08);
+      border-top-color: $primary-color;
       &:after {
         background: rgba($base-color,0.2);
       }
