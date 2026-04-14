@@ -1,6 +1,6 @@
 # Personal Website for the 
 
-Welcome to the source code for our website: 
+Welcome to the source code for our website: https://ithems-math-soc.github.io. 
 
 ## A new member joined the group?
 
