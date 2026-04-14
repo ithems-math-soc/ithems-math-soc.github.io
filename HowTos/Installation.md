@@ -8,7 +8,7 @@ repository to your machine and learn how to `compile` the website locally.
 This is done by running the following command in your terminal:
 
 ```shell
-$ git clone git@github.com:dynamics-social-behavior/dynamics-social-behavior.github.io.git
+$ git clone git@github.com:ithems-math-soc/ithems-math-soc.github.io.git
 ```
 
 ## Compile the website locally

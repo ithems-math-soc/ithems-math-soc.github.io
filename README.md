@@ -13,7 +13,8 @@ To add a new member as a collaborator, see: [Invite new members to our website](
 ## Updating the website
 
 The website is hosted on GitHub. To make changes, all you need to do is update
-the main branch of this repository. See the How To(s)" section to learn how to do that.
+the main branch of this repository. So open a pull request with your changes and
+once it is approved, the website will be updated.
 
 
 ## First time contributing to the website?
@@ -29,6 +30,4 @@ A list of HowTo(s) is available. More specifically:
 - [Install & compile the website](HowTos/Installation.md)
 - [Add people](HowTos/AddPeople.md)
 - [Add publication](HowTos/AddPublication.md)
-- [Add pictures to feed](HowTos/AddFeedPics.md)
-- [Update website](HowTos/Update.md)
 

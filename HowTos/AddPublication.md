@@ -28,9 +28,10 @@ Edit the top the file `publications/index.md`. Each entry starts with the
 symbol `-`, for example:
 
 ```shell
-- Juan Li, Xiaowei Zhao, Bing Li, Charlotte S. L. Rossetti, Christian Hilbe, Haoxiang Xia
-[**Evolution of cooperation through cumulative reciprocity**](https://www.nature.com/articles/s43588-022-00334-w)
-_Nature Computational Science_ (2022) <a href="papers/CURE_ncs_2022.pdf"><i class="fa fa-file-pdf-o"></i>
+- Nikoleta E Glynatsi, Christian Hilbe & Yohsuke Murase.
+[**Exact conditions for evolutionary stability in indirect reciprocity under noise.**](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1013584)
+_Plos Computational Biology_ (2025)
+<a href="papers/Glynatsi_PlosCB_2025.pdf"><i class="fa fa-file-pdf-o"></i>
 ```
 
 The convention is the following:
