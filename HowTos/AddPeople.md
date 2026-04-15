@@ -3,7 +3,14 @@
 In order to add your personal profile you must include a new file (`.md`) file
 in `_posts/people/`.
 
-Firstly you need to branch (do not make changes to `main`).
+Firstly make sure your local `main` branch is up to date:
+
+```shell
+$ git checkout main
+$ git pull origin main
+```
+
+Then create a new branch (do not make changes directly on `main`).
 To branch use the commands `git branch <name>` and `git checkout <name>`.
 
 Name the branch as `add-people-your_last_name`. For example:
@@ -31,13 +38,14 @@ The `year-month-day-your_last_name.md` should have the following format:
 **Header**
 
 The beginning of the file should include the following lines were you alter
-the `title`, `excerpt` and `teaser` with your information.
+the `title`, `excerpt`, `role_order` and `teaser` with your information.
 
 ```shell
 ---
 layout: people
 title: <your name>
 excerpt: <your position>
+role_order: <number>
 categories: current
 tags:
 image:
@@ -45,6 +53,13 @@ image:
   teaser: <your picture>
 ---
 ```
+
+`role_order` controls the display order for people who share the same join date.
+Lower numbers appear first. For example:
+
+- `1` for team director
+- `2` for research scientist
+- `3` for postdoctoral researcher pr JSPS PD researcher
 
 For the `teaser` you will need to give the name of your profile picture. Include
 your picture in the `images` folder. 
@@ -58,7 +73,8 @@ An example of a **Header**:
 ---
 layout: people
 title: Dr Nikoleta E. Glynatsi
-excerpt: Postdoc
+excerpt: Research Scientist
+role_order: 3
 categories: current
 tags:
 image:
@@ -115,6 +131,15 @@ line.
 <img src="../../images/<your_picture>" class="center">
 ```
 
-
 Once you have added your personal `md` file check the locally hosted website to
 view the changes.
+
+When you are ready you need to `git add` the files you changed or added, then
+`git commit`, and finally push your branch to GitHub:
+
+```shell
+$ git push -u origin add-people-your_last_name
+```
+
+After pushing, your branch should appear on GitHub. Open a pull request from
+your branch into `main`.
