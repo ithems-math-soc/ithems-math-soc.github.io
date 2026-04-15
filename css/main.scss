@@ -67,15 +67,22 @@ br {
 
 .circular--portrait {
    position: relative;
-   width: 200px;
-   height: 200px;
+   width: 100%;
+   max-width: 200px;
+   height: 0;
+   padding-bottom: min(100%, 200px);
    overflow: hidden;
    border-radius: 50%;
+   margin: 0 auto;
  }
- 
+
  .circular--portrait img {
+   position: absolute;
+   top: 0;
+   left: 0;
    width: 100%;
-   height: auto;
+   height: 100%;
+   object-fit: cover;
  }
 
 .article--img {
