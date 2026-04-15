@@ -30,4 +30,3 @@ A list of HowTo(s) is available. More specifically:
 - [Install & compile the website](HowTos/Installation.md)
 - [Add people](HowTos/AddPeople.md)
 - [Add publication](HowTos/AddPublication.md)
-

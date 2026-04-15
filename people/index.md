@@ -10,8 +10,9 @@ image:
 
 <h5>Current</h5>
 
-<div class="tiles">
-{% for post in site.categories.current reversed%}
+<div class="tiles people-tiles">
+{% assign current_people = site.categories.current | sort: "date" | sort: "role_order" %}
+{% for post in current_people %}
   {% include people-grid.html %}
 {% endfor %}
 </div><!-- /.tiles -->
