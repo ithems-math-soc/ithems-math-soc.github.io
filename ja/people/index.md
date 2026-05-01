@@ -2,7 +2,7 @@
 layout: archive
 title:
 lang: ja
-site_title: 数理社会科学
+site_title: 数理社会科学チーム
 translation_url: /people/
 modified:
 tags: []
