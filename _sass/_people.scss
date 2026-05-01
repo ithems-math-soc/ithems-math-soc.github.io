@@ -1,0 +1,56 @@
+/* ==========================================================================
+   People
+   ========================================================================== */
+
+.people-tiles {
+  max-width: none;
+}
+
+.people-card {
+  min-height: 100%;
+  text-align: center;
+
+  .people-card-image {
+    display: block;
+    margin-bottom: 1rem;
+    border-bottom-width: 0;
+  }
+
+  .circular--portrait {
+    width: 168px;
+    height: 168px;
+    max-width: 168px;
+    padding-bottom: 0;
+    border: 4px solid $white;
+    box-shadow: 0 8px 22px rgba($black, 0.08);
+  }
+
+  .post-title {
+    margin-top: 0.25rem;
+    margin-bottom: 0.35rem;
+    @include font-size(19,no);
+
+    a {
+      border-bottom-width: 0;
+      color: darken($text-color, 2);
+    }
+  }
+
+  .post-excerpt {
+    max-width: none;
+    color: lighten($text-color, 24);
+    font-family: $alt-font;
+    @include font-size(14,no);
+    line-height: 1.45;
+  }
+}
+
+@include media($micro) {
+  .people-card {
+    .circular--portrait {
+      width: 148px;
+      height: 148px;
+      max-width: 148px;
+    }
+  }
+}

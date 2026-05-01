@@ -7,11 +7,11 @@
    ========================================================================== */
 
 #masthead {
-	padding: $gutter;
+	position: relative;
+	padding: 0 $gutter;
 	background: $white;
-	border-top: 6px solid $primary-color;
 	border-bottom: 1px solid $border-color;
-	box-shadow: 0 8px 30px rgba($black, 0.05);
+	box-shadow: 0 10px 28px rgba($black, 0.04);
 	z-index: 5;
 	@include transform(translate(0,0));
 	@include transition(500ms cubic-bezier(.645,.045,.355,1.000));
@@ -20,6 +20,12 @@
 	}
 	.inner-wrap {
 		@include outer-container;
+		min-height: 76px;
+		@include media($medium) {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
 	}
 }
 .site-title {
@@ -27,16 +33,25 @@
 	@include media($large) {
 		@include span-columns(4);
 	}
-	padding: (.25 * $masthead-height) 0; // fourth the height to center vertically
-	height: $masthead-height;
+	float: none;
+	width: auto;
+	max-width: 100%;
+	padding: 1rem 0;
+	height: auto;
 	text-decoration: none;
 	color: $text-color;
 	font-family: $alt-font;
 	font-weight: 700;
-	letter-spacing: 0.06em;
-	@include font-size(20,no);
-	line-height: .5 * $masthead-height; // half the height to center vertically
-	text-transform: uppercase;
+	letter-spacing: 0;
+	@include font-size(19,no);
+	line-height: 1.25;
+	text-transform: none;
+	@include media($medium) {
+		@include font-size(21,no);
+	}
+	&:hover {
+		color: $primary-color;
+	}
 }
 
 
@@ -92,13 +107,15 @@
 	display: none;
 	position: relative;
 	@include media($medium) {
-		@include span-columns(12);
+		display: block;
+		float: none;
+		width: auto;
 	}
 	@include media($large) {
-		@include span-columns(7);
+		float: none;
+		width: auto;
 		ul {
-			position: absolute;
-			right: 0;
+			position: static;
 		}
 	}
 	.home,
@@ -108,11 +125,11 @@
 	li {
 		a {
 			font-weight: 700;
-			@include font-size(16,no);
-			line-height: .5 * $masthead-height; // half the height to center vertically
+			@include font-size(14,no);
+			line-height: 1.2;
 			color: $text-color;
-			text-transform: uppercase;
-			letter-spacing: 0.05em;
+			text-transform: none;
+			letter-spacing: 0;
 			&:hover {
 				color: $primary-color;
 			}
@@ -136,7 +153,7 @@
    ========================================================================== */
 
 #page-wrapper {
-	padding: 0 $gutter; // add white space for smaller screens
+	padding: 0 $gutter $gutter; // add white space for smaller screens
 	@include size(100% 100%);
 	-webkit-overflow-scrolling: touch;
 	background: transparent;
@@ -153,6 +170,7 @@
    ========================================================================== */
 
 #main {
+	padding-top: 2rem;
 	.inner-wrap {
 		@include media($medium) {
 			@include span-columns(10);
@@ -160,7 +178,7 @@
 	}
 	.page-title {
 		@include fill-parent;
-		margin: 1.5rem 0 1rem;
+		margin: 1.5rem 0 1.25rem;
 		padding-left: 1rem;
 		border-left: 6px solid $primary-color;
 		h1, h2 {
@@ -173,6 +191,23 @@
 	@at-root {
 		.page-content {
 			@include fill-parent;
+			p,
+			ul,
+			ol,
+			h1,
+			h2,
+			h3,
+			h4,
+			h5,
+			h6 {
+				max-width: 760px;
+			}
+			h5 {
+				margin-top: 0;
+				margin-bottom: 0.85rem;
+				color: $primary-color;
+				letter-spacing: 0.02em;
+			}
 			// cleaner underlines for links
 			a { text-decoration: none; }
 			p a,
@@ -243,21 +278,25 @@
 .page-lead {
 	background-position: center top;
 	background-repeat: no-repeat;
-	background-attachment: fixed;
-	text-align: center;
+	background-size: cover;
+	text-align: left;
 	color: $white;
-	box-shadow: inset 0 0 0 1000px rgba($black, 0.32);
-	@include media($large) {
-		background-size: cover;
-	}
+	box-shadow: inset 0 0 0 1000px rgba($black, 0.36);
 }
 .page-lead-content {
-	padding: 1em;
+	@include outer-container;
+	min-height: 260px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding: 3rem $gutter;
 	@include media($medium) {
-		padding: 2em;
+		min-height: 340px;
+		padding: 4rem $gutter;
 	}
 	@include media($large) {
-		padding: 3em;
+		min-height: 420px;
+		padding: 5rem $gutter;
 	}
 	h1 {
 		@include font-size(48);
@@ -269,12 +308,24 @@
 		}
 	}
 	h2 {
-		@include font-size(20);
+		max-width: 820px;
+		margin: 0;
+		color: $white;
+		text-shadow: 0 2px 18px rgba($black, 0.35);
+		@include font-size(28);
 		@include media($medium) {
-			@include font-size(24);
+			@include font-size(38);
 		}
 		@include media($large) {
-			@include font-size(32);
+			@include font-size(48);
+		}
+		& + h2 {
+			margin-top: 0.45rem;
+			@include font-size(18);
+			font-weight: 500;
+			@include media($medium) {
+				@include font-size(24);
+			}
 		}
 	}
 }
@@ -348,10 +399,14 @@
    ========================================================================== */
 
 #site-footer {
-	@include outer-container;
+	max-width: none;
 	margin-top: (3 * (0px + $doc-line-height));
 	margin-top: (3 * (0rem + ($doc-line-height / $doc-font-size)));
-	padding-bottom: $gutter;
+	margin-left: -1 * $gutter;
+	margin-right: -1 * $gutter;
+	padding: 2rem $gutter;
+	background: $white;
+	border-top: 1px solid $border-color;
 	font-family: $alt-font;
   /* Copyright text */
 	.copyright {
