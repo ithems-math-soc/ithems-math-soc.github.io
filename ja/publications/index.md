@@ -1,8 +1,9 @@
 ---
 layout: archive
 title:
-lang: en
-translation_url: /ja/publications/
+lang: ja
+site_title: 数理社会科学
+translation_url: /publications/
 image:
   feature:
   teaser:

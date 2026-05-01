@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ page.lang | default: site.locale | default: 'en' }}">
   <head>
     <meta charset="utf-8">
-    <title>{% if page.title %}{{ page.title }} • {% endif %}{{ site.title }}</title>
+    {% assign site_title = page.site_title | default: site.title %}
+    <title>{% if page.title %}{{ page.title }} • {% endif %}{{ site_title }}</title>
     {% if page.excerpt %}<meta name="description" content="{{ page.excerpt | strip_html }}">{% endif %}
     {% if page.tags %}<meta name="keywords" content="{{ page.tags | join: ', ' }}">{% endif %}
     {% if page.author %}
@@ -11,8 +12,12 @@
     {% include open-graph.html %}
 
     <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.url }}">
+    {% if page.translation_url %}
+      <link rel="alternate" hreflang="{{ page.lang | default: site.locale | default: 'en' }}" href="{{ page.url | replace:'index.html','' | prepend: site.url }}">
+      <link rel="alternate" hreflang="{% if page.lang == 'ja' %}en{% else %}ja{% endif %}" href="{{ page.translation_url | prepend: site.url }}">
+    {% endif %}
 
-    <link href="{{ site.url }}/atom.xml" type="application/atom+xml" rel="alternate" title="{{ site.title }} Atom Feed">
+    <link href="{{ site.url }}/atom.xml" type="application/atom+xml" rel="alternate" title="{{ site_title }} Atom Feed">
     <link href="{{ site.url }}/sitemap.xml" type="application/xml" rel="sitemap" title="Sitemap">
 
     <meta name="HandheldFriendly" content="True">

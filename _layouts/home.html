@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ page.lang | default: site.locale | default: 'en' }}">
   <head>
     <meta charset="utf-8">
-    <title>{% if page.title %}{{ page.title }} • {% endif %}{{ site.title }}</title>
+    {% assign site_title = page.site_title | default: site.title %}
+    <title>{% if page.title %}{{ page.title }} • {% endif %}{{ site_title }}</title>
     {% if page.excerpt %}<meta name="description" content="{{ page.excerpt | strip_html }}">{% endif %}
     {% if page.tags %}<meta name="keywords" content="{{ page.tags | join: ', ' }}">{% endif %}
     {% if page.author %}
@@ -12,8 +13,12 @@
     {% if author.google.plus %}<link rel="author" href="https://plus.google.com/{{ author.google.plus }}"/>{% endif %}
 
     <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.url }}">
+    {% if page.translation_url %}
+      <link rel="alternate" hreflang="{{ page.lang | default: site.locale | default: 'en' }}" href="{{ page.url | replace:'index.html','' | prepend: site.url }}">
+      <link rel="alternate" hreflang="{% if page.lang == 'ja' %}en{% else %}ja{% endif %}" href="{{ page.translation_url | prepend: site.url }}">
+    {% endif %}
 
-    <link href="{{ site.url }}/atom.xml" type="application/atom+xml" rel="alternate" title="{{ site.title }} Atom Feed">
+    <link href="{{ site.url }}/atom.xml" type="application/atom+xml" rel="alternate" title="{{ site_title }} Atom Feed">
 
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
@@ -37,8 +42,8 @@
     <div class="page-lead" style="background-image:url({{ site.url }}/images/{{
     page.image.feature }}); background-size: 100% 50%">
       <div class="wrap page-lead-content">
-        <h2>Mathematical Social Science Team</h2>
-        <h2>iTHEMS</h2>
+        <h2>{{ page.hero_title | default: "Mathematical Social Science Team" }}</h2>
+        <h2>{{ page.hero_subtitle | default: "iTHEMS" }}</h2>
       </div><!-- /.page-lead-content -->
     </div><!-- /.page-lead -->
     {% endif %}

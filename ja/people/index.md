@@ -1,8 +1,9 @@
 ---
 layout: archive
 title:
-lang: en
-translation_url: /ja/people/
+lang: ja
+site_title: 数理社会科学
+translation_url: /people/
 modified:
 tags: []
 image:
@@ -11,7 +12,3 @@ image:
 ---
 
 {% include people-list.html %}
-
-<!-- <div id="alumni">
-<h5>Alumni</h5>
-</div> -->

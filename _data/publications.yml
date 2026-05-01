@@ -1,0 +1,34 @@
+journal_articles:
+  - year: 2026
+    papers:
+      - authors: Kim, H., & Murase, Y.
+        year: 2026
+        title: Incomplete reputation information and punishment in indirect reciprocity
+        url: https://www.nature.com/articles/s41598-026-42957-3
+        journal: Scientific Reports
+
+      - authors: Laporte, P., Hilbe, C., Glynatsi, N. E., & Nowak, M. A.
+        year: 2026
+        title: Payoff equivalence and complete strategy spaces of direct reciprocity
+        url: https://www.pnas.org/doi/10.1073/pnas.2518486123
+        journal: Proceedings of the National Academy of Sciences
+
+  - year: 2025
+    papers:
+      - authors: Kyomen, S., Ramirez, M. A., Glynatsi, N. E., Rodríguez-Sánchez, G. T., & de Azevedo-Lopes, A.
+        year: 2025
+        title: Insights from the “Women in Evolutionary Biology Workshop” on gender equality in science
+        url: https://academic.oup.com/evolut/article/80/3/525/8384175
+        journal: Evolution
+
+      - authors: Glynatsi, N. E., Hilbe, C., & Murase, Y.
+        year: 2025
+        title: Exact conditions for evolutionary stability in indirect reciprocity under noise
+        url: https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1013584
+        journal: PLOS Computational Biology
+
+      - authors: Lesigang, F., Hilbe, C., & Glynatsi, N. E.
+        year: 2025
+        title: Can I afford to remember less than you? Best responses in repeated additive games
+        url: https://www.sciencedirect.com/science/article/pii/S0165176525001375
+        journal: Economics Letters
