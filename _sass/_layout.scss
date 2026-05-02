@@ -48,6 +48,7 @@
 	text-transform: none;
 	@include media($medium) {
 		@include font-size(21,no);
+		text-align: left;
 	}
 	&:hover {
 		color: $primary-color;
@@ -135,6 +136,11 @@
 			}
 		}
 	}
+	.menu-item {
+		display: flex;
+		justify-content: flex-end;
+		flex-wrap: wrap;
+	}
 }
 
 /* Bottom menu navigation */
@@ -171,6 +177,9 @@
 
 #main {
 	padding-top: 2rem;
+	.wrap {
+		max-width: 920px;
+	}
 	.inner-wrap {
 		@include media($medium) {
 			@include span-columns(10);
@@ -200,7 +209,7 @@
 			h4,
 			h5,
 			h6 {
-				max-width: 760px;
+				max-width: 800px;
 			}
 			h5 {
 				margin-top: 0;
