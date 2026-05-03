@@ -1,20 +1,31 @@
+<section class="publications-list">
 <h5>{% if page.lang == 'ja' %}論文{% else %}Journal articles{% endif %}</h5>
 
 {% for section in site.data.publications.journal_articles %}
+<section class="publication-year">
 <h6>{{ section.year }}</h6>
 
 {% if section.papers.size > 0 %}
-<ul>
+<ol class="publication-items">
   {% for paper in section.papers %}
-  <li>
-    {{ paper.authors }} ({{ paper.year }}).<br>
-    <a href="{{ paper.url }}"><strong>{{ paper.title }}</strong></a>.<br>
-    <em>{{ paper.journal }}</em>.
+  <li class="publication-item">
+    <p class="publication-title">
+      <a href="{{ paper.url }}"><strong>{{ paper.title }}</strong></a>
+    </p>
+    <p class="publication-meta">
+      <span class="publication-authors">{{ paper.authors }}</span>
+      <span class="publication-year-inline">({{ paper.year }})</span>
+    </p>
+    <p class="publication-journal">
+      <em>{{ paper.journal }}</em>
+    </p>
     {% if paper.pdf %}
-    <a href="{{ paper.pdf | relative_url }}"><i class="fa fa-file-pdf-o"></i></a>
+    <a class="publication-pdf" href="{{ paper.pdf | relative_url }}" aria-label="PDF for {{ paper.title }}"><i class="fa fa-file-pdf-o"></i> PDF</a>
     {% endif %}
   </li>
   {% endfor %}
-</ul>
+</ol>
 {% endif %}
+</section>
 {% endfor %}
+</section>

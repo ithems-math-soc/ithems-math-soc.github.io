@@ -6,8 +6,8 @@
    Typography variables
    ========================================================================== */
 
-$base-font                   	: Georgia,Times,"Times New Roman",serif;
-$heading-font                	: "Helvetica Neue","Segoe UI",Arial,sans-serif;
+$base-font                   	: -apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI","Yu Gothic","Hiragino Kaku Gothic ProN",Arial,sans-serif;
+$heading-font                	: -apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI","Yu Gothic","Hiragino Kaku Gothic ProN",Arial,sans-serif;
 $caption-font                	: $base-font;
 $code-font                   	: monospace;
 $alt-font                    	: $heading-font;
@@ -15,7 +15,7 @@ $alt-font                    	: $heading-font;
 $doc-font-size               	: 16;
 $doc-line-height             	: 24;
 
-$border-radius               	: 3px;
+$border-radius               	: 8px;
 
 /*
    Color variables
@@ -24,15 +24,15 @@ $border-radius               	: 3px;
 $white                        : #fff;
 $black                        : #000;
 
-$body-color                  	: #f4f1f1;
+$body-color                  	: #f7f8f7;
 
-$text-color                  	: #171717;
+$text-color                  	: #202326;
 $caption-color                : mix($white, $text-color, 25%);
 
-$base-color                  	: #a61e22;
+$base-color                  	: #9d1f2c;
 $comp-color                  	: complement($base-color);
-$border-color                	: #d9d1d1;
-$link-color                  	: #a61e22;
+$border-color                	: #d9ded9;
+$link-color                  	: #9d1f2c;
 
 $primary-color               	: $base-color;
 $success-color               	: #2ecc71;
