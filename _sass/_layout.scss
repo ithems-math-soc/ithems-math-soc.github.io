@@ -36,7 +36,7 @@
 	float: none;
 	width: auto;
 	max-width: 100%;
-	padding: 1rem 0;
+	padding: 0;
 	height: auto;
 	text-decoration: none;
 	color: $text-color;
@@ -49,6 +49,9 @@
 	@include media($medium) {
 		@include font-size(21,no);
 		text-align: left;
+		display: flex;
+		align-items: center;
+		min-height: $masthead-height;
 	}
 	&:hover {
 		color: $primary-color;
@@ -111,6 +114,7 @@
 		display: block;
 		float: none;
 		width: auto;
+		top: 0.22rem;
 	}
 	@include media($large) {
 		float: none;
@@ -126,7 +130,10 @@
 	li {
 		a {
 			font-weight: 700;
-			@include font-size(14,no);
+			@include font-size(16,no);
+			display: flex;
+			align-items: center;
+			padding: 0 0.55rem;
 			line-height: 1.2;
 			color: $text-color;
 			text-transform: none;
@@ -139,6 +146,7 @@
 	.menu-item {
 		display: flex;
 		justify-content: flex-end;
+		align-items: center;
 		flex-wrap: wrap;
 	}
 }
