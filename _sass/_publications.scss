@@ -10,8 +10,9 @@
   margin-top: 2rem;
 
   h6 {
-    display: inline-block;
-    margin: 0 0 0.9rem;
+    display: block;
+    margin: 0 0 2.5rem;
+    width: fit-content;
     padding: 0.2rem 0.6rem;
     color: $primary-color;
     background: mix($white, $primary-color, 92%);
@@ -23,7 +24,7 @@
 
 .publication-items {
   max-width: none;
-  margin: 0;
+  margin: 1rem 0 0;
   padding: 0;
   list-style: none;
 }
