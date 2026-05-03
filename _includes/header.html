@@ -1,6 +1,12 @@
 <header id="masthead">
   <div class="inner-wrap">
-    <a href="{{ site.url }}/" class="site-title">{{ site.title }}</a>
+    {% assign site_title = page.site_title | default: site.title %}
+    {% if page.lang == 'ja' %}
+      {% assign home_url = '/ja/' %}
+    {% else %}
+      {% assign home_url = '/' %}
+    {% endif %}
+    <a href="{{ site.url }}{{ home_url }}" class="site-title">{{ site_title }}</a>
     <nav role="navigation" class="menu top-menu">
         {% include navigation.html %}
     </nav>

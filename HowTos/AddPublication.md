@@ -1,6 +1,9 @@
 # Add Publication
 
-In order to add your new publication you need to edit the file `publications/index.md`.
+In order to add your new publication you need to edit the file `_data/publications.yml`.
+Both the English and Japanese publication pages are generated from this shared
+data file, so do not edit `publications/index.md` or `ja/publications/index.md`
+for normal publication updates.
 
 Firstly make sure your local `main` branch is up to date:
 
@@ -27,33 +30,45 @@ however, try to use sensible names and avoid abstract names such as `main.pdf`
 or `mypaper.pdf`. Also avoid spaces and use `_` instead.
 
 Once you have copied your paper in the folder you are ready to edit
-the `publications/index.md`.
+`_data/publications.yml`.
 
 **Listing your Paper on the Website**
 
-Edit the top the file `publications/index.md`. Each entry starts with the
-symbol `-`, for example:
+Edit the appropriate year in `_data/publications.yml`. Each entry has this
+format:
 
-```shell
-- Glynatsi, N. E., Hilbe, C., & Murase, Y. (2025).  
-  [**Exact conditions for evolutionary stability in indirect reciprocity under noise**](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1013584).  
-  _PLOS Computational Biology_.
+```yaml
+- authors: Glynatsi, N. E., Hilbe, C., & Murase, Y.
+  year: 2025
+  title: Exact conditions for evolutionary stability in indirect reciprocity under noise
+  url: https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1013584
+  journal: PLOS Computational Biology
 ```
 
 The convention is the following:
 
-```shell
-- Author, A., Collaborator, B., & Researcher, C. (year).  
-  [**Title of the paper**](link to paper).  
-  _Journal Name_.
+```yaml
+- authors: Author, A., Collaborator, B., & Researcher, C.
+  year: publication year
+  title: Title of the paper
+  url: link to paper
+  journal: Journal Name
 ```
 
 This means:
 
 - the authors come first
-- the year appears in parentheses after the authors
-- the paper title is bold and linked
-- the journal name is italicized on the next line
+- the year is stored as a number
+- the paper title is stored without Markdown formatting
+- the paper URL is stored in `url`
+- the journal name is stored without Markdown formatting
+- the page template handles the display formatting for both languages
+
+If you add a local PDF, add a `pdf` line using a path from the repository root:
+
+```yaml
+  pdf: publications/papers/<your paper>.pdf
+```
 
 Once you have made all the necessary changes you can review them locally
 by [compile the website](Installation.md).

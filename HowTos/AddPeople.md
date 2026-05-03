@@ -33,6 +33,10 @@ For example:
 _posts/people/2020-09-22-Glynatsi.md
 ```
 
+The English and Japanese people index pages are generated from the files in
+`_posts/people/`, so you do not need to edit `people/index.md` or
+`ja/people/index.md` when adding or updating a person.
+
 The `year-month-day-your_last_name.md` should have the following format:
 
 **Header**

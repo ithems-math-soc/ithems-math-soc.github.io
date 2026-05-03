@@ -1,0 +1,20 @@
+<h5>{% if page.lang == 'ja' %}論文{% else %}Journal articles{% endif %}</h5>
+
+{% for section in site.data.publications.journal_articles %}
+<h6>{{ section.year }}</h6>
+
+{% if section.papers.size > 0 %}
+<ul>
+  {% for paper in section.papers %}
+  <li>
+    {{ paper.authors }} ({{ paper.year }}).<br>
+    <a href="{{ paper.url }}"><strong>{{ paper.title }}</strong></a>.<br>
+    <em>{{ paper.journal }}</em>.
+    {% if paper.pdf %}
+    <a href="{{ paper.pdf | relative_url }}"><i class="fa fa-file-pdf-o"></i></a>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endfor %}

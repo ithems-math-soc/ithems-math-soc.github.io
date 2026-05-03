@@ -1,6 +1,8 @@
 ---
 layout: home
 permalink: /
+lang: en
+translation_url: /ja/
 image:
   feature: home.jpg
 ---
