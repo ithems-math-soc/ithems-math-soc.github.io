@@ -1,6 +1,17 @@
 journal_articles:
   - year: 2026
     papers:
+      - authors: Tham, Y. J., Hilbe, C., & Murase, Y.
+        year: 2026
+        title: Indirect reciprocity with dual private assessment
+        url: https://www.pnas.org/doi/10.1073/pnas.2624656123
+        journal: Proceedings of the National Academy of Sciences
+
+      - authors: Knight, V., Campbell, O., Harper, M., Gaffney, T. J., & Glynatsi, N. E.
+        year: 2026
+        title: Reviving, reproducing, and revisiting Axelrod’s second tournament
+        url: https://www.nature.com/articles/s44488-026-00016-w
+        journal: Communications AI & Computing
       - authors: Kim, H., & Murase, Y.
         year: 2026
         title: Incomplete reputation information and punishment in indirect reciprocity
