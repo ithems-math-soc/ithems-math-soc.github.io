@@ -22,6 +22,27 @@ $blog-type-colors: (
 }
 
 /*
+   Home page: latest three posts ("Activities")
+   ========================================================================== */
+
+.blog-latest {
+  max-width: 920px;
+  margin-top: 3rem;
+}
+
+.page-content .blog-latest-more {
+  margin: 1.5rem 0 0;
+
+  .btn {
+    border-bottom-width: 0;
+  }
+
+  i {
+    margin-left: 0.3em;
+  }
+}
+
+/*
    Toolbar: type filter buttons, search, sort
    ========================================================================== */
 
@@ -167,7 +188,7 @@ $blog-type-colors: (
 }
 
 .blog-item-author::before {
-  content: "·";
+  content: "\00B7"; // middle dot, escaped so the build does not depend on the locale
   margin-right: 0.65rem;
   color: lighten($text-color, 45);
 }

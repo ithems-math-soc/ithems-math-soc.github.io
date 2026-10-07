@@ -27,7 +27,7 @@ body:
     id: type
     attributes:
       label: Type
-      description: What kind of post is this? It is shown as a tag on the Blog page. Use "News" for anything else, e.g. a new grant or project.
+      description: What kind of post is this? It is shown as a tag on the Blog page. Use "News" for anything else, e.g. a new grant, a new project, or a new collaboration.
       options:
         - Paper
         - Article

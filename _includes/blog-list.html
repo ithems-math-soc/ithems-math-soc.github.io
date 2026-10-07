@@ -1,8 +1,8 @@
 {% comment %}
   Blog index. Lists every post under _posts/blog/ (English) or _posts/ja/blog/
   (Japanese), newest first, with client-side filtering, search, and sorting
-  handled by js/blog.js. Post metadata is embedded as data-* attributes so the
-  script needs no extra requests.
+  handled by js/blog.js. Each card (blog-card.html) carries its metadata as
+  data-* attributes so the script needs no extra requests.
 {% endcomment %}
 {% if page.lang == 'ja' %}
   {% assign posts = site.categories.blog | where: "lang", "ja" %}
@@ -36,23 +36,7 @@
 
 <div class="blog-items" id="blog-items">
 {% for post in posts %}
-  {% assign tdef = site.data.blog_types | where: "key", post.type | first %}
-  {% assign search_text = post.title | append: " " | append: post.content | strip_html | strip_newlines | downcase | truncate: 3000, "" %}
-  <article class="blog-item" data-type="{{ post.type | escape }}" data-date="{{ post.date | date: '%Y-%m-%d' }}" data-title="{{ post.title | downcase | escape }}" data-search="{{ search_text | escape }}">
-    {% if post.image.teaser %}
-    {% if post.image.teaser contains '://' %}{% assign thumb = post.image.teaser %}{% else %}{% assign thumb = post.image.teaser | prepend: '/images/' | prepend: site.url %}{% endif %}
-    <a class="blog-item-thumb" href="{{ site.url }}{{ post.url }}" tabindex="-1" aria-hidden="true"><img src="{{ thumb }}" alt=""></a>
-    {% endif %}
-    <div class="blog-item-body">
-      <p class="blog-item-meta">
-        <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{% if page.lang == 'ja' %}{{ post.date | date: '%Y年%-m月%-d日' }}{% else %}{{ post.date | date: '%B %-d, %Y' }}{% endif %}</time>
-        {% if post.type %}<span class="blog-type type-{{ post.type | downcase }}">{% if page.lang == 'ja' %}{{ tdef.ja | default: post.type }}{% else %}{{ post.type }}{% endif %}</span>{% endif %}
-        {% if post.author %}<span class="blog-item-author">{{ post.author }}</span>{% endif %}
-      </p>
-      <h2 class="blog-item-title"><a href="{{ site.url }}{{ post.url }}">{{ post.title }}</a></h2>
-      <p class="blog-item-excerpt">{{ post.excerpt | strip_html | strip_newlines | truncate: 200 }}</p>
-    </div>
-  </article>
+  {% include blog-card.html post=post %}
 {% endfor %}
 </div>
 

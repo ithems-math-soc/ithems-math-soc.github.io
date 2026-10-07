@@ -3,7 +3,7 @@
 The Blog page (https://ithems-math-soc.github.io/blog/) is for short news
 items: a new paper, a talk, a workshop report, a visitor, a new member, a
 seminar announcement, an award, media coverage, a job opening, or other news
-such as a new grant.
+such as a new grant, project, or collaboration.
 
 You do **not** need git or a local copy of the website to post. Everything is
 done on GitHub in your browser.
@@ -17,7 +17,8 @@ done on GitHub in your browser.
 3. Fill in the fields:
    - **Type** (required): pick one from the list. It is shown as a coloured tag
      on the Blog page and can be used to filter posts. If nothing fits (for
-     example a new grant or project), choose **News**.
+     example a new grant, a new project, or a new collaboration), choose
+     **News**.
    - **Date**: `YYYY-MM-DD`. Leave empty for today.
    - **Author**: your name as it should appear. Optional.
    - **Link** / **Link label**: an optional URL (paper, seminar page, ...)
