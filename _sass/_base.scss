@@ -8,6 +8,7 @@
 
 body {
 	font-family: $base-font;
+	font-weight: $base-weight;
 	color: $text-color;
 	background: $body-color;
 	@include font-size(16);
@@ -18,14 +19,28 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 }
 
+// Japanese pages lead with the Japanese gothic so kana, kanji, and Latin share one rhythm.
+html[lang="ja"] body {
+	font-family: $base-font-ja;
+	font-weight: $base-weight-ja;
+	font-feature-settings: normal; // full-width kana spacing reads better in the light weight
+}
+// Headings keep the Latin-first stack on Japanese pages too, so "Welcome",
+// "Current" and other English headings look the same in both languages;
+// Japanese characters in a heading fall back to Noto Sans JP automatically.
+strong,
+b {
+	font-weight: 500;
+}
+
 p {
-	@include font-size(16,yes,32);
+	@include font-size(14.5,yes,29);
 	line-height: 2;
 	color: $text-color;
 }
 
 li {
-	@include font-size(16,12,30);
+	@include font-size(14.5,12,27);
 	line-height: 1.9;
 }
 
@@ -40,22 +55,22 @@ h1, h2, h3, h4, h5, h6 {
 	color: $text-color;
 }
 h1 {
-	@include font-size(32);
-}
-h2 {
 	@include font-size(28);
 }
-h3 {
+h2 {
 	@include font-size(24);
 }
+h3 {
+	@include font-size(21);
+}
 h4 {
-	@include font-size(22);
+	@include font-size(19);
 }
 h5 {
-	@include font-size(22);
+	@include font-size(19);
 }
 h6 {
-	@include font-size(16);
+	@include font-size(15);
 }
 
 /* Underlined text */

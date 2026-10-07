@@ -16,55 +16,47 @@
 	.inner-wrap {
 		@include outer-container;
 		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
+		align-items: flex-end; // the menu sits on the same bottom line as the site title
 		justify-content: space-between;
 		gap: 0.5rem 2rem;
-		min-height: 76px;
-		padding: 0.9rem 0;
+		padding: 1.1rem 0 1rem;
 		@include media($medium) {
-			flex-wrap: nowrap;
-			min-height: 96px;
-			padding: 0;
+			padding: 1.5rem 0 1.3rem;
 		}
 	}
 }
 
-// Site title with the two short decorative bars underneath (rose + line colour).
+// Site title with a small letter-spaced "RIKEN iTHEMS" label above it.
 .site-title {
-	position: relative;
-	display: inline-block;
-	padding: 0 0 0.9rem;
+	display: inline-flex;
+	flex-direction: column;
+	gap: 0.3rem;
 	text-decoration: none;
 	color: $text-color;
 	font-family: $alt-font;
 	font-weight: 500;
 	letter-spacing: 0.1em;
-	@include font-size(17,no);
-	line-height: 1.25;
+	@include font-size(16,no);
+	line-height: 1.2;
 	@include media($medium) {
-		@include font-size(20,no);
+		@include font-size(19,no);
+		line-height: 1.2; // the mixin would otherwise reset it to the document line-height
 	}
-	&::before,
-	&::after {
-		content: '';
-		position: absolute;
-		bottom: 0;
-		height: 2px;
-	}
-	&::before {
-		left: 0;
-		width: 1.4rem;
-		background: $accent-color;
-	}
-	&::after {
-		left: 2rem;
-		right: 0;
-		background: rgba($text-color, 0.22);
+	.site-title-label {
+		display: block;
+		@include font-size(10,no);
+		font-weight: 500;
+		letter-spacing: 0.28em;
+		line-height: 1;
+		color: $primary-color;
+		white-space: nowrap;
 	}
 	&:hover {
 		color: $text-color;
 		opacity: 1;
+		.site-title-label {
+			color: $accent-color;
+		}
 	}
 }
 
@@ -107,11 +99,12 @@
 	}
 	li {
 		float: none;
+		margin: 0; // the base list style adds a bottom margin that would lift the links
 		a {
 			margin: 0;
-			padding: 0.4rem 0;
+			padding: 0.4rem 0 0.1rem;
 			font-weight: 500;
-			@include font-size(13,no);
+			@include font-size(12.5,no);
 			letter-spacing: 0.14em;
 			line-height: 1.2;
 			color: $text-color;
@@ -123,7 +116,7 @@
 				position: absolute;
 				left: 0;
 				right: 0;
-				bottom: -0.2rem;
+				bottom: -0.45rem;
 				height: 3px;
 				background: $accent-color;
 				transform: scaleX(0);
@@ -190,7 +183,7 @@
 		padding-bottom: 4rem;
 	}
 	.wrap {
-		max-width: 920px;
+		max-width: 820px;
 	}
 	.inner-wrap {
 		@include media($medium) {
@@ -204,7 +197,8 @@
 			margin: 0;
 		}
 		h1 {
-			@include font-size(30,no);
+			@include font-size(24,no);
+			color: $primary-color;
 			&::after {
 				content: '';
 				display: block;
@@ -234,50 +228,80 @@
 			h4,
 			h5,
 			h6 {
-				max-width: 760px;
+				max-width: 640px;
 			}
 			// Section heading: letter-spaced label with a short rose bar underneath.
+			// Section heading: a small node (dot with a rose ring, like the hero's
+			// network nodes) in front of the label.
 			h5 {
-				@include font-size(22,no); // the mixin resets margin-bottom, so margins come after it
+				@include font-size(18,no); // the mixin resets margin-bottom, so margins come after it
+				position: relative;
+				display: flex;
+				align-items: center;
+				gap: 0.8rem;
 				margin-top: 0;
-				margin-bottom: 2.2rem;
+				margin-bottom: 1.8rem;
+				color: $primary-color;
+				&::before {
+					content: '';
+					flex: 0 0 auto;
+					width: 8px;
+					height: 8px;
+					border-radius: 50%;
+					background: $primary-color;
+					box-shadow: 0 0 0 3px $body-color, 0 0 0 4px $accent-color;
+				}
+				// a soft ripple that slowly spreads out from the node and fades
 				&::after {
 					content: '';
-					display: block;
-					width: 2.4rem;
-					height: 2px;
-					margin-top: 0.9rem;
-					background: $accent-color;
+					position: absolute;
+					top: 50%;
+					left: 4px; // centre of the 8px dot
+					width: 16px;
+					height: 16px;
+					margin: -8px 0 0 -8px;
+					border: 1px solid $accent-color;
+					border-radius: 50%;
+					opacity: 0;
+					pointer-events: none;
+					animation: heading-ripple 3.6s ease-out infinite;
 				}
 			}
 			h5 + p {
 				margin-top: 0;
 			}
-			// Lead paragraph (used on the home page): large serif statement.
-			.lead,
-			&.home-content > p:first-of-type {
+			// Lead paragraph (the catchphrase on the home page): large serif statement.
+			.lead {
 				@include font-size(26,no);
-				max-width: 860px;
-				margin-bottom: 2.5rem;
+				max-width: 760px;
+				margin-bottom: 3.45rem;
+				color: $primary-color;
 				font-family: $serif-font;
-				line-height: 1.7;
-				letter-spacing: 0.01em;
+				line-height: 1.5;
+				letter-spacing: 0.04em; // Cinzel is all small caps, so it needs a little air
 				@include media($medium) {
-					@include font-size(30,no);
+					@include font-size(33,no);
+					line-height: 1.5; // the mixin resets line-height, so it is restated after it
+					margin-bottom: 3.45rem;
 				}
 				a {
 					text-decoration: underline;
 					text-decoration-thickness: 1px;
 					text-underline-offset: 0.2em;
 				}
-				// Japanese Mincho needs more leading than the Latin serif
+				// Japanese Mincho needs more leading than the Latin serif; the
+				// margin is a little smaller so the visual gap to "Welcome" matches.
 				@at-root html[lang="ja"] & {
-					line-height: 1.9;
 					@include font-size(24,no);
-					margin-bottom: 2.5rem;
+					font-family: $serif-font-ja;
+					font-weight: 500;
+					letter-spacing: 0.02em;
+					line-height: 1.8;
+					margin-bottom: 3.35rem;
 					@include media($medium) {
 						@include font-size(27,no);
-						margin-bottom: 2.5rem;
+						line-height: 1.8;
+						margin-bottom: 3.35rem;
 					}
 				}
 			}
@@ -320,6 +344,19 @@
 	}
 }
 
+@keyframes heading-ripple {
+	0%   { transform: scale(0.6); opacity: 0; }
+	10%  { opacity: 0.7; }
+	55%  { transform: scale(1.9); opacity: 0; }
+	100% { transform: scale(1.9); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.page-content h5::after {
+		animation: none;
+	}
+}
+
 // Sections stacked on one page (home: Welcome, then Activities) are separated by a rule.
 .page-content > section + section,
 .page-content > section + h5,
@@ -338,10 +375,34 @@
 	background-color: $body-color;
 	text-align: left;
 	color: $text-color;
-	border-bottom: $rule-width solid $border-color;
+	position: relative;
+	// Fade the top and bottom edges of the illustration into the page background.
+	&::before,
+	&::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		height: 24px;
+		pointer-events: none;
+	}
+	&::before {
+		top: 0;
+		background: linear-gradient(to bottom, $body-color 0%, rgba($body-color, 0) 100%);
+	}
+	&::after {
+		bottom: 0;
+		background: linear-gradient(to top, $body-color 0%, rgba($body-color, 0) 100%);
+	}
+}
+// On the home page the illustration sits directly under the header, with no rules around it.
+.page-home #masthead {
+	border-bottom-color: transparent;
 }
 .page-lead-content {
 	@include outer-container;
+	position: relative; // above the edge fades
+	z-index: 1;
 	min-height: clamp(260px, 46vw, 620px);
 	display: flex;
 	flex-direction: column;

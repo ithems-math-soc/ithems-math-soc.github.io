@@ -6,11 +6,16 @@
    Typography variables
    ========================================================================== */
 
-// Zen Kaku Gothic New (Google Fonts) covers Latin and Japanese; Instrument Serif
-// is used for the hero title and lead paragraphs. Both are loaded in the layouts.
-$base-font                   	: "Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",YuGothic,"Noto Sans JP","Helvetica Neue",Arial,sans-serif;
+// Google Fonts, loaded in the layouts: Albert Sans for Latin text, a Japanese
+// gothic for Japanese pages (html[lang="ja"] switches to $base-font-ja),
+// Prata / Shippori Mincho B1 for the catchphrase.
+$base-font                   	: "Albert Sans","Noto Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",YuGothic,"Helvetica Neue",Arial,sans-serif;
+$base-weight                 	: 300;   // Albert Sans light for body text; headings and labels use 500
+$base-font-ja                	: "Noto Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",YuGothic,"Albert Sans","Helvetica Neue",Arial,sans-serif;
+$base-weight-ja              	: 300;   // the light weight keeps Japanese text as airy as the Latin body
 $heading-font                	: $base-font;
-$serif-font                  	: "Instrument Serif","Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",YuMincho,"Iowan Old Style","Palatino Linotype","Times New Roman",serif;
+$serif-font                  	: "Cinzel","Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",YuMincho,"Iowan Old Style","Palatino Linotype","Times New Roman",serif;
+$serif-font-ja               	: "Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",YuMincho,"Cinzel",serif;
 $caption-font                	: $base-font;
 $code-font                   	: monospace;
 $alt-font                    	: $heading-font;
@@ -29,13 +34,14 @@ $tracking                    	: 0.12em;  // letter-spacing for headings, menus, 
 $white                        : #fff;
 $black                        : #000;
 
-// Warm paper background; everything else is drawn in one deep red (エンジ).
+// Warm paper background with warm charcoal text; the deep red (エンジ) is the
+// accent: links, section headings, the catchphrase, buttons, rules.
 $body-color                  	: #f5eee2;
 
 $base-color                  	: #8e1f2f;
 $accent-color                 : #d9a39a; // soft rose used for the small bars under headings and menu links
-$text-color                  	: $base-color;
-$caption-color                : mix($body-color, $text-color, 30%);
+$text-color                  	: #3b3734;
+$caption-color                : #7b746e;
 
 $comp-color                  	: complement($base-color);
 $border-color                	: $base-color;
