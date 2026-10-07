@@ -4,7 +4,6 @@ permalink: /ja/
 lang: ja
 site_title: 数理社会科学チーム
 hero_title: 数理社会科学チーム
-hero_subtitle: iTHEMS
 translation_url: /
 image:
   feature: home-network.jpg

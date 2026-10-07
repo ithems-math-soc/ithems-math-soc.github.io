@@ -66,76 +66,69 @@
    ========================================================================== */
 
 .menu {
+	.menu-item {
+		display: flex;
+		flex-wrap: wrap;
+	}
 	li {
-		float: left;
-		a {
-			position: relative;
-			display: block;
-			margin-right: $gutter;
-			font-family: $alt-font;
-		}
+		margin: 0; // the base list style adds a bottom margin
+	}
+	li a {
+		position: relative;
+		display: block;
+		font-family: $alt-font;
 	}
 }
 
 /* Top menu navigation */
 
 .top-menu {
-	display: block;
-	position: relative;
 	.home,
 	.sub-menu-item {
 		display: none;
 	}
 	.menu-item {
-		display: flex;
-		justify-content: flex-start;
 		align-items: center;
-		flex-wrap: wrap;
 		gap: 0.2rem 1.6rem;
 		@include media($medium) {
 			justify-content: flex-end;
 			gap: 0 2.6rem;
 		}
 	}
-	li {
-		float: none;
-		margin: 0; // the base list style adds a bottom margin that would lift the links
-		a {
-			margin: 0;
-			padding: 0.4rem 0 0.1rem;
-			font-weight: 500;
-			@include font-size(12.5,no);
-			letter-spacing: 0.14em;
-			line-height: 1.2;
+	li a {
+		padding: 0.4rem 0 0.1rem;
+		font-weight: 500;
+		@include font-size(12.5,no);
+		letter-spacing: 0.14em;
+		line-height: 1.2;
+		color: $text-color;
+		text-decoration: none;
+		white-space: nowrap;
+		// the bar that grows in from the left on hover and shrinks out to the right
+		&::after {
+			content: '';
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: -0.45rem;
+			height: 3px;
+			background: $accent-color;
+			transform: scaleX(0);
+			transform-origin: right center;
+			transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+		}
+		&:hover,
+		&:focus-visible {
 			color: $text-color;
-			text-decoration: none;
-			white-space: nowrap;
-			// the bar that grows in from the left on hover and shrinks out to the right
+			opacity: 1;
 			&::after {
-				content: '';
-				position: absolute;
-				left: 0;
-				right: 0;
-				bottom: -0.45rem;
-				height: 3px;
-				background: $accent-color;
-				transform: scaleX(0);
-				transform-origin: right center;
-				transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-			}
-			&:hover,
-			&:focus-visible {
-				color: $text-color;
-				opacity: 1;
-				&::after {
-					transform: scaleX(1);
-					transform-origin: left center;
-				}
-			}
-			&.is-current::after {
 				transform: scaleX(1);
 				transform-origin: left center;
 			}
+		}
+		&.is-current::after {
+			transform: scaleX(1);
+			transform-origin: left center;
 		}
 	}
 }
@@ -143,9 +136,10 @@
 /* Bottom menu navigation */
 
 .bottom-menu {
-	@include clearfix;
+	.menu-item {
+		gap: 2rem;
+	}
 	li a {
-		margin-right: 2rem;
 		font-weight: 500;
 		@include font-size(13,no);
 		letter-spacing: 0.14em;
@@ -328,10 +322,6 @@
 					color: $caption-color;
 				}
 			}
-			// trailing rule that the article layout prints after the content
-			> hr:last-child {
-				display: none;
-			}
 		}
 	}
 	@at-root {
@@ -410,44 +400,6 @@
 	padding: 2.2rem $gutter 3rem;
 	@include media($medium) {
 		padding: 4rem $gutter 5rem;
-	}
-	h1, h2 {
-		max-width: 860px;
-		margin: 0;
-		color: $text-color;
-		// a soft glow in the paper colour lifts the text off the drawing
-		text-shadow:
-			0 0 10px rgba($body-color, 1),
-			0 0 22px rgba($body-color, 0.95),
-			0 0 40px rgba($body-color, 0.8);
-	}
-	h2 {
-		font-family: $serif-font;
-		font-weight: 400;
-		letter-spacing: 0.01em;
-		line-height: 1.15;
-		font-size: clamp(30px, 4.8vw, 68px);
-		// subtitle (second h2): small letter-spaced sans with a short bar in front
-		& + h2 {
-			display: flex;
-			align-items: center;
-			gap: 0.9rem;
-			margin-top: 1.4rem;
-			font-family: $alt-font;
-			font-weight: 500;
-			letter-spacing: 0.22em;
-			@include font-size(14,no);
-			@include media($medium) {
-				@include font-size(16,no);
-			}
-			&::before {
-				content: '';
-				display: inline-block;
-				width: 2rem;
-				height: 2px;
-				background: $accent-color;
-			}
-		}
 	}
 }
 // page header

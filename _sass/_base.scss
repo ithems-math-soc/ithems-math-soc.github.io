@@ -14,7 +14,6 @@ body {
 	@include font-size(16);
 	line-height: 1.9;
 	letter-spacing: 0.02em;
-	font-feature-settings: "palt";
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
@@ -23,7 +22,6 @@ body {
 html[lang="ja"] body {
 	font-family: $base-font-ja;
 	font-weight: $base-weight-ja;
-	font-feature-settings: normal; // full-width kana spacing reads better in the light weight
 }
 // Headings keep the Latin-first stack on Japanese pages too, so "Welcome",
 // "Current" and other English headings look the same in both languages;
