@@ -6,28 +6,58 @@
    Default button .btn
    ========================================================================== */
 
+// Rectangular, letter-spaced button. An icon placed inside (for example
+// <i class="fa fa-angle-right">) slides out and back in on hover.
 .btn {
-	display: inline-block;
-	padding: 8px 20px;
-	@include font-size(14);
+	display: inline-flex;
+	align-items: center;
+	gap: 2.2rem;
+	padding: 0.55rem 0.6rem 0.55rem 1.4rem;
+	@include font-size(13,no);
 	font-family: $alt-font;
+	font-weight: 500;
+	line-height: 1.5;
 	background-color: $primary-color;
-	color: $white;
+	color: $body-color;
 	text-decoration: none;
-	border: 0 !important;
-	border-radius: 999px;
-	letter-spacing: 0.04em;
-	text-transform: uppercase;
-	box-shadow: 0 10px 24px rgba($primary-color, 0.2);
-	@include transition(background 0.2s, border 0.2s, box-shadow 0.2s);
+	border: $rule-width solid $primary-color !important;
+	border-radius: 0;
+	letter-spacing: 0.15em;
+	text-transform: none;
+	@include transition(background 0.3s ease-out, color 0.3s ease-out);
+	i {
+		font-size: 150%;
+		line-height: 1;
+	}
 	&:hover {
-		color: $white;
-		background-color: darken($primary-color, 4);
-		box-shadow: 0 14px 28px rgba($primary-color, 0.28);
+		color: $body-color;
+		background-color: darken($primary-color, 6);
+		opacity: 1;
+		i {
+			@include animation(button-arrow 0.7s cubic-bezier(0.22, 1, 0.36, 1));
+		}
 	}
 	&:active {
 		// move button slightly on click
 		@include transform(translateY(1px));
+	}
+}
+
+@include keyframes(button-arrow) {
+	0%   { opacity: 1; transform: translateX(0); }
+	40%  { opacity: 0; transform: translateX(14px); }
+	45%  { opacity: 0; transform: translateX(-10px); }
+	100% { opacity: 1; transform: translateX(0); }
+}
+
+// Outline variant on the page background.
+.btn-outline {
+	@extend .btn;
+	background-color: transparent;
+	color: $primary-color;
+	&:hover {
+		color: $body-color;
+		background-color: $primary-color;
 	}
 }
 

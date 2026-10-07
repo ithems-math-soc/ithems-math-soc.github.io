@@ -6,16 +6,21 @@
    Typography variables
    ========================================================================== */
 
-$base-font                   	: -apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI","Yu Gothic","Hiragino Kaku Gothic ProN",Arial,sans-serif;
-$heading-font                	: -apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI","Yu Gothic","Hiragino Kaku Gothic ProN",Arial,sans-serif;
+// Zen Kaku Gothic New (Google Fonts) covers Latin and Japanese; Instrument Serif
+// is used for the hero title and lead paragraphs. Both are loaded in the layouts.
+$base-font                   	: "Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",YuGothic,"Noto Sans JP","Helvetica Neue",Arial,sans-serif;
+$heading-font                	: $base-font;
+$serif-font                  	: "Instrument Serif","Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",YuMincho,"Iowan Old Style","Palatino Linotype","Times New Roman",serif;
 $caption-font                	: $base-font;
 $code-font                   	: monospace;
 $alt-font                    	: $heading-font;
 
 $doc-font-size               	: 16;
-$doc-line-height             	: 24;
+$doc-line-height             	: 30;
 
-$border-radius               	: 8px;
+$border-radius               	: 0;
+$rule-width                  	: 1.5px;   // thin lines that separate sections
+$tracking                    	: 0.12em;  // letter-spacing for headings, menus, labels
 
 /*
    Color variables
@@ -24,15 +29,17 @@ $border-radius               	: 8px;
 $white                        : #fff;
 $black                        : #000;
 
-$body-color                  	: #f7f8f7;
+// Warm paper background; everything else is drawn in one deep red (エンジ).
+$body-color                  	: #f6f1ec;
 
-$text-color                  	: #202326;
-$caption-color                : mix($white, $text-color, 25%);
+$base-color                  	: #8e1f2f;
+$accent-color                 : #d9a39a; // soft rose used for the small bars under headings and menu links
+$text-color                  	: $base-color;
+$caption-color                : mix($body-color, $text-color, 30%);
 
-$base-color                  	: #9d1f2c;
 $comp-color                  	: complement($base-color);
-$border-color                	: #d9ded9;
-$link-color                  	: #9d1f2c;
+$border-color                	: $base-color;
+$link-color                  	: $base-color;
 
 $primary-color               	: $base-color;
 $success-color               	: #2ecc71;
@@ -43,7 +50,7 @@ $info-color                  	: #3498db;
 $table-border-color          	: $border-color;
 $table-border                	: 1px solid $table-border-color;
 $table-background            	: $body-color;
-$table-header-color          	: lighten($table-background, 10);
+$table-header-color          	: darken($table-background, 3);
 $table-hover-color           	: darken($table-background, 2);
 $table-stripe-color          	: darken($table-background, 4);
 $table-stripe-color-hover    	: darken($table-stripe-color, 5);

@@ -14,7 +14,9 @@
         {% else %}
         {% assign domain = site.url %}
     {% endif %}
-    <li><a href="{{ domain }}{{ link.url }}" {% if link.url contains 'http' %}target="_blank"{% endif %}>{{ link.title }}</a></li>
+    {% assign current_url = page.url | remove: 'index.html' %}
+    {% if current_url == link.url %}{% assign current_class = ' class="is-current"' %}{% else %}{% assign current_class = '' %}{% endif %}
+    <li><a href="{{ domain }}{{ link.url }}"{{ current_class }} {% if link.url contains 'http' %}target="_blank"{% endif %}>{{ link.title }}</a></li>
   {% endfor %}
   {% if page.translation_url %}
     {% if page.lang == 'ja' %}

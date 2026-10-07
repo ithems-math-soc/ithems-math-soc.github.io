@@ -7,54 +7,64 @@
    ========================================================================== */
 
 #masthead {
-	position: relative;
+	position: sticky;
+	top: 0;
 	padding: 0 $gutter;
-	background: $white;
-	border-bottom: 1px solid $border-color;
-	box-shadow: 0 10px 28px rgba($black, 0.04);
+	background: $body-color;
+	border-bottom: $rule-width solid $border-color;
 	z-index: 5;
-	@include transform(translate(0,0));
-	@include transition(500ms cubic-bezier(.645,.045,.355,1.000));
-	&.slide {
-		@include transform(translate(-1600px,0));
-	}
 	.inner-wrap {
 		@include outer-container;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem 2rem;
 		min-height: 76px;
+		padding: 0.9rem 0;
 		@include media($medium) {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
+			flex-wrap: nowrap;
+			min-height: 96px;
+			padding: 0;
 		}
 	}
 }
+
+// Site title with the two short decorative bars underneath (rose + line colour).
 .site-title {
-	@include row;
-	@include media($large) {
-		@include span-columns(4);
-	}
-	float: none;
-	width: auto;
-	max-width: 100%;
-	padding: 0;
-	height: auto;
+	position: relative;
+	display: inline-block;
+	padding: 0 0 0.9rem;
 	text-decoration: none;
 	color: $text-color;
 	font-family: $alt-font;
-	font-weight: 700;
-	letter-spacing: 0;
-	@include font-size(19,no);
+	font-weight: 500;
+	letter-spacing: 0.1em;
+	@include font-size(17,no);
 	line-height: 1.25;
-	text-transform: none;
 	@include media($medium) {
-		@include font-size(21,no);
-		text-align: left;
-		display: flex;
-		align-items: center;
-		min-height: $masthead-height;
+		@include font-size(20,no);
+	}
+	&::before,
+	&::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		height: 2px;
+	}
+	&::before {
+		left: 0;
+		width: 1.4rem;
+		background: $accent-color;
+	}
+	&::after {
+		left: 2rem;
+		right: 0;
+		background: rgba($text-color, 0.22);
 	}
 	&:hover {
-		color: $primary-color;
+		color: $text-color;
+		opacity: 1;
 	}
 }
 
@@ -66,41 +76,11 @@
 .menu {
 	li {
 		float: left;
-		&:last-child a {
-			@include media($medium) {
-				margin-right: 0; // remove spacing from last menu link
-			}
-		}
 		a {
-			// line hover effect
 			position: relative;
 			display: block;
 			margin-right: $gutter;
-			padding: (.25 * $masthead-height) 0 (.25 * $masthead-height) ;
-			height: $masthead-height;
 			font-family: $alt-font;
-			&:before,
-			&:after {
-				content: '';
-				display: block;
-				position: absolute;
-				top: 0;
-				left: 0;
-				height: 2px;
-				@include transition(width 0.3s);
-			}
-			&:before {
-				width: 100%;
-				background: transparent;
-			}
-			&:after {
-				width: 0;
-				background: $primary-color;
-			}
-			&:active:after,
-			&:hover:after {
-				width: 100%;
-			}
 		}
 	}
 }
@@ -108,46 +88,62 @@
 /* Top menu navigation */
 
 .top-menu {
-	display: none;
+	display: block;
 	position: relative;
-	@include media($medium) {
-		display: block;
-		float: none;
-		width: auto;
-		top: 0.22rem;
-	}
-	@include media($large) {
-		float: none;
-		width: auto;
-		ul {
-			position: static;
-		}
-	}
 	.home,
 	.sub-menu-item {
 		display: none;
 	}
-	li {
-		a {
-			font-weight: 700;
-			@include font-size(16,no);
-			display: flex;
-			align-items: center;
-			padding: 0 0.55rem;
-			line-height: 1.2;
-			color: $text-color;
-			text-transform: none;
-			letter-spacing: 0;
-			&:hover {
-				color: $primary-color;
-			}
-		}
-	}
 	.menu-item {
 		display: flex;
-		justify-content: flex-end;
+		justify-content: flex-start;
 		align-items: center;
 		flex-wrap: wrap;
+		gap: 0.2rem 1.6rem;
+		@include media($medium) {
+			justify-content: flex-end;
+			gap: 0 2.6rem;
+		}
+	}
+	li {
+		float: none;
+		a {
+			margin: 0;
+			padding: 0.4rem 0;
+			font-weight: 500;
+			@include font-size(13,no);
+			letter-spacing: 0.14em;
+			line-height: 1.2;
+			color: $text-color;
+			text-decoration: none;
+			white-space: nowrap;
+			// the bar that grows in from the left on hover and shrinks out to the right
+			&::after {
+				content: '';
+				position: absolute;
+				left: 0;
+				right: 0;
+				bottom: -0.2rem;
+				height: 3px;
+				background: $accent-color;
+				transform: scaleX(0);
+				transform-origin: right center;
+				transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+			}
+			&:hover,
+			&:focus-visible {
+				color: $text-color;
+				opacity: 1;
+				&::after {
+					transform: scaleX(1);
+					transform-origin: left center;
+				}
+			}
+			&.is-current::after {
+				transform: scaleX(1);
+				transform-origin: left center;
+			}
+		}
 	}
 }
 
@@ -155,9 +151,16 @@
 
 .bottom-menu {
 	@include clearfix;
-	font-weight: 700;
-	a {
-		color: lighten($black,60);
+	li a {
+		margin-right: 2rem;
+		font-weight: 500;
+		@include font-size(13,no);
+		letter-spacing: 0.14em;
+		color: $text-color;
+		text-decoration: none;
+		&:hover {
+			opacity: 0.6;
+		}
 	}
 }
 
@@ -167,16 +170,12 @@
    ========================================================================== */
 
 #page-wrapper {
-	padding: 0 $gutter $gutter; // add white space for smaller screens
+	box-sizing: border-box;
+	padding: 0 $gutter;
 	@include size(100% 100%);
 	-webkit-overflow-scrolling: touch;
 	background: transparent;
 	z-index: 2;
-	@include transform(translate(0,0));
-	@include transition(500ms cubic-bezier(.645,.045,.355,1.000));
-	&.slide {
-		@include transform(translate(-60rem,0));
-	}
 }
 
 /*
@@ -184,7 +183,12 @@
    ========================================================================== */
 
 #main {
-	padding-top: 2rem;
+	padding-top: 4rem;
+	padding-bottom: 2rem;
+	@include media($medium) {
+		padding-top: 6rem;
+		padding-bottom: 4rem;
+	}
 	.wrap {
 		max-width: 920px;
 	}
@@ -195,14 +199,27 @@
 	}
 	.page-title {
 		@include fill-parent;
-		margin: 1.5rem 0 1.25rem;
-		padding-left: 1rem;
-		border-left: 6px solid $primary-color;
+		margin: 0 0 2.5rem;
 		h1, h2 {
 			margin: 0;
 		}
+		h1 {
+			@include font-size(30,no);
+			&::after {
+				content: '';
+				display: block;
+				width: 2.4rem;
+				height: 2px;
+				margin-top: 0.9rem;
+				background: $accent-color;
+			}
+		}
 		h2 {
-			color: lighten($text-color, 28);
+			margin-top: 1rem;
+			@include font-size(15,no);
+			font-weight: 500;
+			letter-spacing: 0.1em;
+			color: $caption-color;
 		}
 	}
 	@at-root {
@@ -217,30 +234,55 @@
 			h4,
 			h5,
 			h6 {
-				max-width: 800px;
+				max-width: 760px;
 			}
+			// Section heading: letter-spaced label with a short rose bar underneath.
 			h5 {
+				@include font-size(22,no); // the mixin resets margin-bottom, so margins come after it
 				margin-top: 0;
-				margin-bottom: 0.85rem;
-				color: $primary-color;
-				letter-spacing: 0.02em;
-			}
-			// cleaner underlines for links
-			a { text-decoration: none; }
-			p a,
-			li a {
-				border-bottom: 1px solid rgba($primary-color, 0.28);
-				&:hover {
-					border-bottom-style: solid;
-					border-bottom-color: $primary-color;
+				margin-bottom: 2.2rem;
+				&::after {
+					content: '';
+					display: block;
+					width: 2.4rem;
+					height: 2px;
+					margin-top: 0.9rem;
+					background: $accent-color;
 				}
 			}
-			p > a.reversefootnote {
-				border-bottom-width: 0;
+			h5 + p {
+				margin-top: 0;
 			}
-      .toc li > a {
-        border-bottom-width: 0;
-      }
+			// Lead paragraph (used on the home page): large serif statement.
+			.lead,
+			&.home-content > p:first-of-type {
+				@include font-size(26,no);
+				max-width: 860px;
+				margin-bottom: 2.5rem;
+				font-family: $serif-font;
+				line-height: 1.7;
+				letter-spacing: 0.01em;
+				@include media($medium) {
+					@include font-size(30,no);
+				}
+				a {
+					text-decoration: underline;
+					text-decoration-thickness: 1px;
+					text-underline-offset: 0.2em;
+				}
+			}
+			a {
+				text-decoration: underline;
+				text-decoration-thickness: 1px;
+				text-underline-offset: 0.3em;
+				&:hover {
+					opacity: 0.6;
+				}
+			}
+			p > a.reversefootnote,
+			.toc li > a {
+				text-decoration: none;
+			}
 			.page-footer,
 			.pagination {
 				@include fill-parent;
@@ -249,8 +291,12 @@
 				p{
 					@include font-size(14,no);
 					font-family: $alt-font;
-					color: lighten($text-color,40);
+					color: $caption-color;
 				}
+			}
+			// trailing rule that the article layout prints after the content
+			> hr:last-child {
+				display: none;
 			}
 		}
 	}
@@ -262,86 +308,73 @@
 			}
 		}
 	}
-  /* advertisements */
-	.ads {
-		position: relative;
-		text-align: center;
-		margin-top: $gutter;
-		margin-left: -$gutter;
-		margin-right: -$gutter;
-		padding: 10px 0 20px;
-		background: lighten($border-color,5);
-		@include media($medium) {
-			@include span-columns(3);
-			margin-left: 0;
-			margin-right: 0;
-		}
-		&:after {
-			content: 'Advertisement';
-			position: absolute;
-			bottom: 0;
-			width: 100%;
-			text-align: center;
-			display: block;
-			@include font-size(9,no);
-			font-family: $alt-font;
-		}
-		ins {
-			border-width: 0;
-		}
-	}
 }
-// page lead
+
+// Sections stacked on one page (home: Welcome, then Activities) are separated by a rule.
+.page-content > section + section,
+.page-content > section + h5,
+.page-content > p + section {
+	margin-top: 4.5rem;
+	padding-top: 4rem;
+	border-top: $rule-width solid $border-color;
+}
+
+// page lead (hero image with the team name)
 .page-lead {
 	background-position: center top;
 	background-repeat: no-repeat;
 	background-size: cover;
 	text-align: left;
 	color: $white;
-	box-shadow: inset 0 0 0 1000px rgba($black, 0.36);
+	box-shadow: inset 0 0 0 1000px rgba(darken($base-color, 25), 0.32);
+	border-bottom: $rule-width solid $border-color;
 }
 .page-lead-content {
 	@include outer-container;
-	min-height: 260px;
+	min-height: 300px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	padding: 3rem $gutter;
+	padding: 3.5rem $gutter;
 	@include media($medium) {
-		min-height: 340px;
-		padding: 4rem $gutter;
-	}
-	@include media($large) {
-		min-height: 420px;
+		min-height: 400px;
 		padding: 5rem $gutter;
 	}
-	h1 {
-		@include font-size(48);
-		@include media($medium) {
-			@include font-size(60);
-		}
-		@include media($large) {
-			@include font-size(72);
-		}
+	@include media($large) {
+		min-height: 480px;
+		padding: 6rem $gutter;
 	}
-	h2 {
-		max-width: 820px;
+	h1, h2 {
+		max-width: 860px;
 		margin: 0;
 		color: $white;
-		text-shadow: 0 2px 18px rgba($black, 0.35);
-		@include font-size(28);
-		@include media($medium) {
-			@include font-size(38);
-		}
-		@include media($large) {
-			@include font-size(48);
-		}
+		text-shadow: 0 2px 24px rgba($black, 0.35);
+	}
+	h2 {
+		font-family: $serif-font;
+		font-weight: 400;
+		letter-spacing: 0.01em;
+		line-height: 1.15;
+		font-size: clamp(30px, 4.8vw, 68px);
+		// subtitle (second h2): small letter-spaced sans with a short bar in front
 		& + h2 {
-			margin-top: 0.45rem;
-			@include font-size(18);
+			display: flex;
+			align-items: center;
+			gap: 0.9rem;
+			margin-top: 1.4rem;
+			font-family: $alt-font;
 			font-weight: 500;
+			letter-spacing: 0.22em;
+			@include font-size(14,no);
 			@include media($medium) {
-				@include font-size(24);
+				@include font-size(16,no);
+			}
+			&::before {
+				content: '';
+				display: inline-block;
+				width: 2rem;
+				height: 2px;
+				background: $accent-color;
 			}
 		}
 	}
@@ -395,7 +428,7 @@
 	img {
 		width: 80px;
 		height: 80px;
-		border-radius: $border-radius;
+		border-radius: 50%;
 	}
 }
 .author-content {
@@ -417,20 +450,31 @@
 
 #site-footer {
 	max-width: none;
-	margin-top: (3 * (0px + $doc-line-height));
-	margin-top: (3 * (0rem + ($doc-line-height / $doc-font-size)));
+	margin-top: 1rem;
 	margin-left: -1 * $gutter;
 	margin-right: -1 * $gutter;
-	padding: 2rem $gutter;
-	background: $white;
-	border-top: 1px solid $border-color;
+	padding: 3.5rem $gutter 3rem;
+	background: $body-color;
+	border-top: $rule-width solid $border-color;
 	font-family: $alt-font;
+	@include media($medium) {
+		margin-top: 2rem;
+		padding: 5rem $gutter 4rem;
+	}
+	.inner-wrap {
+		@include outer-container;
+	}
   /* Copyright text */
 	.copyright {
-		@include font-size(12);
-		color: lighten($black,60);
+		@include font-size(12,no);
+		max-width: none;
+		margin-top: 2.5rem;
+		margin-bottom: 0;
+		letter-spacing: 0.08em;
+		line-height: 1.8;
+		color: $caption-color;
 		a {
-			color: lighten($black,60);
+			color: $caption-color;
 			text-decoration: none;
 		}
 	}
