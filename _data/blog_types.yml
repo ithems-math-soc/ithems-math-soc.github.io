@@ -1,0 +1,48 @@
+# Blog post types.
+#
+# `key` is the value written in a post's `type:` front matter and shown as the
+# English label. `ja` is the label shown on the Japanese pages. The order here
+# is the order of the filter buttons on the Blog page.
+#
+# If you add or rename a type, also update the dropdown in
+# .github/ISSUE_TEMPLATE/blog-post.yml so the posting form offers it.
+
+- key: Paper
+  ja: 論文
+  description: A new paper or preprint by a team member
+
+- key: Article
+  ja: 記事
+  description: An article, essay, or column written by a team member
+
+- key: Talk
+  ja: 講演
+  description: A talk or poster given at a conference or workshop
+
+- key: Seminar
+  ja: セミナー
+  description: A seminar hosted or announced by the team
+
+- key: Event
+  ja: イベント
+  description: A workshop, school, or meeting attended or organised by the team
+
+- key: Visitor
+  ja: 来訪者
+  description: A guest who visited the team
+
+- key: Member
+  ja: メンバー
+  description: A member joining or leaving the team
+
+- key: Award
+  ja: 受賞
+  description: An award, prize, or fellowship
+
+- key: Media
+  ja: メディア
+  description: Press coverage, interviews, or other media appearances
+
+- key: Opening
+  ja: 公募
+  description: A job opening or call for applications

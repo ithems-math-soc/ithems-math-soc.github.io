@@ -16,6 +16,9 @@ sass:
   sass_dir: _sass
   style: compressed
 permalink: /:categories/:title/
+# GitHub Pages builds in UTC. Without this, a blog post dated "today" in JST
+# can be treated as a future post and silently skipped.
+future: true
 kramdown:
   toc_levels: 1..2
 highlighter: rouge
