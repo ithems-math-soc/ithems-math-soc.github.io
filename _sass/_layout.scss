@@ -11,10 +11,11 @@
 	top: 0;
 	padding: 0 $gutter;
 	background: $body-color;
-	border-bottom: $rule-width solid $border-color;
 	z-index: 5;
 	.inner-wrap {
-		@include outer-container;
+		// not outer-container: its clearfix ::after would become a third flex item
+		max-width: $max-width;
+		margin: 0 auto;
 		display: flex;
 		align-items: flex-end; // the menu sits on the same bottom line as the site title
 		justify-content: space-between;
@@ -96,7 +97,7 @@
 		}
 	}
 	li a {
-		padding: 0.4rem 0 0.1rem;
+		padding: 0.4rem 0 0.1rem 1.1rem; // room for the node in front
 		font-weight: 500;
 		@include font-size(12.5,no);
 		letter-spacing: 0.14em;
@@ -104,32 +105,44 @@
 		color: $text-color;
 		text-decoration: none;
 		white-space: nowrap;
-		// the bar that grows in from the left on hover and shrinks out to the right
-		&::after {
+		transition: color 0.3s ease, opacity 0.3s ease, letter-spacing 0.4s $ease-out;
+		// the node: a hollow rose ring that appears on hover; filled red on the current page
+		&::before {
 			content: '';
 			position: absolute;
 			left: 0;
-			right: 0;
-			bottom: -0.45rem;
-			height: 3px;
-			background: $accent-color;
-			transform: scaleX(0);
-			transform-origin: right center;
-			transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+			top: 50%;
+			width: 6px;
+			height: 6px;
+			margin-top: 0.05rem; // the link has more padding above than below, so nudge to the text's centre
+			border-radius: 50%;
+			box-shadow: 0 0 0 2px $body-color, 0 0 0 3px $accent-color;
+			opacity: 0;
+			transform: scale(0.4);
+			transition: opacity 0.3s ease, transform 0.4s $ease-out;
 		}
 		&:hover,
 		&:focus-visible {
-			color: $text-color;
+			color: $primary-color;
+			letter-spacing: 0.2em;
 			opacity: 1;
-			&::after {
-				transform: scaleX(1);
-				transform-origin: left center;
+			&::before {
+				opacity: 1;
+				transform: none;
 			}
 		}
-		&.is-current::after {
-			transform: scaleX(1);
-			transform-origin: left center;
+		&.is-current {
+			color: $primary-color;
+			&::before {
+				opacity: 1;
+				transform: none;
+				background: $primary-color;
+			}
 		}
+	}
+	// while one link is hovered the others step back
+	.menu-item:hover li a:not(:hover) {
+		opacity: 0.45;
 	}
 }
 
@@ -143,8 +156,6 @@
 		font-weight: 500;
 		@include font-size(13,no);
 		letter-spacing: 0.14em;
-		color: $text-color;
-		text-decoration: none;
 		&:hover {
 			opacity: 0.6;
 		}
@@ -385,10 +396,6 @@
 		background: linear-gradient(to top, $body-color 0%, rgba($body-color, 0) 100%);
 	}
 }
-// On the home page the illustration sits directly under the header, with no rules around it.
-.page-home #masthead {
-	border-bottom-color: transparent;
-}
 .page-lead-content {
 	@include outer-container;
 	position: relative; // above the edge fades
@@ -473,19 +480,21 @@
 
 #site-footer {
 	max-width: none;
-	margin-top: 1rem;
-	margin-left: -1 * $gutter;
-	margin-right: -1 * $gutter;
+	margin: 4rem (-1 * $gutter) 0;
 	padding: 3.5rem $gutter 3rem;
-	background: $body-color;
-	border-top: $rule-width solid $border-color;
+	background: $primary-color;
+	color: $body-color;
 	font-family: $alt-font;
 	@include media($medium) {
-		margin-top: 2rem;
+		margin-top: 6rem;
 		padding: 5rem $gutter 4rem;
 	}
 	.inner-wrap {
 		@include outer-container;
+	}
+	a {
+		color: inherit;
+		text-decoration: none;
 	}
   /* Copyright text */
 	.copyright {
@@ -495,10 +504,6 @@
 		margin-bottom: 0;
 		letter-spacing: 0.08em;
 		line-height: 1.8;
-		color: $caption-color;
-		a {
-			color: $caption-color;
-			text-decoration: none;
-		}
+		color: rgba($body-color, 0.7);
 	}
 }

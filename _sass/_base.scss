@@ -11,7 +11,7 @@ body {
 	font-weight: $base-weight;
 	color: $text-color;
 	background: $body-color;
-	@include font-size(16);
+	@include font-size(16,no); // "no": the mixin would otherwise give <body> a bottom margin
 	line-height: 1.9;
 	letter-spacing: 0.02em;
 	-webkit-font-smoothing: antialiased;

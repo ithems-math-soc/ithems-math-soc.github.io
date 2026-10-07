@@ -10,7 +10,6 @@
    ========================================================================== */
 
 $nav-collapse: 899px;
-$nav-ease: cubic-bezier(0.22, 1, 0.36, 1);
 
 .nav-toggle,
 .nav-backdrop,
@@ -62,7 +61,7 @@ $nav-ease: cubic-bezier(0.22, 1, 0.36, 1);
 		height: 1.5px;
 		background: $text-color;
 		transform-origin: center;
-		transition: transform 0.35s $nav-ease, opacity 0.2s ease, width 0.35s $nav-ease, top 0.35s $nav-ease;
+		transition: transform 0.35s $ease-out, opacity 0.2s ease, width 0.35s $ease-out, top 0.35s $ease-out;
 		&:nth-child(1) { top: 0;    width: 100%; }
 		&:nth-child(2) { top: 9px;  width: 70%; }
 		&:nth-child(3) { top: 18px; width: 100%; }
@@ -105,7 +104,7 @@ $nav-ease: cubic-bezier(0.22, 1, 0.36, 1);
 		-webkit-overflow-scrolling: touch;
 		transform: translateX(100%);
 		visibility: hidden;
-		transition: transform 0.55s $nav-ease, visibility 0s linear 0.55s;
+		transition: transform 0.55s $ease-out, visibility 0s linear 0.55s;
 		a {
 			color: $body-color;
 			text-decoration: none;
@@ -146,7 +145,7 @@ $nav-ease: cubic-bezier(0.22, 1, 0.36, 1);
 			// each link drifts in from the right, one after another
 			opacity: 0;
 			transform: translateX(24px);
-			transition: opacity 0.4s ease, transform 0.6s $nav-ease;
+			transition: opacity 0.4s ease, transform 0.6s $ease-out;
 		}
 		li a {
 			position: relative;
@@ -169,7 +168,7 @@ $nav-ease: cubic-bezier(0.22, 1, 0.36, 1);
 				background: $accent-color;
 				transform: scaleX(0);
 				transform-origin: right center;
-				transition: transform 0.4s $nav-ease;
+				transition: transform 0.4s $ease-out;
 			}
 			&:hover,
 			&:active {
@@ -179,9 +178,21 @@ $nav-ease: cubic-bezier(0.22, 1, 0.36, 1);
 					transform-origin: left center;
 				}
 			}
-			&.is-current::after {
-				transform: scaleX(1);
-				transform-origin: left center;
+			// current page: the node mark, inverted for the red sheet
+			&.is-current {
+				padding-left: 1.4rem;
+				&::before {
+					content: '';
+					position: absolute;
+					left: 0;
+					top: 50%;
+					width: 7px;
+					height: 7px;
+					margin-top: -3.5px;
+					border-radius: 50%;
+					background: $body-color;
+					box-shadow: 0 0 0 2px $primary-color, 0 0 0 3px $accent-color;
+				}
 			}
 		}
 		// the language switch is the last item: smaller, sans, letter-spaced
@@ -222,7 +233,7 @@ $nav-ease: cubic-bezier(0.22, 1, 0.36, 1);
 		.nav-drawer {
 			transform: translateX(0);
 			visibility: visible;
-			transition: transform 0.55s $nav-ease, visibility 0s linear 0s;
+			transition: transform 0.55s $ease-out, visibility 0s linear 0s;
 		}
 		.drawer-menu li {
 			opacity: 1;

@@ -1,12 +1,11 @@
 <header id="masthead">
   <div class="inner-wrap">
-    {% assign site_title = page.site_title | default: site.title %}
     {% if page.lang == 'ja' %}
       {% assign home_url = '/ja/' %}
     {% else %}
       {% assign home_url = '/' %}
     {% endif %}
-    <a href="{{ site.url }}{{ home_url }}" class="site-title"><span class="site-title-label">RIKEN iTHEMS</span>{{ site_title }}</a>
+    <a href="{{ site.url }}{{ home_url }}" class="site-title"><span class="site-title-label">RIKEN iTHEMS</span>{{ site.title }}</a>
     <nav role="navigation" class="menu top-menu">
         {% include navigation.html %}
     </nav>
@@ -28,5 +27,5 @@
   <nav role="navigation" class="drawer-menu">
     {% include navigation.html %}
   </nav>
-  <p class="nav-drawer-foot"><a href="{{ site.url }}{{ home_url }}">{{ site_title }}</a></p>
+  <p class="nav-drawer-foot"><a href="{{ site.url }}{{ home_url }}">{{ site.title }}</a></p>
 </aside><!-- /.nav-drawer -->
