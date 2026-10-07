@@ -270,6 +270,16 @@
 					text-decoration-thickness: 1px;
 					text-underline-offset: 0.2em;
 				}
+				// Japanese Mincho needs more leading than the Latin serif
+				@at-root html[lang="ja"] & {
+					line-height: 1.9;
+					@include font-size(24,no);
+					margin-bottom: 2.5rem;
+					@include media($medium) {
+						@include font-size(27,no);
+						margin-bottom: 2.5rem;
+					}
+				}
 			}
 			a {
 				text-decoration: underline;
