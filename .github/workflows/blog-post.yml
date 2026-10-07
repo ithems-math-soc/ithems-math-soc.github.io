@@ -1,0 +1,181 @@
+# Turns a "blog-post" issue (created from the New blog post form) into a pull
+# request that adds the post to the website.
+#
+# Flow:
+#   issue opened/edited  ->  generate _posts/blog/<date>-<slug>.md (English),
+#                            _posts/ja/blog/<date>-<slug>.md (DeepL translation),
+#                            images/blog/<slug>/* (attached photos)
+#                        ->  commit to branch blog/issue-<n>, open or update a PR
+#                        ->  comment on the issue with the PR link
+#
+# Only issues by repository collaborators are processed.
+#
+# One-time setup (repository admin):
+#   1. Settings > Actions > General > Workflow permissions:
+#      enable "Allow GitHub Actions to create and approve pull requests".
+#   2. Settings > Secrets and variables > Actions: add DEEPL_API_KEY
+#      (a DeepL API Free key). Without it, posts are created in English only.
+#   3. Make sure the "blog-post" label exists.
+
+name: Blog post from issue
+
+on:
+  issues:
+    types: [opened, edited, labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: blog-post-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  post:
+    if: >-
+      (contains(github.event.issue.labels.*.name, 'blog-post') || startsWith(github.event.issue.title, '[Blog]'))
+      && contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association)
+    runs-on: ubuntu-latest
+    env:
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+      BRANCH: blog/issue-${{ github.event.issue.number }}
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Switch to the branch for this issue
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+            # The issue was edited and a branch already exists: build on it.
+            git checkout -B "$BRANCH" "origin/$BRANCH"
+          else
+            git checkout -B "$BRANCH" origin/main
+          fi
+
+      - name: Generate the post files
+        id: gen
+        env:
+          ISSUE_JSON: ${{ toJSON(github.event.issue) }}
+          DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python .github/scripts/issue_to_post.py
+
+      - name: Commit and push
+        id: push
+        env:
+          TITLE: ${{ steps.gen.outputs.title }}
+        run: |
+          git add -A _posts/blog _posts/ja/blog images/blog
+          if git diff --cached --quiet; then
+            echo "Nothing changed."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "Add blog post: $TITLE"
+            git push origin "$BRANCH"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open or update the pull request
+        id: pr
+        if: steps.push.outputs.changed == 'true'
+        env:
+          TITLE: ${{ steps.gen.outputs.title }}
+          EN_URL: ${{ steps.gen.outputs.en_url }}
+          JA_URL: ${{ steps.gen.outputs.ja_url }}
+          TRANSLATED: ${{ steps.gen.outputs.translated }}
+          WARNINGS: ${{ steps.gen.outputs.warnings }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          AUTHOR: ${{ github.event.issue.user.login }}
+        run: |
+          PR_URL="$(gh pr list --head "$BRANCH" --state open --json url --jq '.[0].url // empty')"
+          if [ -z "$PR_URL" ]; then
+            if [ "$TRANSLATED" = "true" ]; then
+              JA_LINE="- Japanese (machine translation): $JA_URL"
+            else
+              JA_LINE="- Japanese: **not generated** (translation unavailable; see the workflow log)."
+            fi
+            if [ -n "$WARNINGS" ]; then
+              WARN_LINE="**Warnings:** $WARNINGS"
+            else
+              WARN_LINE=""
+            fi
+            BODY="$(printf '%s\n' \
+              "Blog post submitted by @$AUTHOR via $ISSUE_URL." \
+              "" \
+              "After merging, the post will appear at:" \
+              "- English: $EN_URL" \
+              "$JA_LINE" \
+              "" \
+              "Review the files in this PR (especially the Japanese translation) and merge when ready." \
+              "To change the text or photos, edit the original issue and this PR will be updated." \
+              "" \
+              "$WARN_LINE" \
+              "" \
+              "Closes #$ISSUE_NUMBER")"
+            PR_URL="$(gh pr create --base main --head "$BRANCH" --title "Blog: $TITLE" --body "$BODY")"
+            echo "created=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "created=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "url=$PR_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Report back on the issue
+        if: steps.push.outputs.changed == 'true'
+        env:
+          PR_URL: ${{ steps.pr.outputs.url }}
+          CREATED: ${{ steps.pr.outputs.created }}
+          EN_URL: ${{ steps.gen.outputs.en_url }}
+          JA_URL: ${{ steps.gen.outputs.ja_url }}
+          TRANSLATED: ${{ steps.gen.outputs.translated }}
+          WARNINGS: ${{ steps.gen.outputs.warnings }}
+        run: |
+          if [ "$CREATED" = "true" ]; then
+            FIRST="Thanks! A pull request has been opened for this post: $PR_URL"
+          else
+            FIRST="The pull request has been updated with your edits: $PR_URL"
+          fi
+          if [ "$TRANSLATED" = "true" ]; then
+            JA_LINE="- Japanese (machine translation): $JA_URL"
+          else
+            JA_LINE="- Japanese version: not generated this time (translation service unavailable). An admin can check the workflow log."
+          fi
+          if [ -n "$WARNINGS" ]; then
+            WARN_LINE="Note: $WARNINGS"
+          else
+            WARN_LINE=""
+          fi
+          gh issue comment "$ISSUE_NUMBER" --body "$(printf '%s\n' \
+            "$FIRST" \
+            "" \
+            "Once a team member merges it, the post will be live at:" \
+            "- English: $EN_URL" \
+            "$JA_LINE" \
+            "" \
+            "Need to change something? Edit this issue (title, fields, or body) and the pull request will be updated automatically." \
+            "" \
+            "$WARN_LINE")"
+
+      - name: Report a failure on the issue
+        if: failure()
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --body "$(printf '%s\n' \
+            "Sorry, the post could not be generated automatically." \
+            "" \
+            "Common causes: the Type field is empty or not one of the listed types, or the Date is not in YYYY-MM-DD format. Please check the fields, edit the issue, and the workflow will run again." \
+            "" \
+            "Details for admins: $RUN_URL")" || true
