@@ -329,36 +329,36 @@
 	border-top: $rule-width solid $border-color;
 }
 
-// page lead (hero image with the team name)
+// page lead (hero illustration with the team name). The illustration is pale,
+// so the title sits on it in the text colour without any overlay.
 .page-lead {
-	background-position: center top;
+	background-position: center center;
 	background-repeat: no-repeat;
 	background-size: cover;
+	background-color: $body-color;
 	text-align: left;
-	color: $white;
-	box-shadow: inset 0 0 0 1000px rgba(darken($base-color, 25), 0.32);
+	color: $text-color;
 	border-bottom: $rule-width solid $border-color;
 }
 .page-lead-content {
 	@include outer-container;
-	min-height: 300px;
+	min-height: clamp(260px, 46vw, 620px);
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
-	padding: 3.5rem $gutter;
+	justify-content: flex-start; // the sky at the top of the illustration is the calmest area
+	padding: 2.2rem $gutter 3rem;
 	@include media($medium) {
-		min-height: 400px;
-		padding: 5rem $gutter;
-	}
-	@include media($large) {
-		min-height: 480px;
-		padding: 6rem $gutter;
+		padding: 4rem $gutter 5rem;
 	}
 	h1, h2 {
 		max-width: 860px;
 		margin: 0;
-		color: $white;
-		text-shadow: 0 2px 24px rgba($black, 0.35);
+		color: $text-color;
+		// a soft glow in the paper colour lifts the text off the drawing
+		text-shadow:
+			0 0 10px rgba($body-color, 1),
+			0 0 22px rgba($body-color, 0.95),
+			0 0 40px rgba($body-color, 0.8);
 	}
 	h2 {
 		font-family: $serif-font;

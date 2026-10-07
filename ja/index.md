@@ -7,7 +7,7 @@ hero_title: 数理社会科学チーム
 hero_subtitle: iTHEMS
 translation_url: /
 image:
-  feature: home.jpg
+  feature: home-network.jpg
 ---
 
 <h5>ようこそ</h5>

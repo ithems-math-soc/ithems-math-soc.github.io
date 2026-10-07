@@ -4,7 +4,7 @@ permalink: /
 lang: en
 translation_url: /ja/
 image:
-  feature: home.jpg
+  feature: home-network.jpg
 ---
 
 <h5>Welcome</h5>
