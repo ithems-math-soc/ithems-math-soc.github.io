@@ -53,9 +53,11 @@ sitemap: false
    ========================================================================== */
 
 @import "layout";
+@import "nav-drawer";
 @import "people";
 @import "publications";
 @import "reveal";
+@import "scroll";
 
 br {
    line-height: 550%;
