@@ -34,7 +34,7 @@
 		background-color: darken($primary-color, 6);
 		opacity: 1;
 		i {
-			@include animation(button-arrow 0.7s cubic-bezier(0.22, 1, 0.36, 1));
+			@include animation(button-arrow 0.7s $ease-out);
 		}
 	}
 	&:active {

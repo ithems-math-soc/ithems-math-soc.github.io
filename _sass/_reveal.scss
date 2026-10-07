@@ -13,7 +13,7 @@
   transform: translateY(28px);
   transition:
     opacity 0.8s ease-out var(--reveal-delay, 0s),
-    transform 1.3s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s);
+    transform 1.3s $ease-out var(--reveal-delay, 0s);
   will-change: opacity, transform;
 
   &.is-visible {

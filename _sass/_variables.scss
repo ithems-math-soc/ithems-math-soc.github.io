@@ -26,6 +26,7 @@ $doc-line-height             	: 30;
 $border-radius               	: 0;
 $rule-width                  	: 1.5px;   // thin lines that separate sections
 $tracking                    	: 0.12em;  // letter-spacing for headings, menus, labels
+$ease-out                    	: cubic-bezier(0.22, 1, 0.36, 1); // shared easing for hover and reveal motion
 
 /*
    Color variables
