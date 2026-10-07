@@ -7,6 +7,8 @@ image:
   feature: home-network.jpg
 ---
 
+<p class="lead">Unraveling Society with Mathematics</p>
+
 <h5>Welcome</h5>
 
 We are the Mathematical Social Science Team at [RIKEN Center for Interdisciplinary Theoretical and Mathematical Sciences](https://ithems.riken.jp/)
