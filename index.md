@@ -7,7 +7,7 @@ image:
   feature: home-network.jpg
 ---
 
-<p class="lead">Unraveling Society with Mathematics</p>
+<p class="lead">Exploring Social Mechanisms with Mathematics</p>
 
 <h5>Welcome</h5>
 
