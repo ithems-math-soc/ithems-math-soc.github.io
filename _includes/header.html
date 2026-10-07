@@ -6,9 +6,27 @@
     {% else %}
       {% assign home_url = '/' %}
     {% endif %}
-    <a href="{{ site.url }}{{ home_url }}" class="site-title">{{ site_title }}</a>
+    <a href="{{ site.url }}{{ home_url }}" class="site-title"><span class="site-title-label">RIKEN iTHEMS</span>{{ site_title }}</a>
     <nav role="navigation" class="menu top-menu">
         {% include navigation.html %}
     </nav>
+    {% comment %}
+      Narrow screens: the top menu is hidden and this button opens a drawer
+      from the right with the same links (see _sass/_nav-drawer.scss and js/nav.js).
+    {% endcomment %}
+    <button type="button" class="nav-toggle" id="js-nav-toggle" aria-controls="js-nav-drawer" aria-expanded="false" aria-label="{% if page.lang == 'ja' %}メニュー{% else %}Menu{% endif %}">
+      <span class="nav-toggle-line"></span>
+      <span class="nav-toggle-line"></span>
+      <span class="nav-toggle-line"></span>
+    </button>
   </div><!-- /.inner-wrap -->
 </header><!-- /.masthead -->
+
+<div class="nav-backdrop" id="js-nav-backdrop"></div>
+<aside class="nav-drawer" id="js-nav-drawer" aria-hidden="true">
+  <p class="nav-drawer-label">Menu</p>
+  <nav role="navigation" class="drawer-menu">
+    {% include navigation.html %}
+  </nav>
+  <p class="nav-drawer-foot"><a href="{{ site.url }}{{ home_url }}">{{ site_title }}</a></p>
+</aside><!-- /.nav-drawer -->
