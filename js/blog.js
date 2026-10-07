@@ -1,5 +1,5 @@
 /*
- * Blog index: filter by type, search by keyword, sort.
+ * Blog index: filter by type, search by keyword, sort by date.
  *
  * Works entirely on the post cards already rendered by _includes/blog-list.html
  * (each card carries data-type / data-date / data-title / data-search), so no
@@ -28,7 +28,7 @@
     state.tag = known ? tag : '';
     state.q = params.get('q') || '';
     var sort = params.get('sort') || 'newest';
-    state.sort = (sort === 'oldest' || sort === 'title') ? sort : 'newest';
+    state.sort = sort === 'oldest' ? 'oldest' : 'newest';
   }
 
   function writeUrl() {
@@ -54,11 +54,6 @@
   }
 
   function compare(a, b) {
-    if (state.sort === 'title') {
-      var ta = a.getAttribute('data-title') || '';
-      var tb = b.getAttribute('data-title') || '';
-      return ta < tb ? -1 : (ta > tb ? 1 : 0);
-    }
     var da = a.getAttribute('data-date') || '';
     var db = b.getAttribute('data-date') || '';
     if (da === db) { return 0; }

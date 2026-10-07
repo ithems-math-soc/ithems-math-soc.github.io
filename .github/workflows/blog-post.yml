@@ -121,6 +121,7 @@ jobs:
               "" \
               "Review the files in this PR (especially the Japanese translation) and merge when ready." \
               "To change the text or photos, edit the original issue and this PR will be updated." \
+              "If you correct the Japanese file by hand, set \`machine_translation: false\` in its front matter so it is not overwritten." \
               "" \
               "$WARN_LINE" \
               "" \

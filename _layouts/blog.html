@@ -16,7 +16,7 @@ layout: default
 			</p>
 			<h1 itemprop="headline">{{ page.title }}</h1>
 		</div>
-		{% if page.lang == 'ja' %}
+		{% if page.lang == 'ja' and page.machine_translation != false %}
 		<p class="blog-notice">このブログ記事は英語で投稿された原文を自動翻訳したものです。正確な内容は{% if page.translation_url %}<a href="{{ site.url }}{{ page.translation_url }}">英語版</a>{% else %}英語版{% endif %}をご参照ください。</p>
 		{% endif %}
 		<div class="inner-wrap">

@@ -2,7 +2,8 @@
 
 The Blog page (https://ithems-math-soc.github.io/blog/) is for short news
 items: a new paper, a talk, a workshop report, a visitor, a new member, a
-seminar announcement, an award, media coverage, or a job opening.
+seminar announcement, an award, media coverage, a job opening, or other news
+such as a new grant.
 
 You do **not** need git or a local copy of the website to post. Everything is
 done on GitHub in your browser.
@@ -15,7 +16,8 @@ done on GitHub in your browser.
 2. In the title box, replace `[Blog] ` with the title of your post.
 3. Fill in the fields:
    - **Type** (required): pick one from the list. It is shown as a coloured tag
-     on the Blog page and can be used to filter posts.
+     on the Blog page and can be used to filter posts. If nothing fits (for
+     example a new grant or project), choose **News**.
    - **Date**: `YYYY-MM-DD`. Leave empty for today.
    - **Author**: your name as it should appear. Optional.
    - **Link** / **Link label**: an optional URL (paper, seminar page, ...)
@@ -39,17 +41,38 @@ Within about a minute a bot comments on your issue with a link to a
    - `images/blog/<slug>/` – any photos
 3. Read through the text. If the Japanese translation needs a fix, you can
    edit it directly: on the file, click the **...** menu → **Edit file**,
-   change the text, and **Commit changes** to the same branch.
+   change the text, and **Commit changes** to the same branch (see
+   *Editing the Japanese text* below).
 4. Click **Merge pull request** → **Confirm merge**. The website rebuilds in a
    few minutes and the post appears on the Blog page. The issue closes
    automatically.
 
+## Editing the Japanese text
+
+The Japanese file (`_posts/ja/blog/<date>-<slug>.md`) is an ordinary text
+file and can be edited at any time, before or after publishing. When you do,
+also change the line
+
+```yaml
+machine_translation: true
+```
+
+near the top of the file to `machine_translation: false`. This does two
+things:
+
+- the "automatically translated" notice disappears from the Japanese page, and
+- if someone later edits the original issue, the bot keeps your Japanese text
+  instead of translating the English again.
+
+Without that change, an edit to the issue regenerates the Japanese file and
+your corrections are lost.
+
 ## Changing a post
 
 **Before the pull request is merged:** edit the issue (title, fields, or
-body). The pull request is updated automatically. Note that this regenerates
-the post files, so any hand edits made on the pull request are overwritten;
-make translation fixes after your last edit to the issue.
+body). The pull request is updated automatically. This regenerates the post
+files, so hand edits made on the pull request are overwritten, except for a
+Japanese file marked `machine_translation: false`.
 
 **After it is merged:** either
 
@@ -132,5 +155,6 @@ Body text in Markdown.
 ```
 
 The Japanese file lives at the same name under `_posts/ja/blog/` and has
-`lang: ja`, `categories: [ja, blog]`, `site_title: 数理社会科学チーム`, and
-`translation_url` pointing back to the English post.
+`lang: ja`, `categories: [ja, blog]`, `site_title: 数理社会科学チーム`,
+`translation_url` pointing back to the English post, and
+`machine_translation: true` (set to `false` once a person has edited it).
