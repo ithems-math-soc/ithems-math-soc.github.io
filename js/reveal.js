@@ -4,8 +4,9 @@
  * Elements matching the selectors below get a data-reveal attribute; when one
  * scrolls into view it receives .is-visible and _sass/_reveal.scss animates it.
  * Items inside a list (people cards, publications) are staggered slightly.
- * Does nothing when the browser lacks IntersectionObserver or the visitor
- * prefers reduced motion, so content is always readable.
+ * Exposed as window.siteReveal so js/transition.js can run it again after
+ * swapping in a new page. Does nothing when the browser lacks
+ * IntersectionObserver or the visitor prefers reduced motion.
  */
 (function () {
   'use strict';
@@ -32,25 +33,6 @@
     '.blog-items > .blog-item'
   ];
 
-  var targets = [];
-
-  single.forEach(function (sel) {
-    Array.prototype.forEach.call(document.querySelectorAll(sel), function (el) {
-      targets.push(el);
-    });
-  });
-
-  staggered.forEach(function (sel) {
-    var items = document.querySelectorAll(sel);
-    Array.prototype.forEach.call(items, function (el, i) {
-      // restart the stagger for each list so long lists do not wait seconds
-      el.style.setProperty('--reveal-delay', ((i % 6) * 0.08) + 's');
-      targets.push(el);
-    });
-  });
-
-  if (!targets.length) { return; }
-
   var observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (!entry.isIntersecting) { return; }
@@ -59,8 +41,25 @@
     });
   }, { rootMargin: '0px 0px -60px 0px', threshold: 0 });
 
-  targets.forEach(function (el) {
-    el.setAttribute('data-reveal', '');
-    observer.observe(el);
-  });
+  function reveal() {
+    var targets = [];
+    single.forEach(function (sel) {
+      Array.prototype.forEach.call(document.querySelectorAll(sel), function (el) { targets.push(el); });
+    });
+    staggered.forEach(function (sel) {
+      Array.prototype.forEach.call(document.querySelectorAll(sel), function (el, i) {
+        // restart the stagger for each list so long lists do not wait seconds
+        el.style.setProperty('--reveal-delay', ((i % 6) * 0.08) + 's');
+        targets.push(el);
+      });
+    });
+    targets.forEach(function (el) {
+      if (el.hasAttribute('data-reveal')) { return; }
+      el.setAttribute('data-reveal', '');
+      observer.observe(el);
+    });
+  }
+
+  reveal();
+  window.siteReveal = reveal;
 })();

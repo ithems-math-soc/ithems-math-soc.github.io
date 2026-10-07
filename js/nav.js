@@ -4,21 +4,19 @@
  * Toggles .is-nav-open on <html>; _sass/_nav-drawer.scss does the rest.
  * The drawer closes on Escape, on a link click, on a tap on the dimmed
  * backdrop, or when the window grows past the breakpoint where the top
- * menu is visible again.
+ * menu is visible again. js/transition.js replaces the header's inner part
+ * and the drawer when the language changes, so lookups go through bind().
  */
 (function () {
   'use strict';
 
   var root = document.documentElement;
-  var button = document.getElementById('js-nav-toggle');
-  var drawer = document.getElementById('js-nav-drawer');
-  var backdrop = document.getElementById('js-nav-backdrop');
-  if (!button || !drawer) { return; }
-
   var open = false;
+  var button;
 
   function setOpen(isOpen) {
-    if (open === isOpen) { return; }
+    var drawer = document.getElementById('js-nav-drawer');
+    if (open === isOpen || !button || !drawer) { return; }
     open = isOpen;
     root.classList.toggle('is-nav-open', isOpen);
     button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
@@ -27,11 +25,14 @@
     if (window.siteScroll) { isOpen ? window.siteScroll.stop() : window.siteScroll.start(); }
   }
 
-  button.addEventListener('click', function () { setOpen(!open); });
-  if (backdrop) { backdrop.addEventListener('click', function () { setOpen(false); }); }
+  function bind() {
+    button = document.getElementById('js-nav-toggle');
+    if (button) { button.addEventListener('click', function () { setOpen(!open); }); }
+  }
 
-  Array.prototype.forEach.call(drawer.querySelectorAll('a'), function (a) {
-    a.addEventListener('click', function () { setOpen(false); });
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (t.closest && (t.closest('#js-nav-backdrop') || t.closest('#js-nav-drawer a'))) { setOpen(false); }
   });
 
   document.addEventListener('keydown', function (e) {
@@ -42,4 +43,7 @@
   function onResize() { if (wide.matches) { setOpen(false); } }
   if (wide.addEventListener) { wide.addEventListener('change', onResize); }
   else if (wide.addListener) { wide.addListener(onResize); }
+
+  bind();
+  window.siteNav = { bind: bind };
 })();
