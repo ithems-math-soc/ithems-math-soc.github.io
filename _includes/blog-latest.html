@@ -1,0 +1,23 @@
+{% comment %}
+  "Activities" block for the home page: the three newest blog posts in the
+  page's language, followed by a button to the Blog page. Nothing is rendered
+  when there are no posts yet.
+{% endcomment %}
+{% if page.lang == 'ja' %}
+  {% assign latest = site.categories.blog | where: "lang", "ja" %}
+{% else %}
+  {% assign latest = site.categories.blog | where_exp: "p", "p.lang != 'ja'" %}
+{% endif %}
+{% if latest.size > 0 %}
+<section class="blog-latest">
+<h5>Activities</h5>
+
+<div class="blog-items">
+{% for post in latest limit: 3 %}
+  {% include blog-card.html post=post %}
+{% endfor %}
+</div>
+
+<p class="blog-latest-more"><a class="btn" href="{{ site.url }}{% if page.lang == 'ja' %}/ja{% endif %}/blog/">{% if page.lang == 'ja' %}もっと見る{% else %}See more{% endif %} <i class="fa fa-angle-right"></i></a></p>
+</section>
+{% endif %}

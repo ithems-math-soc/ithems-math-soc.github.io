@@ -1,0 +1,84 @@
+# Blog post form.
+#
+# Submitting this form creates an issue labelled "blog-post". The workflow in
+# .github/workflows/blog-post.yml turns that issue into a pull request that
+# adds the post (plus a machine-translated Japanese version) to the website.
+#
+# Field labels (Type, Date, Author, Link, Link label, Body) are read by
+# .github/scripts/issue_to_post.py. If you rename a label here, update the
+# script as well. The Type options must match _data/blog_types.yml.
+
+name: "New blog post"
+description: "Post news to the team blog (paper, talk, visitor, seminar, ...). No git needed."
+title: "[Blog] "
+labels: ["blog-post"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for posting! Replace the `[Blog] ` prefix in the title above with the post title, fill in the fields below, and press **Submit new issue**.
+
+        - Write in **English**. A Japanese version is translated automatically.
+        - To add **photos**, drag & drop them into the *Body* field.
+        - After you submit, a pull request is opened automatically. Once a team member merges it, the post goes live.
+        - To **change** something later, just edit this issue; the pull request is updated.
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      description: What kind of post is this? It is shown as a tag on the Blog page. Use "News" for anything else, e.g. a new grant, a new project, or a new collaboration.
+      options:
+        - Paper
+        - Article
+        - Talk
+        - Seminar
+        - Event
+        - Visitor
+        - Member
+        - Award
+        - Media
+        - Opening
+        - News
+    validations:
+      required: true
+
+  - type: input
+    id: date
+    attributes:
+      label: Date
+      description: "Date of the post as YYYY-MM-DD. Leave empty to use today."
+      placeholder: "2026-10-07"
+
+  - type: input
+    id: author
+    attributes:
+      label: Author
+      description: "Your name as it should appear on the post. Leave empty to omit."
+      placeholder: "Shinobu Utsumi"
+
+  - type: input
+    id: link
+    attributes:
+      label: Link
+      description: "Optional. A URL (paper, seminar page, article, ...) shown as a button at the end of the post."
+      placeholder: "https://doi.org/..."
+
+  - type: input
+    id: link_label
+    attributes:
+      label: Link label
+      description: "Optional. Text for the button, for example 'Read the paper'. Defaults to 'Open link'."
+      placeholder: "Read the paper"
+
+  - type: textarea
+    id: body
+    attributes:
+      label: Body
+      description: "The post itself, in Markdown. The first paragraph is used as the summary on the Blog page. Drag & drop photos here."
+      placeholder: |
+        Our paper "..." has been published in ...
+
+        A short paragraph or two is plenty.
+    validations:
+      required: true

@@ -28,3 +28,5 @@ dilemmas, where individually rational decisions can lead to undesirable outcomes
 at the group level. Through this work, we aim to develop a theoretical
 foundation that contributes to the design of more sustainable and resilient
 societies.
+
+{% include blog-latest.html %}

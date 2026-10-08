@@ -1,0 +1,7 @@
+# Only allow issues created from the forms in this folder, so that blog posts
+# always have the fields the automation expects.
+blank_issues_enabled: false
+contact_links:
+  - name: How to post to the blog
+    url: https://github.com/ithems-math-soc/ithems-math-soc.github.io/blob/main/HowTos/AddBlogPost.md
+    about: Step-by-step guide for posting, editing, and reviewing blog posts.

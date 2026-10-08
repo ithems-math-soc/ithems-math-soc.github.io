@@ -1,0 +1,50 @@
+{% comment %}
+  Blog index. Lists every post under _posts/blog/ (English) or _posts/ja/blog/
+  (Japanese), newest first, with client-side filtering, search, and sorting
+  handled by js/blog.js. Each card (blog-card.html) carries its metadata as
+  data-* attributes so the script needs no extra requests.
+{% endcomment %}
+{% if page.lang == 'ja' %}
+  {% assign posts = site.categories.blog | where: "lang", "ja" %}
+{% else %}
+  {% assign posts = site.categories.blog | where_exp: "p", "p.lang != 'ja'" %}
+{% endif %}
+
+<section class="blog-list">
+<h5>{% if page.lang == 'ja' %}ブログ{% else %}Blog{% endif %}</h5>
+
+{% if posts and posts.size > 0 %}
+<div class="blog-toolbar">
+  <div class="blog-tags" role="group" aria-label="{% if page.lang == 'ja' %}種類で絞り込む{% else %}Filter by type{% endif %}">
+    <button type="button" class="blog-tag is-active" data-tag="">{% if page.lang == 'ja' %}すべて{% else %}All{% endif %} <span class="count">{{ posts | size }}</span></button>
+    {% for t in site.data.blog_types %}
+      {% assign typed = posts | where: "type", t.key %}
+      {% if typed.size > 0 %}
+      <button type="button" class="blog-tag type-{{ t.key | downcase }}" data-tag="{{ t.key }}">{% if page.lang == 'ja' %}{{ t.ja | default: t.key }}{% else %}{{ t.key }}{% endif %} <span class="count">{{ typed.size }}</span></button>
+      {% endif %}
+    {% endfor %}
+  </div>
+  <div class="blog-controls">
+    <input type="search" id="blog-search" placeholder="{% if page.lang == 'ja' %}キーワードで検索{% else %}Search posts{% endif %}" aria-label="{% if page.lang == 'ja' %}キーワードで検索{% else %}Search posts{% endif %}">
+    <select id="blog-sort" aria-label="{% if page.lang == 'ja' %}並べ替え{% else %}Sort posts{% endif %}">
+      <option value="newest">{% if page.lang == 'ja' %}新しい順{% else %}Newest first{% endif %}</option>
+      <option value="oldest">{% if page.lang == 'ja' %}古い順{% else %}Oldest first{% endif %}</option>
+    </select>
+  </div>
+</div>
+
+<p class="blog-count"><span id="blog-count-num">{{ posts | size }}</span> {% if page.lang == 'ja' %}件{% else %}posts{% endif %}</p>
+
+<div class="blog-items" id="blog-items">
+{% for post in posts %}
+  {% include blog-card.html post=post %}
+{% endfor %}
+</div>
+
+<p class="blog-empty is-hidden" id="blog-empty">{% if page.lang == 'ja' %}条件に一致する投稿はありません。{% else %}No posts match your filters.{% endif %}</p>
+{% else %}
+<p class="blog-empty">{% if page.lang == 'ja' %}まだ投稿はありません。最初の記事をお楽しみに。{% else %}No posts yet. The first one is on its way.{% endif %}</p>
+{% endif %}
+</section>
+
+{% if posts and posts.size > 0 %}<script src="{{ site.url }}/js/blog.js"></script>{% endif %}
