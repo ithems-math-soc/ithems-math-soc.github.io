@@ -43,6 +43,7 @@
 		@include font-size(19,no);
 		line-height: 1.2; // the mixin would otherwise reset it to the document line-height
 	}
+	transition: color 0.3s ease;
 	.site-title-label {
 		display: block;
 		@include font-size(10,no);
@@ -51,9 +52,11 @@
 		line-height: 1;
 		color: $primary-color;
 		white-space: nowrap;
+		transition: color 0.3s ease;
 	}
+	// hover: the name turns red like the nav links, the label softens to rose
 	&:hover {
-		color: $text-color;
+		color: $primary-color;
 		opacity: 1;
 		.site-title-label {
 			color: $accent-color;
