@@ -84,10 +84,6 @@
 /* Top menu navigation */
 
 .top-menu {
-	.home,
-	.sub-menu-item {
-		display: none;
-	}
 	.menu-item {
 		align-items: center;
 		gap: 0.2rem 1.6rem;
@@ -168,12 +164,10 @@
    ========================================================================== */
 
 #page-wrapper {
-	box-sizing: border-box;
 	padding: 0 $gutter;
-	@include size(100% 100%);
-	-webkit-overflow-scrolling: touch;
-	background: transparent;
-	z-index: 2;
+	&:focus {
+		outline: none; // js/transition.js focuses it after a swap; no ring is wanted
+	}
 }
 
 /*
@@ -367,15 +361,12 @@
 	border-top: $rule-width solid $border-color;
 }
 
-// page lead (hero illustration with the team name). The illustration is pale,
-// so the title sits on it in the text colour without any overlay.
+// Hero illustration on the home page.
 .page-lead {
 	background-position: center center;
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-color: $body-color;
-	text-align: left;
-	color: $text-color;
 	position: relative;
 	// Fade the top and bottom edges of the illustration into the page background.
 	&::before,
@@ -401,79 +392,7 @@
 	position: relative; // above the edge fades
 	z-index: 1;
 	min-height: clamp(260px, 46vw, 620px);
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start; // the sky at the top of the illustration is the calmest area
-	padding: 2.2rem $gutter 3rem;
-	@include media($medium) {
-		padding: 4rem $gutter 5rem;
-	}
 }
-// page header
-.page-feature {
-	@include fill-parent;
-	// expand image to cover full width of header
-	img {
-		width: 100%;
-	}
-}
-// make image flush with edges on small screens
-.page-image {
-	position: relative;
-	margin-left: -1 * $gutter;
-	margin-right: -1 * $gutter;
-	// feature image caption
-	.image-credit {
-		position: absolute;
-		bottom: 0;
-		right: 0;
-		margin: 0 auto;
-		padding: 10px 15px;
-		background-color: rgba($black,.5);
-		color: $white;
-		font-family: $alt-font;
-		@include font-size(12,no);
-		text-align: right;
-		z-index: 10;
-		a {
-			color: $white;
-			text-decoration: none;
-		}
-	}
-}
-
-/*
-   Page footer
-   ========================================================================== */
-
-.page-footer {
-	position: relative;
-}
-
-/* Author block */
-
-.author-image {
-	position: absolute;
-	left: 0;
-	img {
-		width: 80px;
-		height: 80px;
-		border-radius: 50%;
-	}
-}
-.author-content {
-	word-wrap: break-word;
-	padding-left: 100px; //avatar width + 20px padding
-	min-height: 80px; //mirrors avatar height
-}
-.author-name {
-	@include font-size(20,no);
-}
-.author-bio {
-	margin-top: 0;
-	@include font-size(16);
-}
-
 /*
    Site footer
    ========================================================================== */

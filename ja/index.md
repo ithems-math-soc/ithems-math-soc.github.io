@@ -3,7 +3,6 @@ layout: home
 permalink: /ja/
 lang: ja
 site_title: 数理社会科学チーム
-hero_title: 数理社会科学チーム
 translation_url: /
 image:
   feature: home-network.jpg

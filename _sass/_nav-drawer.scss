@@ -3,13 +3,11 @@
    ========================================================================== */
 
 /*
-   Below $nav-collapse the top menu is hidden and a three-line button in the
+   Below $nav-breakpoint the top menu is hidden and a three-line button in the
    header opens a drawer from the right. The drawer inverts the palette: deep
-   red sheet, paper-coloured serif links, rose accents. js/nav.js toggles
+   red sheet, paper-coloured links, rose accents. js/nav.js toggles
    .is-nav-open on <html>.
    ========================================================================== */
-
-$nav-collapse: 899px;
 
 .nav-toggle,
 .nav-backdrop,
@@ -17,7 +15,7 @@ $nav-collapse: 899px;
 	display: none;
 }
 
-@media screen and (max-width: $nav-collapse) {
+@media screen and (max-width: $nav-breakpoint - 1px) {
 	#masthead .top-menu {
 		display: none;
 	}
@@ -129,18 +127,12 @@ $nav-collapse: 899px;
 	}
 
 	.drawer-menu {
-		.home,
-		.sub-menu-item {
-			display: none;
-		}
 		.menu-item {
 			display: block;
 			margin: 0;
 			padding: 0;
 		}
 		li {
-			float: none;
-			width: auto;
 			margin: 0 0 2.2rem;
 			// each link drifts in from the right, one after another
 			opacity: 0;
@@ -157,6 +149,13 @@ $nav-collapse: 899px;
 			font-weight: 400;
 			letter-spacing: 0.01em;
 			line-height: 1.2;
+			// Japanese pages use the gothic here, not the catchphrase Mincho
+			@at-root html[lang="ja"] .drawer-menu li:not(:last-child) a {
+				@include font-size(20,no);
+				font-family: $base-font-ja;
+				font-weight: 500;
+				letter-spacing: 0.08em;
+			}
 			// rose bar that grows under the link on hover / tap, like the top menu
 			&::after {
 				content: '';
@@ -223,9 +222,6 @@ $nav-collapse: 899px;
 	/* Open state */
 	html.is-nav-open {
 		overflow: hidden;
-		body {
-			overflow: hidden;
-		}
 		.nav-backdrop {
 			opacity: 1;
 			pointer-events: auto;

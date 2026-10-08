@@ -2,34 +2,23 @@
    People
    ========================================================================== */
 
+// Portrait grid: three across on wide screens, fewer as the column narrows.
 .people-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 3rem 1.5rem;
   max-width: none;
   padding-top: 0.5rem;
 }
 
-// Flat portrait cards: no box, no shadow, just the photo, name, and role.
-.tile.people-card {
-  min-height: 100%;
-  margin-bottom: 3rem;
-  padding: 0;
+// Flat portrait card: just the photo, name, and role.
+.people-card {
   text-align: center;
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-  transform: none;
-
-  &:hover {
-    transform: none;
-    box-shadow: none;
-    border-color: transparent;
-  }
 
   .people-card-image {
     display: block;
     margin-bottom: 1.4rem;
     text-decoration: none;
-    border-bottom-width: 0;
 
     &:hover {
       opacity: 1;
@@ -39,14 +28,12 @@
   .circular--portrait {
     width: 160px;
     height: 160px;
-    max-width: 160px;
     padding-bottom: 0;
-    border: 0;
     box-shadow: 0 0 0 $rule-width rgba($text-color, 0.25);
-    @include transition(box-shadow 0.3s ease-out);
+    transition: box-shadow 0.3s ease-out;
 
     img {
-      @include transition(transform 0.6s $ease-out);
+      transition: transform 0.6s $ease-out;
     }
   }
 
@@ -67,7 +54,6 @@
 
     a {
       text-decoration: none;
-      border-bottom-width: 0;
       color: $text-color;
 
       &:hover {
@@ -90,11 +76,8 @@
 }
 
 @include media($micro) {
-  .tile.people-card {
-    .circular--portrait {
-      width: 140px;
-      height: 140px;
-      max-width: 140px;
-    }
+  .people-card .circular--portrait {
+    width: 140px;
+    height: 140px;
   }
 }

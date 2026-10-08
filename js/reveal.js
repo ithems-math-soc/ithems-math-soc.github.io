@@ -28,7 +28,7 @@
     '.blog-toolbar'
   ];
   var staggered = [
-    '.people-tiles > .tile',
+    '.people-tiles > .people-card',
     '.publication-items > .publication-item',
     '.blog-items > .blog-item'
   ];

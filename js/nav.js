@@ -39,7 +39,7 @@
     if (e.key === 'Escape') { setOpen(false); }
   });
 
-  var wide = window.matchMedia('(min-width: 900px)');
+  var wide = window.matchMedia('(min-width: 900px)'); // $nav-breakpoint in _sass/_variables.scss
   function onResize() { if (wide.matches) { setOpen(false); } }
   if (wide.addEventListener) { wide.addEventListener('change', onResize); }
   else if (wide.addListener) { wide.addListener(onResize); }

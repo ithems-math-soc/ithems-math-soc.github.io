@@ -4,8 +4,9 @@
  * Internal links are fetched in the background and only the page content is
  * swapped: the hero (.page-lead), the main content (#page-wrapper, which also
  * holds the footer) and the drawer menu. The header is updated in place, so it
- * never flashes and a hovered link keeps its hover state. Content fades out, is replaced, then fades in
- * (see _sass/_transition.scss). Falls back to a normal navigation on any error.
+ * never flashes and a hovered link keeps its hover state. Content fades out,
+ * is replaced, then fades in (see _sass/_transition.scss). Falls back to a
+ * normal navigation on any error.
  */
 (function () {
   'use strict';
@@ -48,9 +49,7 @@
     swap('.page-lead', doc);
     swap('#page-wrapper', doc);
     // a real navigation would reset focus; move it off the clicked link onto the new content
-    var main = document.getElementById('page-wrapper');
-    main.tabIndex = -1;
-    main.focus({ preventScroll: true });
+    document.getElementById('page-wrapper').focus({ preventScroll: true });
     if (window.siteScroll) { window.siteScroll.scrollTo(0, { immediate: true }); window.siteScroll.resize(); }
     else { window.scrollTo(0, 0); }
     if (window.siteReveal) { window.siteReveal(); }
@@ -61,7 +60,7 @@
     busy = true;
     root.classList.add('is-leaving');
     Promise.all([
-      fetch(url, { headers: { 'X-Requested-With': 'transition' } }).then(function (r) {
+      fetch(url).then(function (r) {
         if (!r.ok) { throw new Error(r.status); }
         return r.text();
       }),

@@ -6,9 +6,9 @@
    Typography variables
    ========================================================================== */
 
-// Google Fonts, loaded in the layouts: Albert Sans for Latin text, a Japanese
-// gothic for Japanese pages (html[lang="ja"] switches to $base-font-ja),
-// Prata / Shippori Mincho B1 for the catchphrase.
+// Google Fonts, loaded in _includes/head.html: Albert Sans for Latin text,
+// Zen Kaku Gothic New for Japanese pages (html[lang="ja"] switches to
+// $base-font-ja), Fraunces / Zen Old Mincho for the catchphrase.
 $base-font                   	: "Albert Sans","Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",YuGothic,"Helvetica Neue",Arial,sans-serif;
 $base-weight                 	: 300;   // Albert Sans light for body text; headings and labels use 500
 $base-font-ja                	: "Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",YuGothic,"Albert Sans","Helvetica Neue",Arial,sans-serif;
@@ -16,7 +16,6 @@ $base-weight-ja              	: 400;   // Zen Kaku Gothic New reads best at its 
 $heading-font                	: $base-font;
 $serif-font                  	: "Fraunces","Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",YuMincho,"Iowan Old Style","Palatino Linotype","Times New Roman",serif;
 $serif-font-ja               	: "Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",YuMincho,"Fraunces",serif;
-$caption-font                	: $base-font;
 $code-font                   	: monospace;
 $alt-font                    	: $heading-font;
 
@@ -27,6 +26,7 @@ $border-radius               	: 0;
 $rule-width                  	: 1.5px;   // thin lines that separate sections
 $tracking                    	: 0.12em;  // letter-spacing for headings, menus, labels
 $ease-out                    	: cubic-bezier(0.22, 1, 0.36, 1); // shared easing for hover and reveal motion
+$nav-breakpoint              	: 900px;   // top menu above, hamburger drawer below (js/nav.js uses the same value)
 
 /*
    Color variables
@@ -44,7 +44,6 @@ $accent-color                 : #d9a39a; // soft rose used for the small bars un
 $text-color                  	: #3b3734;
 $caption-color                : #7b746e;
 
-$comp-color                  	: complement($base-color);
 $border-color                	: $base-color;
 $link-color                  	: $base-color;
 
@@ -88,37 +87,3 @@ $form-box-shadow             	: inset 0 1px 3px hsla(0, 0%, 0%, 0.06);
 $form-box-shadow-focus       	: $form-box-shadow, 0 0 5px rgba(darken($form-border-color-focus, 5), 0.7);
 $form-font-family            	: $base-font;
 $form-font-size              	: $doc-font-size;
-
-
-/*
-   Sliding menu navigation variables
-   ========================================================================== */
-
-$sliding-menu-border-color	 	 : $primary-color;
-$sliding-menu-background 		   : #111;
-$sliding-menu-color 	 		     : $white;
-$sliding-menu-background-hover : $primary-color;
-$sliding-menu-color-hover	 	   : $white;
-$sliding-menu-border   			   : 1px solid $sliding-menu-border-color;
-$button-size		         	     : 30px;
-$transition						         : 0.3s; // increase this to see the transformations in slow-motion
-$sliding-menu-animation        : all 500ms cubic-bezier(.86,.01,.77,.78);
-
-/*
-   Badge variables
-   ========================================================================== */
-
-$badge-background              : $primary-color;
-$badge-dark-color              : $black;
-$badge-danger-color            : $danger-color;
-$badge-info-color              : $info-color;
-$badge-warning-color           : $warning-color;
-$badge-success-color           : $success-color;
-$badge-font-color              : $white;
-
-
-/*
-   Masthead variables
-   ========================================================================== */
-
-$masthead-height: $button-size * 2;
