@@ -25,7 +25,7 @@ html[lang="ja"] body {
 }
 // Headings keep the Latin-first stack on Japanese pages too, so "Welcome",
 // "Current" and other English headings look the same in both languages;
-// Japanese characters in a heading fall back to Noto Sans JP automatically.
+// Japanese characters in a heading fall back to the Japanese gothic automatically.
 strong,
 b {
 	font-weight: 500;
