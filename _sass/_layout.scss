@@ -277,16 +277,16 @@
 			}
 			// Lead paragraph (the catchphrase on the home page): large serif statement.
 			.lead {
-				@include font-size(26,no);
+				@include font-size(28,no);
 				max-width: 760px;
 				margin-bottom: 3.45rem;
 				color: $primary-color;
 				font-family: $serif-font;
-				line-height: 1.5;
-				letter-spacing: 0.04em; // Cinzel is all small caps, so it needs a little air
+				font-weight: 300;
+				line-height: 1.35;
 				@include media($medium) {
-					@include font-size(33,no);
-					line-height: 1.5; // the mixin resets line-height, so it is restated after it
+					@include font-size(36,no);
+					line-height: 1.35; // the mixin resets line-height, so it is restated after it
 					margin-bottom: 3.45rem;
 				}
 				a {
