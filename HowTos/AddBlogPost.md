@@ -111,7 +111,7 @@ exists, then open a pull request. On GitHub: open the file, click **...** →
   `blog/issue-<n>`, opens or updates a pull request, then builds the site,
   screenshots the new post with headless Chrome, and posts the screenshots on
   the pull request. The screenshots are stored on the orphan branch
-  `blog-previews` (one folder per issue and run) so they never end up in the
+  `previews` (one folder per issue and run) so they never end up in the
   site; that branch can be deleted and will be recreated.
 - `.github/scripts/issue_to_post.py` – parses the form, downloads attached
   images into `images/blog/<slug>/`, translates with DeepL, and writes the two

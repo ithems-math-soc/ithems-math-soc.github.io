@@ -8,7 +8,7 @@
 #                        ->  commit to branch blog/issue-<n>, open or update a PR
 #                        ->  build the site, screenshot the new post, and post
 #                            the screenshots on the PR (stored on the
-#                            blog-previews branch) so nobody needs a local build
+#                            orphan "previews" branch) so nobody needs a local build
 #                        ->  comment on the issue with the PR link
 #
 # Only issues by repository collaborators are processed. The workflow can also
@@ -45,7 +45,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  PREVIEW_BRANCH: blog-previews
+  PREVIEW_BRANCH: previews
 
 jobs:
   post:
