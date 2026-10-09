@@ -1,0 +1,32 @@
+---
+layout: default
+---
+
+{% assign tdef = site.data.blog_types | where: "key", page.type | first %}
+<div id="main" role="main">
+	<article class="wrap blog-post" itemscope itemtype="http://schema.org/BlogPosting">
+		<nav class="blog-back">
+			<a href="{{ site.url }}{% if page.lang == 'ja' %}/ja{% endif %}/blog/">&larr; {% if page.lang == 'ja' %}ブログ一覧{% else %}Blog{% endif %}</a>
+		</nav>
+		<div class="page-title">
+			<p class="blog-post-meta">
+				<time datetime="{{ page.date | date: '%Y-%m-%d' }}" itemprop="datePublished">{% if page.lang == 'ja' %}{{ page.date | date: '%Y年%-m月%-d日' }}{% else %}{{ page.date | date: '%B %-d, %Y' }}{% endif %}</time>
+				{% if page.type %}<span class="blog-type type-{{ page.type | downcase }}">{% if page.lang == 'ja' %}{{ tdef.ja | default: page.type }}{% else %}{{ page.type }}{% endif %}</span>{% endif %}
+				{% if page.author %}<span class="blog-item-author" itemprop="author">{{ page.author }}</span>{% endif %}
+			</p>
+			<h1 itemprop="headline">{{ page.title }}</h1>
+		</div>
+		{% if page.lang == 'ja' and page.machine_translation != false %}
+		<p class="blog-notice">このブログ記事は英語で投稿された原文を自動翻訳したものです。正確な内容は{% if page.translation_url %}<a href="{{ site.url }}{{ page.translation_url }}">英語版</a>{% else %}英語版{% endif %}をご参照ください。</p>
+		{% endif %}
+		<div class="inner-wrap">
+			<div id="content" class="page-content blog-post-content" itemprop="articleBody">
+				{{ content }}
+				{% if page.link %}
+				<p class="blog-post-link"><a class="btn" href="{{ page.link }}" target="_blank" rel="noopener">{{ page.link_label | default: "Open link" }} <i class="fa fa-external-link"></i></a></p>
+				{% endif %}
+				<hr />
+			</div><!-- /.content -->
+		</div><!-- /.inner-wrap -->
+	</article><!-- /.wrap -->
+</div><!-- /#main -->
