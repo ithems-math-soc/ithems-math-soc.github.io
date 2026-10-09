@@ -5,6 +5,7 @@
 #   issue opened/edited  ->  generate _posts/blog/<date>-<slug>.md (English),
 #                            _posts/ja/blog/<date>-<slug>.md (DeepL translation),
 #                            images/blog/<slug>/* (attached photos, downsized)
+#                            _data/publications.yml (Paper posts: added from the DOI)
 #                        ->  commit to branch blog/issue-<n>, open or update a PR
 #                        ->  build the site, screenshot the new post, and post
 #                            the screenshots on the PR (stored on the
@@ -117,7 +118,7 @@ jobs:
         env:
           TITLE: ${{ steps.gen.outputs.title }}
         run: |
-          git add -A _posts/blog _posts/ja/blog images/blog
+          git add -A _posts/blog _posts/ja/blog images/blog _data/publications.yml
           if git diff --cached --quiet; then
             echo "Nothing changed."
             echo "changed=false" >> "$GITHUB_OUTPUT"
@@ -136,6 +137,7 @@ jobs:
           JA_URL: ${{ steps.gen.outputs.ja_url }}
           TRANSLATED: ${{ steps.gen.outputs.translated }}
           WARNINGS: ${{ steps.gen.outputs.warnings }}
+          PUBLICATION: ${{ steps.gen.outputs.publication }}
           ISSUE_URL: ${{ steps.issue.outputs.html_url }}
           AUTHOR: ${{ steps.issue.outputs.author }}
         run: |
@@ -161,6 +163,8 @@ jobs:
               "$JA_LINE" \
               "" \
               "If you correct the Japanese file by hand, set \`machine_translation: false\` in its front matter so it is not overwritten." \
+              "" \
+              "$PUBLICATION" \
               "" \
               "$WARN_LINE" \
               "" \
@@ -279,6 +283,7 @@ jobs:
           CREATED: ${{ steps.pr.outputs.created }}
           TRANSLATED: ${{ steps.gen.outputs.translated }}
           WARNINGS: ${{ steps.gen.outputs.warnings }}
+          PUBLICATION: ${{ steps.gen.outputs.publication }}
         run: |
           if [ "$CREATED" = "true" ]; then
             FIRST="Thanks! A pull request has been opened for this post: $PR_URL"
@@ -300,6 +305,7 @@ jobs:
             "" \
             "Screenshots of the finished post are in the pull request. Once a team member merges it, the post goes live." \
             "$JA_LINE" \
+            "$PUBLICATION" \
             "" \
             "Need to change something? Edit this issue (title, fields, or body) and the pull request will be updated automatically." \
             "" \

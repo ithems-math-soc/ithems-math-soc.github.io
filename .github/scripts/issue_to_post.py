@@ -13,6 +13,9 @@ Output (files, relative to the repository root):
   _posts/blog/<date>-<slug>.md       English post (the original text)
   _posts/ja/blog/<date>-<slug>.md    Japanese post (machine translation)
   images/blog/<slug>/image-N.<ext>   photos attached to the issue
+  _data/publications.yml             for Paper posts: the paper is added to the
+                                     list (looked up on Crossref by the DOI in
+                                     the Link field) unless it is already there
 
 Standard library only, so it runs on a plain GitHub Actions runner.
 """
@@ -26,6 +29,7 @@ import sys
 import time
 import unicodedata
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -37,6 +41,8 @@ EN_DIR = ROOT / "_posts" / "blog"
 JA_DIR = ROOT / "_posts" / "ja" / "blog"
 IMG_DIR = ROOT / "images" / "blog"
 TYPES_FILE = ROOT / "_data" / "blog_types.yml"
+PUBLICATIONS_FILE = ROOT / "_data" / "publications.yml"
+USER_AGENT = "mss-blog-bot (https://github.com/ithems-math-soc/ithems-math-soc.github.io)"
 SITE_URL = "https://ithems-math-soc.github.io"
 
 # Field labels as they appear in .github/ISSUE_TEMPLATE/blog-post.yml.
@@ -363,6 +369,97 @@ def translate_post(title: str, body: str, link_label: str) -> tuple[str, str, st
 
 
 # --------------------------------------------------------------------------
+# Publications (Paper posts)
+# --------------------------------------------------------------------------
+
+DOI_RE = re.compile(r"10\.\d{4,9}/[^\s\"<>]+")
+
+
+def find_doi(text: str) -> str | None:
+    m = DOI_RE.search(text)
+    return m.group(0).rstrip(".,;)") if m else None
+
+
+def crossref(doi: str) -> dict | None:
+    req = urllib.request.Request(
+        f"https://api.crossref.org/works/{urllib.parse.quote(doi)}",
+        headers={"User-Agent": USER_AGENT},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return json.loads(resp.read().decode("utf-8"))["message"]
+    except Exception as exc:  # noqa: BLE001
+        warnings.append(f"Crossref lookup for {doi} failed ({exc})")
+        return None
+
+
+def format_authors(authors: list[dict]) -> str:
+    """Crossref author objects -> 'Tham, Y. J., Hilbe, C., & Murase, Y.'"""
+    names = []
+    for a in authors:
+        family = a.get("family") or a.get("name") or ""
+        given = a.get("given", "")
+        initials = " ".join(f"{part[0]}." for part in re.split(r"[\s-]+", given) if part)
+        names.append(f"{family}, {initials}" if initials else family)
+    if len(names) <= 1:
+        return "".join(names)
+    return ", ".join(names[:-1]) + ", & " + names[-1]
+
+
+def normalise(text: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "", text.lower())
+
+
+def add_publication(doi: str, fallback_year: int) -> str:
+    """
+    Add the paper to _data/publications.yml and return a short note for the
+    pull request. Nothing is written when the paper is already listed.
+    """
+    existing = PUBLICATIONS_FILE.read_text(encoding="utf-8")
+    if doi.lower() in existing.lower():
+        return "The paper is already listed on the Publications page."
+    meta = crossref(doi)
+    if not meta:
+        return "The paper was not added to Publications (DOI lookup failed); please add it by hand."
+    title = (meta.get("title") or [""])[0].strip()
+    if title and normalise(title) in {normalise(t) for t in re.findall(r"^\s*title:\s*(.+)$", existing, flags=re.M)}:
+        return "The paper is already listed on the Publications page."
+    journal = (meta.get("container-title") or [""])[0].strip()
+    if not journal:
+        journal = "arXiv preprint" if doi.lower().startswith("10.48550/") else "Preprint"
+    year = fallback_year
+    for key in ("published-print", "published-online", "issued"):
+        parts = (meta.get(key) or {}).get("date-parts") or [[None]]
+        if parts[0][0]:
+            year = int(parts[0][0])
+            break
+    entry = "\n".join([
+        f"      - authors: {yaml_str(format_authors(meta.get('author', [])))}",
+        f"        year: {year}",
+        f"        title: {yaml_str(title)}",
+        f"        url: {yaml_str('https://doi.org/' + doi)}",
+        f"        journal: {yaml_str(journal)}",
+        "",
+    ]) + "\n"
+
+    lines = existing.splitlines(keepends=True)
+    year_at = {int(m.group(1)): i for i, line in enumerate(lines) if (m := re.match(r"  - year:\s*(\d{4})", line))}
+    if year in year_at:
+        # insert right after this year's "papers:" line, i.e. newest first
+        i = year_at[year] + 1
+        while i < len(lines) and not lines[i].strip().startswith("papers:"):
+            i += 1
+        lines.insert(i + 1, entry)
+    else:
+        section = f"  - year: {year}\n    papers:\n{entry}"
+        later = [i for y, i in year_at.items() if y < year]
+        lines.insert(min(later) if later else len(lines), section)
+    PUBLICATIONS_FILE.write_text("".join(lines), encoding="utf-8")
+    print(f"added to {PUBLICATIONS_FILE.relative_to(ROOT)}: {title}")
+    return "The paper was also added to the Publications page (from its DOI via Crossref); please check the entry."
+
+
+# --------------------------------------------------------------------------
 # Main
 # --------------------------------------------------------------------------
 
@@ -421,6 +518,14 @@ def main() -> None:
     ja_url = f"{SITE_URL}/ja/blog/{slug}/"
 
     translation = None if kept_ja else translate_post(title, body, link_label)
+
+    publication_note = ""
+    if post_type == "Paper":
+        doi = find_doi(link) or find_doi(body)
+        if doi:
+            publication_note = add_publication(doi, date.year)
+        else:
+            publication_note = "The paper was not added to Publications: put its DOI link (https://doi.org/...) in the Link field, or add it by hand."
     has_ja = bool(translation or kept_ja)
 
     EN_DIR.mkdir(parents=True, exist_ok=True)
@@ -478,6 +583,7 @@ def main() -> None:
     set_output("en_url", en_url)
     set_output("ja_url", ja_url if has_ja else "")
     set_output("translated", "true" if has_ja else "false")
+    set_output("publication", publication_note)
     set_output("warnings", "; ".join(warnings))
 
 

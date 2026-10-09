@@ -23,6 +23,10 @@ done on GitHub in your browser.
    - **Author**: your name as it should appear. Optional.
    - **Link** / **Link label**: an optional URL (paper, seminar page, ...)
      shown as a button at the end of the post, and the text for that button.
+     For a **Paper**, put the DOI link here (`https://doi.org/...`): the paper
+     is looked up on Crossref and added to the Publications page in the same
+     pull request, unless it is already listed. Check the generated entry in
+     `_data/publications.yml`; no Japanese version is needed.
    - **Body** (required): the post itself, in English, written in Markdown.
      The first paragraph is used as the summary on the Blog page.
      To add **photos**, drag and drop the image files into the Body box; GitHub
@@ -116,7 +120,9 @@ exists, then open a pull request. On GitHub: open the file, click **...** →
 - `.github/scripts/issue_to_post.py` – parses the form, downloads attached
   images into `images/blog/<slug>/`, translates with DeepL, and writes the two
   post files. It records `issue: <n>` in the front matter so edits replace
-  the earlier files instead of duplicating them.
+  the earlier files instead of duplicating them. For Paper posts it also adds
+  the paper to `_data/publications.yml` from the DOI in the Link field
+  (metadata from the Crossref API), skipping papers that are already listed.
 - `_data/blog_types.yml` – the list of post types and their Japanese labels.
   If you change it, change the **Type** dropdown in the form as well.
 - `_includes/blog-list.html`, `_layouts/blog.html`, `_sass/_blog.scss`,
