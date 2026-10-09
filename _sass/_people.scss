@@ -2,55 +2,82 @@
    People
    ========================================================================== */
 
+// Portrait grid: three across on wide screens, fewer as the column narrows.
 .people-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 3rem 1.5rem;
   max-width: none;
+  padding-top: 0.5rem;
 }
 
+// Flat portrait card: just the photo, name, and role.
 .people-card {
-  min-height: 100%;
   text-align: center;
 
   .people-card-image {
     display: block;
-    margin-bottom: 1rem;
-    border-bottom-width: 0;
+    margin-bottom: 1.4rem;
+    text-decoration: none;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 
   .circular--portrait {
-    width: 168px;
-    height: 168px;
-    max-width: 168px;
+    width: 160px;
+    height: 160px;
     padding-bottom: 0;
-    border: 4px solid $white;
-    box-shadow: 0 8px 22px rgba($black, 0.08);
+    box-shadow: 0 0 0 $rule-width rgba($text-color, 0.25);
+    transition: box-shadow 0.3s ease-out;
+
+    img {
+      transition: transform 0.6s $ease-out;
+    }
+  }
+
+  .people-card-image:hover .circular--portrait {
+    box-shadow: 0 0 0 $rule-width $primary-color;
+
+    img {
+      transform: scale(1.04);
+    }
   }
 
   .post-title {
-    margin-top: 0.25rem;
-    margin-bottom: 0.35rem;
-    @include font-size(19,no);
+    @include font-size(16,no); // the mixin resets margin-bottom, so margins come after it
+    margin: 0 0 0.5rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
 
     a {
-      border-bottom-width: 0;
-      color: darken($text-color, 2);
+      text-decoration: none;
+      color: $text-color;
+
+      &:hover {
+        color: $primary-color;
+        opacity: 1;
+      }
     }
   }
 
   .post-excerpt {
     max-width: none;
-    color: lighten($text-color, 24);
+    margin: 0;
+    color: $caption-color;
     font-family: $alt-font;
-    @include font-size(14,no);
-    line-height: 1.45;
+    @include font-size(11.5,no);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    line-height: 1.6;
   }
 }
 
 @include media($micro) {
-  .people-card {
-    .circular--portrait {
-      width: 148px;
-      height: 148px;
-      max-width: 148px;
-    }
+  .people-card .circular--portrait {
+    width: 140px;
+    height: 140px;
   }
 }

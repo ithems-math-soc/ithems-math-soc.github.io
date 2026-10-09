@@ -4,8 +4,10 @@ permalink: /
 lang: en
 translation_url: /ja/
 image:
-  feature: home.jpg
+  feature: home-network.jpg
 ---
+
+<p class="lead">Exploring Social Mechanisms with Mathematics</p>
 
 <h5>Welcome</h5>
 

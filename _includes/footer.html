@@ -1,4 +1,5 @@
 <footer role="contentinfo" id="site-footer">
+	<div class="inner-wrap">
 	<nav role="navigation" class="menu bottom-menu">
 		<ul class="menu-item">
 		{% if page.lang == 'ja' %}
@@ -18,4 +19,5 @@
 	</nav><!-- /.bottom-menu -->
 	{% assign site_title = page.site_title | default: site.title %}
 	<p class="copyright">&#169; {{ site.time | date: '%Y' }} <a href="{{ site.url }}">{{ site_title }}</a> powered by <a href="http://jekyllrb.com" rel="nofollow">Jekyll</a> + <a href="http://mmistakes.github.io/jekyll-theme-skinny-bones/" rel="nofollow">Skinny Bones</a>.</p>
+	</div><!-- /.inner-wrap -->
 </footer>

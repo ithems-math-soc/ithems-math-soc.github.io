@@ -215,11 +215,11 @@ def download_image(url: str, dest_stem: Path) -> Path | None:
     return None
 
 
-def localise_images(body: str, slug: str) -> tuple[str, str | None]:
+def localise_images(body: str, slug: str) -> str:
     """
     Download images attached to the issue into images/blog/<slug>/ and point the
-    Markdown at the local copies. Returns (new_body, first_image_path_or_None),
-    where the path is relative to images/ (for the `teaser` front matter).
+    Markdown at the local copies. The site uses the first image in the body as
+    the post's thumbnail, so nothing else is recorded.
     """
     # Normalise HTML <img> tags (GitHub inserts these for some uploads) to Markdown.
     body = re.sub(
@@ -235,7 +235,6 @@ def localise_images(body: str, slug: str) -> tuple[str, str | None]:
             old.unlink()
 
     counter = {"n": 0}
-    first: list[str] = []
 
     def replace(match: re.Match) -> str:
         alt, url = match.group(1), match.group(2).strip()
@@ -246,15 +245,13 @@ def localise_images(body: str, slug: str) -> tuple[str, str | None]:
         if saved is None:
             return match.group(0)
         rel = saved.relative_to(IMG_DIR).as_posix()
-        if not first:
-            first.append(rel)
         return f"![{alt}](/images/blog/{rel})"
 
     body = re.sub(r"!\[([^\]]*)\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)", replace, body)
 
     if img_dir.exists() and not any(img_dir.iterdir()):
         img_dir.rmdir()
-    return body, (f"blog/{first[0]}" if first else None)
+    return body
 
 
 # --------------------------------------------------------------------------
@@ -393,7 +390,7 @@ def main() -> None:
             old.unlink()
         (IMG_DIR / old_slug).rmdir()
 
-    body, teaser = localise_images(body, slug)
+    body = localise_images(body, slug)
 
     en_url = f"{SITE_URL}/blog/{slug}/"
     ja_url = f"{SITE_URL}/ja/blog/{slug}/"
@@ -412,7 +409,6 @@ def main() -> None:
         "link": link,
         "link_label": link_label if link else "",
         "translation_url": f"/ja/blog/{slug}/" if has_ja else "",
-        "image": {"teaser": teaser} if teaser else None,
         "issue": number,
     }
     en_path.write_text(front_matter(en_fm) + "\n\n" + body.rstrip() + "\n", encoding="utf-8")
@@ -440,7 +436,6 @@ def main() -> None:
             "link": link,
             "link_label": (ja_label or link_label) if link else "",
             "translation_url": f"/blog/{slug}/",
-            "image": {"teaser": teaser} if teaser else None,
             "issue": number,
             # Set to false after editing the Japanese text by hand: the file is
             # then kept when the issue is edited, and the disclaimer disappears.
