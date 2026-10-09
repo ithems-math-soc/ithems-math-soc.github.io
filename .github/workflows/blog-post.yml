@@ -118,7 +118,10 @@ jobs:
         env:
           TITLE: ${{ steps.gen.outputs.title }}
         run: |
-          git add -A _posts/blog _posts/ja/blog images/blog _data/publications.yml
+          # images/blog only exists once a post has photos; git add fails on a missing path
+          for path in _posts/blog _posts/ja/blog images/blog _data/publications.yml; do
+            [ -e "$path" ] && git add -A "$path"
+          done
           if git diff --cached --quiet; then
             echo "Nothing changed."
             echo "changed=false" >> "$GITHUB_OUTPUT"
