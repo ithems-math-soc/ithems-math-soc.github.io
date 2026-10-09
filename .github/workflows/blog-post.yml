@@ -198,15 +198,16 @@ jobs:
           (cd /tmp/site && python3 -m http.server 4000 >/dev/null 2>&1 &)
           sleep 2
           mkdir -p /tmp/shots
-          shot() {  # name, url
+          shot() {  # name, url, height
+            # reduced motion: no scroll-reveal or smooth scrolling, so everything is visible
             google-chrome --headless=new --disable-gpu --hide-scrollbars --no-sandbox \
-              --window-size=1280,2200 --virtual-time-budget=12000 \
+              --force-prefers-reduced-motion --window-size=1280,"$3" --virtual-time-budget=12000 \
               --screenshot="/tmp/shots/$1.png" "$2" >/dev/null 2>&1
           }
-          shot en "http://127.0.0.1:4000/blog/$SLUG/"
-          shot list "http://127.0.0.1:4000/blog/"
+          shot en "http://127.0.0.1:4000/blog/$SLUG/" 2600
+          shot list "http://127.0.0.1:4000/blog/" 900
           if [ "$TRANSLATED" = "true" ]; then
-            shot ja "http://127.0.0.1:4000/ja/blog/$SLUG/"
+            shot ja "http://127.0.0.1:4000/ja/blog/$SLUG/" 2600
           fi
           ls -la /tmp/shots
 
@@ -241,15 +242,16 @@ jobs:
           PR_URL: ${{ steps.pr.outputs.url }}
           BASE: ${{ steps.previews.outputs.base }}
           TRANSLATED: ${{ steps.gen.outputs.translated }}
+          REPO: ${{ github.repository }}
         run: |
           if [ "$TRANSLATED" = "true" ]; then
             JA_PART="$(printf '%s\n' "### Japanese (machine translation)" "![Japanese post]($BASE/ja.png)" "")"
           else
             JA_PART=""
           fi
-          gh pr comment "$PR_URL" --body "$(printf '%s\n' \
+          BODY="$(printf '%s\n' \
             "## Preview" \
-            "This is how the post will look once merged. If something is off, edit the files under **Files changed**, or edit the original issue to regenerate." \
+            "This is how the post will look once merged (updated $(date -u +'%Y-%m-%d %H:%M') UTC). If something is off, edit the files under **Files changed**, or edit the original issue to regenerate." \
             "" \
             "### English" \
             "![English post]($BASE/en.png)" \
@@ -257,6 +259,15 @@ jobs:
             "$JA_PART" \
             "### Blog page" \
             "![Blog list]($BASE/list.png)")"
+          # update the existing preview comment if there is one, so edits do not pile up comments
+          PR_NUMBER="$(gh pr view "$PR_URL" --json number --jq .number)"
+          COMMENT_ID="$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate \
+            --jq '[.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("## Preview")))] | last | .id // empty')"
+          if [ -n "$COMMENT_ID" ]; then
+            gh api -X PATCH "repos/$REPO/issues/comments/$COMMENT_ID" -f body="$BODY" >/dev/null
+          else
+            gh pr comment "$PR_URL" --body "$BODY"
+          fi
 
       # ---- Report back ----------------------------------------------------------
 
