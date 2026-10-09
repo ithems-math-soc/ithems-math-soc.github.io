@@ -13,8 +13,9 @@
 #
 # Only issues by repository collaborators are processed. The workflow can also
 # be started by hand (Actions > "Blog post from issue" > Run workflow) with an
-# issue number, which re-processes that issue; this is how changes to the
-# workflow are tested from a branch before they reach main.
+# issue number, which re-processes that issue and refreshes its preview even if
+# nothing changed; this is how changes to the workflow are tested from a branch
+# before they reach main.
 #
 # One-time setup (repository admin):
 #   1. Settings > Actions > General > Workflow permissions:
@@ -128,7 +129,7 @@ jobs:
 
       - name: Open or update the pull request
         id: pr
-        if: steps.push.outputs.changed == 'true'
+        if: steps.push.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         env:
           TITLE: ${{ steps.gen.outputs.title }}
           EN_URL: ${{ steps.gen.outputs.en_url }}
@@ -174,13 +175,13 @@ jobs:
       # ---- Preview: build the site with the new post and screenshot it -------
 
       - name: Set up Ruby
-        if: steps.push.outputs.changed == 'true'
+        if: steps.push.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.2"
 
       - name: Build the site
-        if: steps.push.outputs.changed == 'true'
+        if: steps.push.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           # the lockfile may only list macOS; make sure the runner's platform is in it
           bundle lock --add-platform x86_64-linux
@@ -190,7 +191,7 @@ jobs:
 
       - name: Screenshot the post
         id: shots
-        if: steps.push.outputs.changed == 'true'
+        if: steps.push.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         env:
           SLUG: ${{ steps.gen.outputs.slug }}
           TRANSLATED: ${{ steps.gen.outputs.translated }}
@@ -213,7 +214,7 @@ jobs:
 
       - name: Publish the screenshots
         id: previews
-        if: steps.push.outputs.changed == 'true'
+        if: steps.push.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         env:
           REPO: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
@@ -237,7 +238,7 @@ jobs:
           echo "base=https://raw.githubusercontent.com/${REPO}/${PREVIEW_BRANCH}/${DIR}" >> "$GITHUB_OUTPUT"
 
       - name: Post the screenshots on the pull request
-        if: steps.push.outputs.changed == 'true'
+        if: steps.push.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         env:
           PR_URL: ${{ steps.pr.outputs.url }}
           BASE: ${{ steps.previews.outputs.base }}
