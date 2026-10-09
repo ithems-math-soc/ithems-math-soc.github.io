@@ -23,6 +23,7 @@ import json
 import os
 import re
 import sys
+import time
 import unicodedata
 import urllib.error
 import urllib.request
@@ -188,16 +189,35 @@ CONTENT_TYPES = {
 }
 
 
+class _DropAuthOnRedirect(urllib.request.HTTPRedirectHandler):
+    """GitHub answers attachment URLs with a redirect to a pre-signed S3 URL,
+    which rejects requests that still carry our Authorization header."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        new = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if new is not None and "Authorization" in new.headers:
+            new.remove_header("Authorization")
+        return new
+
+
 def download_image(url: str, dest_stem: Path) -> Path | None:
+    """
+    Fetch one image into dest_stem.<ext>. Attachments on a fresh issue can take
+    a moment to become public, so a few attempts are made; a token is only
+    needed for private repositories and is tried last.
+    """
     token = os.environ.get("GITHUB_TOKEN", "")
-    attempts = [{}]
+    opener = urllib.request.build_opener(_DropAuthOnRedirect())
+    attempts: list[dict[str, str]] = [{}, {}, {}]
     if token:
         attempts.append({"Authorization": f"Bearer {token}"})
-    last_error: Exception | None = None
-    for extra in attempts:
+    errors: list[str] = []
+    for i, extra in enumerate(attempts):
+        if i:
+            time.sleep(3)
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "mss-blog-bot", **extra})
-            with urllib.request.urlopen(req, timeout=60) as resp:
+            with opener.open(req, timeout=60) as resp:
                 data = resp.read()
                 ctype = resp.headers.get_content_type()
             ext = next((e for magic, e in MAGIC if data.startswith(magic)), None)
@@ -210,8 +230,8 @@ def download_image(url: str, dest_stem: Path) -> Path | None:
             dest.write_bytes(data)
             return dest
         except Exception as exc:  # noqa: BLE001 - we report and fall back
-            last_error = exc
-    warnings.append(f"could not download image {url} ({last_error}); kept the original URL")
+            errors.append(str(exc))
+    warnings.append(f"could not download image {url} ({'; '.join(errors)}); kept the original URL")
     return None
 
 
