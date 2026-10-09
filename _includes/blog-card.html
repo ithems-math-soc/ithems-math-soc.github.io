@@ -1,15 +1,12 @@
 {% comment %}
   One blog post card. Expects `post` (a post from the blog category) and uses
-  page.lang to pick the language of the date and type label. Shared by
-  blog-list.html (the Blog page) and blog-latest.html (the home page).
+  page.lang to pick the language of the date and type label. The thumbnail is
+  the first image in the post body, so nothing extra has to be uploaded. Shared
+  by blog-list.html (the Blog page) and blog-latest.html (the home page).
 {% endcomment %}
 {% assign tdef = site.data.blog_types | where: "key", post.type | first %}
 {% assign search_text = post.title | append: " " | append: post.content | strip_html | strip_newlines | downcase | truncate: 3000, "" %}
 <article class="blog-item" data-type="{{ post.type | escape }}" data-date="{{ post.date | date: '%Y-%m-%d' }}" data-title="{{ post.title | downcase | escape }}" data-search="{{ search_text | escape }}">
-  {% if post.image.teaser %}
-  {% if post.image.teaser contains '://' %}{% assign thumb = post.image.teaser %}{% else %}{% assign thumb = post.image.teaser | prepend: '/images/' | prepend: site.url %}{% endif %}
-  <a class="blog-item-thumb" href="{{ site.url }}{{ post.url }}" tabindex="-1" aria-hidden="true"><img src="{{ thumb }}" alt=""></a>
-  {% endif %}
   <div class="blog-item-body">
     <p class="blog-item-meta">
       <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{% if page.lang == 'ja' %}{{ post.date | date: '%Y年%-m月%-d日' }}{% else %}{{ post.date | date: '%B %-d, %Y' }}{% endif %}</time>
@@ -19,4 +16,10 @@
     <h2 class="blog-item-title"><a href="{{ site.url }}{{ post.url }}">{{ post.title }}</a></h2>
     <p class="blog-item-excerpt">{{ post.excerpt | strip_html | strip_newlines | truncate: 200 }}</p>
   </div>
+  {% comment %} thumbnail: the first image in the post body {% endcomment %}
+  {% assign img_parts = post.content | split: '<img' %}
+  {% if img_parts.size > 1 %}
+  {% assign thumb = img_parts[1] | split: 'src="' | last | split: '"' | first %}
+  <a class="blog-item-thumb" href="{{ site.url }}{{ post.url }}" tabindex="-1" aria-hidden="true"><img src="{{ thumb }}" alt=""></a>
+  {% endif %}
 </article>

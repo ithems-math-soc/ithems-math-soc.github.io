@@ -26,7 +26,10 @@ done on GitHub in your browser.
    - **Body** (required): the post itself, in English, written in Markdown.
      The first paragraph is used as the summary on the Blog page.
      To add **photos**, drag and drop the image files into the Body box; GitHub
-     uploads them and inserts a link automatically.
+     uploads them and inserts a link automatically. The first photo in the
+     post is used as its thumbnail on the Blog page. Photos on consecutive lines are
+     shown side by side on the post page; leave a blank line between photos
+     to show them one below the other.
 4. Click **Submit new issue**.
 
 Within about a minute a bot comments on your issue with a link to a
@@ -148,8 +151,6 @@ author: "Your Name"              # optional
 link: "https://doi.org/..."     # optional
 link_label: "Read the paper"    # optional
 translation_url: /ja/blog/new-paper-published-in-pnas/   # if a Japanese file exists
-image:
-  teaser: blog/new-paper-published-in-pnas/image-1.jpg   # optional thumbnail
 ---
 
 Body text in Markdown.
