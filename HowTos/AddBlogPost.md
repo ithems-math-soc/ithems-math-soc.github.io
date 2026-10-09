@@ -107,7 +107,7 @@ exists, then open a pull request. On GitHub: open the file, click **...** →
 - `.github/ISSUE_TEMPLATE/blog-post.yml` – the form.
 - `.github/workflows/blog-post.yml` – runs when an issue with the `blog-post`
   label is opened or edited by a repository collaborator. It calls the script
-  below, downsizes attached photos to 1600 px, commits to a branch
+  below, downsizes attached photos to 1600 px (`downsize_images.py`), commits to a branch
   `blog/issue-<n>`, opens or updates a pull request, then builds the site,
   screenshots the new post with headless Chrome, and posts the screenshots on
   the pull request. The screenshots are stored on the orphan branch

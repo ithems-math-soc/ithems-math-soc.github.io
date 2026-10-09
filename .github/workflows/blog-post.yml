@@ -102,8 +102,8 @@ jobs:
           SLUG: ${{ steps.gen.outputs.slug }}
         run: |
           if [ -d "images/blog/$SLUG" ]; then
-            # phone photos are often 5000px wide; 1600px is plenty for the post page
-            mogrify -auto-orient -resize '1600x1600>' -quality 85 -strip "images/blog/$SLUG"/*
+            pip install -q pillow
+            python .github/scripts/downsize_images.py "images/blog/$SLUG"
           fi
 
       - name: Commit and push
