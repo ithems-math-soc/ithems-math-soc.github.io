@@ -1,6 +1,6 @@
 ---
 layout: "blog"
-title: "iTHEMSでの「シノブのコーヒーミーティング・トーク」"
+title: "iTHEMSでの「しのぶのコーヒーミーティング・トーク」"
 type: "Talk"
 lang: "ja"
 categories: [ja, blog]
@@ -9,13 +9,11 @@ author: "Shinobu Utsumi"
 link: "https://ithems.riken.jp/en/about/coffee-meeting"
 link_label: "コーヒーミーティング"
 translation_url: "/blog/shinobus-coffee-meeting-talk-at-ithems/"
-image:
-  teaser: "blog/shinobus-coffee-meeting-talk-at-ithems/image-1.jpg"
 issue: 15
 machine_translation: true
 ---
 
-毎週金曜日の昼食時頃、理研iTHEMSでは「コーヒーミーティング」が開催されています。各回は、時事的なトピックを紹介する短いプレゼンテーションから始まります。
+毎週金曜日の昼食時頃、理研iTHEMSでは「コーヒーミーティング」が開催されます。各回は、時事的なトピックを紹介する短いプレゼンテーションから始まります。
 
 今回の私の発表では、最近、関東地方で台風による洪水が発生し、印旛湖周辺で堤防が決壊したといったニュースに触発され、「河川ネットワーク」というテーマを選びました。自身の研究に関連する数学的な考え方を用いて、こうした問題がなぜ発生するのかについて考察しました。
 
@@ -36,4 +34,4 @@ machine_translation: true
 ============================================================
 
 
-![](/images/blog/shinobus-coffee-meeting-talk-at-ithems/image-1.jpg)
+![](https://github.com/user-attachments/assets/14c4fdfb-39d9-4184-aa9c-366b50d819bb)

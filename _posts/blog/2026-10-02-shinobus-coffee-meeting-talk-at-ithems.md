@@ -8,8 +8,6 @@ author: "Shinobu Utsumi"
 link: "https://ithems.riken.jp/en/about/coffee-meeting"
 link_label: "Coffee Meeting"
 translation_url: "/ja/blog/shinobus-coffee-meeting-talk-at-ithems/"
-image:
-  teaser: "blog/shinobus-coffee-meeting-talk-at-ithems/image-1.jpg"
 issue: 15
 ---
 
@@ -34,4 +32,4 @@ In this talk, I’ll briefly explore the unique history of rivers in southern Ka
 ============================================================
 
 
-![](/images/blog/shinobus-coffee-meeting-talk-at-ithems/image-1.jpg)
+![](https://github.com/user-attachments/assets/14c4fdfb-39d9-4184-aa9c-366b50d819bb)
