@@ -30,7 +30,9 @@ import urllib.request
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-ROOT = Path(__file__).resolve().parents[2]
+# The workflow runs this script from a copy outside the checkout, so the
+# repository root comes from the Actions workspace when available.
+ROOT = Path(os.environ.get("GITHUB_WORKSPACE") or Path(__file__).resolve().parents[2])
 EN_DIR = ROOT / "_posts" / "blog"
 JA_DIR = ROOT / "_posts" / "ja" / "blog"
 IMG_DIR = ROOT / "images" / "blog"

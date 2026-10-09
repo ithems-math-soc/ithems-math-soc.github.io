@@ -81,6 +81,8 @@ jobs:
 
       - name: Switch to the branch for this issue
         run: |
+          # keep this workflow's scripts: the issue branch may carry older copies
+          cp -r .github/scripts /tmp/scripts
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
@@ -95,7 +97,7 @@ jobs:
         env:
           DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
           GITHUB_TOKEN: ${{ github.token }}
-        run: ISSUE_JSON="$(cat /tmp/issue.json)" python .github/scripts/issue_to_post.py
+        run: ISSUE_JSON="$(cat /tmp/issue.json)" python /tmp/scripts/issue_to_post.py
 
       - name: Downsize photos for the web
         env:
@@ -103,7 +105,7 @@ jobs:
         run: |
           if [ -d "images/blog/$SLUG" ]; then
             pip install -q pillow
-            python .github/scripts/downsize_images.py "images/blog/$SLUG"
+            python /tmp/scripts/downsize_images.py "images/blog/$SLUG"
           fi
 
       - name: Commit and push
