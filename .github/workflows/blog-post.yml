@@ -86,8 +86,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
-            # The issue was edited and a branch already exists: build on it.
+            # The issue was edited and a branch already exists: build on it, and
+            # bring in anything merged to main since, so the preview shows the
+            # post on the current site.
             git checkout -B "$BRANCH" "origin/$BRANCH"
+            git merge --no-edit origin/main || { git merge --abort; echo "::warning::could not merge main into $BRANCH; preview may be stale"; }
           else
             git checkout -B "$BRANCH" origin/main
           fi
@@ -175,11 +178,13 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.2"
-          bundler-cache: true
 
       - name: Build the site
         if: steps.push.outputs.changed == 'true'
         run: |
+          # the lockfile may only list macOS; make sure the runner's platform is in it
+          bundle lock --add-platform x86_64-linux
+          bundle install --quiet --jobs 4
           printf 'url: http://127.0.0.1:4000\n' > /tmp/preview-config.yml
           bundle exec jekyll build -q -c _config.yml,/tmp/preview-config.yml -d /tmp/site
 
