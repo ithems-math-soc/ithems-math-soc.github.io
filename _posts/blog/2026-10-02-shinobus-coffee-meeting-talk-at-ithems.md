@@ -11,6 +11,8 @@ translation_url: "/ja/blog/shinobus-coffee-meeting-talk-at-ithems/"
 issue: 19
 ---
 
+![](/images/blog/shinobus-coffee-meeting-talk-at-ithems/image-1.jpg)
+
 Every Friday around lunchtime, RIKEN iTHEMS hosts a Coffee Meeting. Each meeting starts with a short presentation introducing a timely topic.
 
 For my talk, I chose “River Networks,” inspired by the recent headlines about typhoon-related flooding in the Kanto region, including levee breaches around Lake Inba. I explored why these problems occur through mathematical ideas connected to my research.
