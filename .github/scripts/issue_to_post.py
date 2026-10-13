@@ -47,6 +47,7 @@ SITE_URL = "https://ithems-math-soc.github.io"
 
 # Field labels as they appear in .github/ISSUE_TEMPLATE/blog-post.yml.
 FIELDS = {"Type", "Date", "Author", "Link", "Link label", "Body"}
+PREAMBLE = "(above the first field)"
 NO_RESPONSE = "_No response_"
 
 IMAGE_HOSTS = (
@@ -85,17 +86,20 @@ def load_types() -> list[str]:
 
 
 def parse_form(body: str) -> dict[str, str]:
-    """Split an issue-form body into {field label: value}."""
-    sections: dict[str, list[str]] = {}
-    current = None
+    """
+    Split an issue-form body into {field label: value}. Anything written above
+    the first field (e.g. a photo dropped at the top while editing the issue on
+    GitHub) is returned under PREAMBLE so it is not lost.
+    """
+    sections: dict[str, list[str]] = {PREAMBLE: []}
+    current = PREAMBLE
     for line in body.splitlines():
         m = re.match(r"^### (.+?)\s*$", line)
         if m and m.group(1).strip() in FIELDS:
             current = m.group(1).strip()
             sections[current] = []
             continue
-        if current is not None:
-            sections[current].append(line)
+        sections[current].append(line)
     result = {}
     for key, lines in sections.items():
         value = "\n".join(lines).strip()
@@ -481,6 +485,11 @@ def main() -> None:
     link = form.get("Link", "").strip()
     link_label = form.get("Link label", "").strip()
     body = form.get("Body", "").strip()
+    above = form.get(PREAMBLE, "")
+    if above:
+        # A photo or text pasted above the form fields belongs to the post.
+        body = f"{above}\n\n{body}".strip()
+        warnings.append("content placed above the form fields was added to the top of the post")
     if not body:
         fail("The Body field is empty.")
 
