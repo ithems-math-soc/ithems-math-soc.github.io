@@ -7,54 +7,60 @@
    ========================================================================== */
 
 #masthead {
-	position: relative;
+	position: sticky;
+	top: 0;
 	padding: 0 $gutter;
-	background: $white;
-	border-bottom: 1px solid $border-color;
-	box-shadow: 0 10px 28px rgba($black, 0.04);
+	background: $body-color;
 	z-index: 5;
-	@include transform(translate(0,0));
-	@include transition(500ms cubic-bezier(.645,.045,.355,1.000));
-	&.slide {
-		@include transform(translate(-1600px,0));
-	}
 	.inner-wrap {
-		@include outer-container;
-		min-height: 76px;
+		// not outer-container: its clearfix ::after would become a third flex item
+		max-width: $max-width;
+		margin: 0 auto;
+		display: flex;
+		align-items: flex-end; // the menu sits on the same bottom line as the site title
+		justify-content: space-between;
+		gap: 0.5rem 2rem;
+		padding: 1.1rem 0 1rem;
 		@include media($medium) {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
+			padding: 1.5rem 0 1.3rem;
 		}
 	}
 }
+
+// Site title with a small letter-spaced "RIKEN iTHEMS" label above it.
 .site-title {
-	@include row;
-	@include media($large) {
-		@include span-columns(4);
-	}
-	float: none;
-	width: auto;
-	max-width: 100%;
-	padding: 0;
-	height: auto;
+	display: inline-flex;
+	flex-direction: column;
+	gap: 0.3rem;
 	text-decoration: none;
 	color: $text-color;
 	font-family: $alt-font;
-	font-weight: 700;
-	letter-spacing: 0;
-	@include font-size(19,no);
-	line-height: 1.25;
-	text-transform: none;
+	font-weight: 500;
+	letter-spacing: 0.1em;
+	@include font-size(16,no);
+	line-height: 1.2;
 	@include media($medium) {
-		@include font-size(21,no);
-		text-align: left;
-		display: flex;
-		align-items: center;
-		min-height: $masthead-height;
+		@include font-size(19,no);
+		line-height: 1.2; // the mixin would otherwise reset it to the document line-height
 	}
+	transition: color 0.3s ease;
+	.site-title-label {
+		display: block;
+		@include font-size(10,no);
+		font-weight: 500;
+		letter-spacing: 0.28em;
+		line-height: 1;
+		color: $primary-color;
+		white-space: nowrap;
+		transition: color 0.3s ease;
+	}
+	// hover: the name turns red like the nav links, the label softens to rose
 	&:hover {
 		color: $primary-color;
+		opacity: 1;
+		.site-title-label {
+			color: $accent-color;
+		}
 	}
 }
 
@@ -64,100 +70,94 @@
    ========================================================================== */
 
 .menu {
+	.menu-item {
+		display: flex;
+		flex-wrap: wrap;
+	}
 	li {
-		float: left;
-		&:last-child a {
-			@include media($medium) {
-				margin-right: 0; // remove spacing from last menu link
-			}
-		}
-		a {
-			// line hover effect
-			position: relative;
-			display: block;
-			margin-right: $gutter;
-			padding: (.25 * $masthead-height) 0 (.25 * $masthead-height) ;
-			height: $masthead-height;
-			font-family: $alt-font;
-			&:before,
-			&:after {
-				content: '';
-				display: block;
-				position: absolute;
-				top: 0;
-				left: 0;
-				height: 2px;
-				@include transition(width 0.3s);
-			}
-			&:before {
-				width: 100%;
-				background: transparent;
-			}
-			&:after {
-				width: 0;
-				background: $primary-color;
-			}
-			&:active:after,
-			&:hover:after {
-				width: 100%;
-			}
-		}
+		margin: 0; // the base list style adds a bottom margin
+	}
+	li a {
+		position: relative;
+		display: block;
+		font-family: $alt-font;
 	}
 }
 
 /* Top menu navigation */
 
 .top-menu {
-	display: none;
-	position: relative;
-	@include media($medium) {
-		display: block;
-		float: none;
-		width: auto;
-		top: 0.22rem;
-	}
-	@include media($large) {
-		float: none;
-		width: auto;
-		ul {
-			position: static;
+	.menu-item {
+		align-items: center;
+		gap: 0.2rem 1.6rem;
+		@include media($medium) {
+			justify-content: flex-end;
+			gap: 0 2.6rem;
 		}
 	}
-	.home,
-	.sub-menu-item {
-		display: none;
-	}
-	li {
-		a {
-			font-weight: 700;
-			@include font-size(16,no);
-			display: flex;
-			align-items: center;
-			padding: 0 0.55rem;
-			line-height: 1.2;
-			color: $text-color;
-			text-transform: none;
-			letter-spacing: 0;
-			&:hover {
-				color: $primary-color;
+	li a {
+		padding: 0.4rem 0 0.1rem 1.1rem; // room for the node in front
+		font-weight: 500;
+		@include font-size(12.5,no);
+		letter-spacing: 0.14em;
+		line-height: 1.2;
+		color: $text-color;
+		text-decoration: none;
+		white-space: nowrap;
+		transition: color 0.3s ease, opacity 0.3s ease, letter-spacing 0.4s $ease-out;
+		// the node: a hollow rose ring that appears on hover; filled red on the current page
+		&::before {
+			content: '';
+			position: absolute;
+			left: 0;
+			top: 50%;
+			width: 6px;
+			height: 6px;
+			margin-top: 0.05rem; // the link has more padding above than below, so nudge to the text's centre
+			border-radius: 50%;
+			box-shadow: 0 0 0 2px $body-color, 0 0 0 3px $accent-color;
+			opacity: 0;
+			transform: scale(0.4);
+			transition: opacity 0.3s ease, transform 0.4s $ease-out;
+		}
+		&:hover,
+		&:focus-visible {
+			color: $primary-color;
+			letter-spacing: 0.2em;
+			opacity: 1;
+			&::before {
+				opacity: 1;
+				transform: none;
+			}
+		}
+		&.is-current {
+			color: $primary-color;
+			&::before {
+				opacity: 1;
+				transform: none;
+				background: $primary-color;
 			}
 		}
 	}
-	.menu-item {
-		display: flex;
-		justify-content: flex-end;
-		align-items: center;
-		flex-wrap: wrap;
+	// while one link is hovered the others step back
+	.menu-item:hover li a:not(:hover) {
+		opacity: 0.45;
 	}
 }
 
 /* Bottom menu navigation */
 
 .bottom-menu {
-	@include clearfix;
-	font-weight: 700;
-	a {
-		color: lighten($black,60);
+	.menu-item {
+		gap: 2rem;
+	}
+	li a {
+		font-weight: 500;
+		@include font-size(13,no);
+		letter-spacing: 0.14em;
+		&:hover {
+			opacity: 0.6;
+		}
 	}
 }
 
@@ -167,15 +167,9 @@
    ========================================================================== */
 
 #page-wrapper {
-	padding: 0 $gutter $gutter; // add white space for smaller screens
-	@include size(100% 100%);
-	-webkit-overflow-scrolling: touch;
-	background: transparent;
-	z-index: 2;
-	@include transform(translate(0,0));
-	@include transition(500ms cubic-bezier(.645,.045,.355,1.000));
-	&.slide {
-		@include transform(translate(-60rem,0));
+	padding: 0 $gutter;
+	&:focus {
+		outline: none; // js/transition.js focuses it after a swap; no ring is wanted
 	}
 }
 
@@ -184,9 +178,14 @@
    ========================================================================== */
 
 #main {
-	padding-top: 2rem;
+	padding-top: 4rem;
+	padding-bottom: 2rem;
+	@include media($medium) {
+		padding-top: 6rem;
+		padding-bottom: 4rem;
+	}
 	.wrap {
-		max-width: 920px;
+		max-width: 820px;
 	}
 	.inner-wrap {
 		@include media($medium) {
@@ -195,14 +194,28 @@
 	}
 	.page-title {
 		@include fill-parent;
-		margin: 1.5rem 0 1.25rem;
-		padding-left: 1rem;
-		border-left: 6px solid $primary-color;
+		margin: 0 0 2.5rem;
 		h1, h2 {
 			margin: 0;
 		}
+		h1 {
+			@include font-size(24,no);
+			color: $primary-color;
+			&::after {
+				content: '';
+				display: block;
+				width: 2.4rem;
+				height: 2px;
+				margin-top: 0.9rem;
+				background: $accent-color;
+			}
+		}
 		h2 {
-			color: lighten($text-color, 28);
+			margin-top: 1rem;
+			@include font-size(15,no);
+			font-weight: 500;
+			letter-spacing: 0.1em;
+			color: $caption-color;
 		}
 	}
 	@at-root {
@@ -217,30 +230,95 @@
 			h4,
 			h5,
 			h6 {
-				max-width: 800px;
+				max-width: 640px;
 			}
+			// Section heading: letter-spaced label with a short rose bar underneath.
+			// Section heading: a small node (dot with a rose ring, like the hero's
+			// network nodes) in front of the label.
 			h5 {
+				@include font-size(18,no); // the mixin resets margin-bottom, so margins come after it
+				position: relative;
+				display: flex;
+				align-items: center;
+				gap: 0.8rem;
 				margin-top: 0;
-				margin-bottom: 0.85rem;
+				margin-bottom: 1.8rem;
 				color: $primary-color;
-				letter-spacing: 0.02em;
-			}
-			// cleaner underlines for links
-			a { text-decoration: none; }
-			p a,
-			li a {
-				border-bottom: 1px solid rgba($primary-color, 0.28);
-				&:hover {
-					border-bottom-style: solid;
-					border-bottom-color: $primary-color;
+				&::before {
+					content: '';
+					flex: 0 0 auto;
+					width: 8px;
+					height: 8px;
+					border-radius: 50%;
+					background: $primary-color;
+					box-shadow: 0 0 0 3px $body-color, 0 0 0 4px $accent-color;
+				}
+				// a soft ripple that slowly spreads out from the node and fades
+				&::after {
+					content: '';
+					position: absolute;
+					top: 50%;
+					left: 4px; // centre of the 8px dot
+					width: 16px;
+					height: 16px;
+					margin: -8px 0 0 -8px;
+					border: 1px solid $accent-color;
+					border-radius: 50%;
+					opacity: 0;
+					pointer-events: none;
+					animation: heading-ripple 3.6s ease-out infinite;
 				}
 			}
-			p > a.reversefootnote {
-				border-bottom-width: 0;
+			h5 + p {
+				margin-top: 0;
 			}
-      .toc li > a {
-        border-bottom-width: 0;
-      }
+			// Lead paragraph (the catchphrase on the home page): large serif statement.
+			.lead {
+				@include font-size(28,no);
+				max-width: 760px;
+				margin-bottom: 3.45rem;
+				color: $primary-color;
+				font-family: $serif-font;
+				font-weight: 300;
+				line-height: 1.35;
+				@include media($medium) {
+					@include font-size(36,no);
+					line-height: 1.35; // the mixin resets line-height, so it is restated after it
+					margin-bottom: 3.45rem;
+				}
+				a {
+					text-decoration: underline;
+					text-decoration-thickness: 1px;
+					text-underline-offset: 0.2em;
+				}
+				// Japanese Mincho needs more leading than the Latin serif; the
+				// margin is a little smaller so the visual gap to "Welcome" matches.
+				@at-root html[lang="ja"] & {
+					@include font-size(24,no);
+					font-family: $serif-font-ja;
+					font-weight: 500;
+					letter-spacing: 0.02em;
+					line-height: 1.8;
+					margin-bottom: 3.35rem;
+					@include media($medium) {
+						@include font-size(27,no);
+						line-height: 1.8;
+						margin-bottom: 3.35rem;
+					}
+				}
+			}
+			a {
+				text-decoration: underline;
+				text-decoration-thickness: 1px;
+				text-underline-offset: 0.3em;
+				&:hover {
+					opacity: 0.6;
+				}
+			}
+			p > a.reversefootnote,
+			.toc li > a {
+				text-decoration: none;
+			}
 			.page-footer,
 			.pagination {
 				@include fill-parent;
@@ -249,7 +327,7 @@
 				p{
 					@include font-size(14,no);
 					font-family: $alt-font;
-					color: lighten($text-color,40);
+					color: $caption-color;
 				}
 			}
 		}
@@ -262,176 +340,92 @@
 			}
 		}
 	}
-  /* advertisements */
-	.ads {
-		position: relative;
-		text-align: center;
-		margin-top: $gutter;
-		margin-left: -$gutter;
-		margin-right: -$gutter;
-		padding: 10px 0 20px;
-		background: lighten($border-color,5);
-		@include media($medium) {
-			@include span-columns(3);
-			margin-left: 0;
-			margin-right: 0;
-		}
-		&:after {
-			content: 'Advertisement';
-			position: absolute;
-			bottom: 0;
-			width: 100%;
-			text-align: center;
-			display: block;
-			@include font-size(9,no);
-			font-family: $alt-font;
-		}
-		ins {
-			border-width: 0;
-		}
+}
+
+@keyframes heading-ripple {
+	0%   { transform: scale(0.6); opacity: 0; }
+	10%  { opacity: 0.7; }
+	55%  { transform: scale(1.9); opacity: 0; }
+	100% { transform: scale(1.9); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.page-content h5::after {
+		animation: none;
 	}
 }
-// page lead
+
+// Sections stacked on one page (home: Welcome, then Activities) are separated by a rule.
+.page-content > section + section,
+.page-content > section + h5,
+.page-content > p + section {
+	margin-top: 4.5rem;
+	padding-top: 4rem;
+	border-top: $rule-width solid $border-color;
+}
+
+// Hero illustration on the home page.
 .page-lead {
-	background-position: center top;
+	background-position: center center;
 	background-repeat: no-repeat;
 	background-size: cover;
-	text-align: left;
-	color: $white;
-	box-shadow: inset 0 0 0 1000px rgba($black, 0.36);
+	background-color: $body-color;
+	position: relative;
+	// Fade the top and bottom edges of the illustration into the page background.
+	&::before,
+	&::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		height: 24px;
+		pointer-events: none;
+	}
+	&::before {
+		top: 0;
+		background: linear-gradient(to bottom, $body-color 0%, rgba($body-color, 0) 100%);
+	}
+	&::after {
+		bottom: 0;
+		background: linear-gradient(to top, $body-color 0%, rgba($body-color, 0) 100%);
+	}
 }
 .page-lead-content {
 	@include outer-container;
-	min-height: 260px;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	padding: 3rem $gutter;
-	@include media($medium) {
-		min-height: 340px;
-		padding: 4rem $gutter;
-	}
-	@include media($large) {
-		min-height: 420px;
-		padding: 5rem $gutter;
-	}
-	h1 {
-		@include font-size(48);
-		@include media($medium) {
-			@include font-size(60);
-		}
-		@include media($large) {
-			@include font-size(72);
-		}
-	}
-	h2 {
-		max-width: 820px;
-		margin: 0;
-		color: $white;
-		text-shadow: 0 2px 18px rgba($black, 0.35);
-		@include font-size(28);
-		@include media($medium) {
-			@include font-size(38);
-		}
-		@include media($large) {
-			@include font-size(48);
-		}
-		& + h2 {
-			margin-top: 0.45rem;
-			@include font-size(18);
-			font-weight: 500;
-			@include media($medium) {
-				@include font-size(24);
-			}
-		}
-	}
+	position: relative; // above the edge fades
+	z-index: 1;
+	min-height: clamp(260px, 46vw, 620px);
 }
-// page header
-.page-feature {
-	@include fill-parent;
-	// expand image to cover full width of header
-	img {
-		width: 100%;
-	}
-}
-// make image flush with edges on small screens
-.page-image {
-	position: relative;
-	margin-left: -1 * $gutter;
-	margin-right: -1 * $gutter;
-	// feature image caption
-	.image-credit {
-		position: absolute;
-		bottom: 0;
-		right: 0;
-		margin: 0 auto;
-		padding: 10px 15px;
-		background-color: rgba($black,.5);
-		color: $white;
-		font-family: $alt-font;
-		@include font-size(12,no);
-		text-align: right;
-		z-index: 10;
-		a {
-			color: $white;
-			text-decoration: none;
-		}
-	}
-}
-
-/*
-   Page footer
-   ========================================================================== */
-
-.page-footer {
-	position: relative;
-}
-
-/* Author block */
-
-.author-image {
-	position: absolute;
-	left: 0;
-	img {
-		width: 80px;
-		height: 80px;
-		border-radius: $border-radius;
-	}
-}
-.author-content {
-	word-wrap: break-word;
-	padding-left: 100px; //avatar width + 20px padding
-	min-height: 80px; //mirrors avatar height
-}
-.author-name {
-	@include font-size(20,no);
-}
-.author-bio {
-	margin-top: 0;
-	@include font-size(16);
-}
-
 /*
    Site footer
    ========================================================================== */
 
 #site-footer {
 	max-width: none;
-	margin-top: (3 * (0px + $doc-line-height));
-	margin-top: (3 * (0rem + ($doc-line-height / $doc-font-size)));
-	margin-left: -1 * $gutter;
-	margin-right: -1 * $gutter;
-	padding: 2rem $gutter;
-	background: $white;
-	border-top: 1px solid $border-color;
+	margin: 4rem (-1 * $gutter) 0;
+	padding: 3.5rem $gutter 3rem;
+	background: $primary-color;
+	color: $body-color;
 	font-family: $alt-font;
+	@include media($medium) {
+		margin-top: 6rem;
+		padding: 5rem $gutter 4rem;
+	}
+	.inner-wrap {
+		@include outer-container;
+	}
+	a {
+		color: inherit;
+		text-decoration: none;
+	}
   /* Copyright text */
 	.copyright {
-		@include font-size(12);
-		color: lighten($black,60);
-		a {
-			color: lighten($black,60);
-			text-decoration: none;
-		}
+		@include font-size(12,no);
+		max-width: none;
+		margin-top: 2.5rem;
+		margin-bottom: 0;
+		letter-spacing: 0.08em;
+		line-height: 1.8;
+		color: rgba($body-color, 0.7);
 	}
 }

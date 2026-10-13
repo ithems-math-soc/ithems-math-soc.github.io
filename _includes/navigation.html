@@ -1,26 +1,19 @@
 <ul class="menu-item">
-  {% assign site_title = page.site_title | default: site.title %}
   {% if page.lang == 'ja' %}
     {% assign navigation_links = site.data.navigation_ja %}
-    {% assign home_url = '/ja/' %}
   {% else %}
     {% assign navigation_links = site.data.navigation %}
-    {% assign home_url = '/' %}
   {% endif %}
-	<li class="home"><a href="{{ home_url }}">{{ site_title }}</a></li>
-	{% for link in navigation_links %}
+  {% assign current_url = page.url | remove: 'index.html' %}
+  {% for link in navigation_links %}
     {% if link.url contains 'http' %}
-        {% assign domain = '' %}
-        {% else %}
-        {% assign domain = site.url %}
+      {% assign domain = '' %}
+    {% else %}
+      {% assign domain = site.url %}
     {% endif %}
-    <li><a href="{{ domain }}{{ link.url }}" {% if link.url contains 'http' %}target="_blank"{% endif %}>{{ link.title }}</a></li>
+    <li><a href="{{ domain }}{{ link.url }}"{% if current_url == link.url %} class="is-current"{% endif %}{% if link.url contains 'http' %} target="_blank"{% endif %}>{{ link.title }}</a></li>
   {% endfor %}
   {% if page.translation_url %}
-    {% if page.lang == 'ja' %}
-      <li><a href="{{ page.translation_url }}">English</a></li>
-    {% else %}
-      <li><a href="{{ page.translation_url }}">日本語</a></li>
-    {% endif %}
+    <li><a href="{{ page.translation_url }}">{% if page.lang == 'ja' %}English{% else %}日本語{% endif %}</a></li>
   {% endif %}
 </ul>

@@ -1,8 +1,9 @@
 {% comment %}
   Blog index. Lists every post under _posts/blog/ (English) or _posts/ja/blog/
   (Japanese), newest first, with client-side filtering, search, and sorting
-  handled by js/blog.js. Each card (blog-card.html) carries its metadata as
-  data-* attributes so the script needs no extra requests.
+  handled by js/blog.js (loaded site-wide from _includes/scripts.html). Each
+  card (blog-card.html) carries its metadata as data-* attributes so the script
+  needs no extra requests.
 {% endcomment %}
 {% if page.lang == 'ja' %}
   {% assign posts = site.categories.blog | where: "lang", "ja" %}
@@ -12,6 +13,9 @@
 
 <section class="blog-list">
 <h5>{% if page.lang == 'ja' %}ブログ{% else %}Blog{% endif %}</h5>
+{% if page.lang == 'ja' %}
+<p class="blog-notice">このブログは英語で投稿された原文を自動翻訳したものです。正確な内容は<a href="{{ site.url }}/blog/">英語版</a>をご参照ください。</p>
+{% endif %}
 
 {% if posts and posts.size > 0 %}
 <div class="blog-toolbar">
@@ -25,11 +29,17 @@
     {% endfor %}
   </div>
   <div class="blog-controls">
-    <input type="search" id="blog-search" placeholder="{% if page.lang == 'ja' %}キーワードで検索{% else %}Search posts{% endif %}" aria-label="{% if page.lang == 'ja' %}キーワードで検索{% else %}Search posts{% endif %}">
-    <select id="blog-sort" aria-label="{% if page.lang == 'ja' %}並べ替え{% else %}Sort posts{% endif %}">
-      <option value="newest">{% if page.lang == 'ja' %}新しい順{% else %}Newest first{% endif %}</option>
-      <option value="oldest">{% if page.lang == 'ja' %}古い順{% else %}Oldest first{% endif %}</option>
-    </select>
+    <label class="blog-search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input type="search" id="blog-search" placeholder="{% if page.lang == 'ja' %}キーワードで検索{% else %}Search posts{% endif %}" aria-label="{% if page.lang == 'ja' %}キーワードで検索{% else %}Search posts{% endif %}">
+    </label>
+    <label class="blog-sort">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3"/></svg>
+      <select id="blog-sort" aria-label="{% if page.lang == 'ja' %}並べ替え{% else %}Sort posts{% endif %}">
+        <option value="newest">{% if page.lang == 'ja' %}新しい順{% else %}Newest first{% endif %}</option>
+        <option value="oldest">{% if page.lang == 'ja' %}古い順{% else %}Oldest first{% endif %}</option>
+      </select>
+    </label>
   </div>
 </div>
 
@@ -46,5 +56,3 @@
 <p class="blog-empty">{% if page.lang == 'ja' %}まだ投稿はありません。最初の記事をお楽しみに。{% else %}No posts yet. The first one is on its way.{% endif %}</p>
 {% endif %}
 </section>
-
-{% if posts and posts.size > 0 %}<script src="{{ site.url }}/js/blog.js"></script>{% endif %}

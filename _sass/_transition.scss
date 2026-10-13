@@ -1,0 +1,30 @@
+/* ==========================================================================
+   Page transitions
+   ========================================================================== */
+
+// js/transition.js adds .is-leaving to <html> while the next page is fetched
+// and swapped in, then removes it: the content (hero and everything below)
+// fades out quickly and drifts back in a little more slowly. The header is
+// not part of the swap, so it stays put.
+.page-lead,
+#page-wrapper {
+  transition: opacity 0.9s ease, transform 1.3s $ease-out;
+}
+
+html.is-leaving .page-lead,
+html.is-leaving #page-wrapper {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.4s ease, transform 0.4s ease; // keep in sync with LEAVE in js/transition.js
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-lead,
+  #page-wrapper,
+  html.is-leaving .page-lead,
+  html.is-leaving #page-wrapper {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}

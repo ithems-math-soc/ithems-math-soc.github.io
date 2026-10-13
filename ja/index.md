@@ -3,14 +3,14 @@ layout: home
 permalink: /ja/
 lang: ja
 site_title: 数理社会科学チーム
-hero_title: 数理社会科学チーム
-hero_subtitle: iTHEMS
 translation_url: /
 image:
-  feature: home.jpg
+  feature: home-network.jpg
 ---
 
-<h5>ようこそ</h5>
+<p class="lead">社会の仕組みを数理で探る</p>
+
+<h5>Welcome</h5>
 
 私たちは、埼玉県和光市にある[理化学研究所 数理創造研究センター](https://ithems.riken.jp/)（iTHEMS）の数理社会科学チームです。
 
