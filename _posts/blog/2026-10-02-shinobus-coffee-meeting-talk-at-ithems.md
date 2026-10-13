@@ -26,3 +26,5 @@ You can find the talk title and abstract below. If you’re interested, feel fre
 As the rise of the earliest civilizations shows, rivers have always been deeply connected to human society. They bring many benefits, such as agriculture and transportation, but they can also cause major disasters through flooding. Moreover, because a basin works as one connected system, altering one part of a river can trigger a system-wide response, sometimes leading to even greater disasters. That's why flood control and water management should consider not just individual tributaries but the entire basin as a river network. In this talk, I'll briefly cover the unique history of rivers in the southern Kanto area where we live, and introduce mathematical approaches to describing river networks, as well as the laws found in natural river systems. Finally, I'll discuss how these methods might apply to other fields, such as bonsai.
 
 ============================================================
+
+![](/images/blog/shinobus-coffee-meeting-talk-at-ithems/image-1.jpg)
