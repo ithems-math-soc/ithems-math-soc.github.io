@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Shrink the photos of one blog post for the web.
+Shrink the photos of one news post for the web.
 
-Usage: downsize_images.py images/blog/<slug>
+Usage: downsize_images.py images/news/<slug>
 
 Phone photos are often 4000-6000 px wide and several megabytes; 1600 px on the
 long side is plenty for the post page. Images are re-encoded (JPEG quality 85,

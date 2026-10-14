@@ -3,11 +3,12 @@ layout: archive
 title:
 lang: ja
 site_title: 数理社会科学チーム
-translation_url: /blog/
+translation_url: /news/
+redirect_from: /ja/blog/
 image:
   feature:
   teaser:
   thumb:
 ---
 
-{% include blog-list.html %}
+{% include news-list.html %}

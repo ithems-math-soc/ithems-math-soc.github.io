@@ -1,19 +1,19 @@
-# Turns a "blog-post" issue (created from the New blog post form) into a pull
+# Turns a "news-post" issue (created from the News post form) into a pull
 # request that adds the post to the website.
 #
 # Flow:
-#   issue opened/edited  ->  generate _posts/blog/<date>-<slug>.md (English),
-#                            _posts/ja/blog/<date>-<slug>.md (DeepL translation),
-#                            images/blog/<slug>/* (attached photos, downsized)
+#   issue opened/edited  ->  generate _posts/news/<date>-<slug>.md (English),
+#                            _posts/ja/news/<date>-<slug>.md (DeepL translation),
+#                            images/news/<slug>/* (attached photos, downsized)
 #                            _data/publications.yml (Paper posts: added from the DOI)
-#                        ->  commit to branch blog/issue-<n>, open or update a PR
+#                        ->  commit to branch news/issue-<n>, open or update a PR
 #                        ->  build the site, screenshot the new post, and post
 #                            the screenshots on the PR (stored on the
 #                            orphan "previews" branch) so nobody needs a local build
 #                        ->  comment on the issue with the PR link
 #
 # Only issues by repository collaborators are processed. The workflow can also
-# be started by hand (Actions > "Blog post from issue" > Run workflow) with an
+# be started by hand (Actions > "News post from issue" > Run workflow) with an
 # issue number, which re-processes that issue and refreshes its preview even if
 # nothing changed; this is how changes to the workflow are tested from a branch
 # before they reach main.
@@ -23,9 +23,9 @@
 #      enable "Allow GitHub Actions to create and approve pull requests".
 #   2. Settings > Secrets and variables > Actions: add DEEPL_API_KEY
 #      (a DeepL API Free key). Without it, posts are created in English only.
-#   3. Make sure the "blog-post" label exists.
+#   3. Make sure the "news-post" label exists.
 
-name: Blog post from issue
+name: News post from issue
 
 on:
   issues:
@@ -43,7 +43,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: blog-post-${{ github.event.issue.number || inputs.issue_number }}
+  group: news-post-${{ github.event.issue.number || inputs.issue_number }}
   cancel-in-progress: false
 
 env:
@@ -53,12 +53,12 @@ jobs:
   post:
     if: >-
       github.event_name == 'workflow_dispatch'
-      || ((contains(github.event.issue.labels.*.name, 'blog-post') || startsWith(github.event.issue.title, '[Blog]'))
+      || ((contains(github.event.issue.labels.*.name, 'news-post') || startsWith(github.event.issue.title, '[News]'))
           && contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association))
     runs-on: ubuntu-latest
     env:
       ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue_number }}
-      BRANCH: blog/issue-${{ github.event.issue.number || inputs.issue_number }}
+      BRANCH: news/issue-${{ github.event.issue.number || inputs.issue_number }}
       GH_TOKEN: ${{ github.token }}
 
     steps:
@@ -108,9 +108,9 @@ jobs:
         env:
           SLUG: ${{ steps.gen.outputs.slug }}
         run: |
-          if [ -d "images/blog/$SLUG" ]; then
+          if [ -d "images/news/$SLUG" ]; then
             pip install -q pillow
-            python /tmp/scripts/downsize_images.py "images/blog/$SLUG"
+            python /tmp/scripts/downsize_images.py "images/news/$SLUG"
           fi
 
       - name: Commit and push
@@ -118,15 +118,15 @@ jobs:
         env:
           TITLE: ${{ steps.gen.outputs.title }}
         run: |
-          # images/blog only exists once a post has photos; git add fails on a missing path
-          for path in _posts/blog _posts/ja/blog images/blog _data/publications.yml; do
+          # images/news only exists once a post has photos; git add fails on a missing path
+          for path in _posts/news _posts/ja/news images/news _data/publications.yml; do
             [ -e "$path" ] && git add -A "$path"
           done
           if git diff --cached --quiet; then
             echo "Nothing changed."
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
-            git commit -m "Add blog post: $TITLE"
+            git commit -m "Add news post: $TITLE"
             git push origin "$BRANCH"
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
@@ -157,7 +157,7 @@ jobs:
               WARN_LINE=""
             fi
             BODY="$(printf '%s\n' \
-              "Blog post submitted by @$AUTHOR via $ISSUE_URL." \
+              "News post submitted by @$AUTHOR via $ISSUE_URL." \
               "" \
               "**How to review:** screenshots of the post are posted below as a comment. Check the text and the Japanese translation there; to fix something, edit the files under **Files changed** (or edit the original issue to regenerate everything), then merge." \
               "" \
@@ -172,7 +172,7 @@ jobs:
               "$WARN_LINE" \
               "" \
               "Closes #$ISSUE_NUMBER")"
-            PR_URL="$(gh pr create --base main --head "$BRANCH" --title "Blog: $TITLE" --body "$BODY")"
+            PR_URL="$(gh pr create --base main --head "$BRANCH" --title "News: $TITLE" --body "$BODY")"
             echo "created=true" >> "$GITHUB_OUTPUT"
           else
             echo "created=false" >> "$GITHUB_OUTPUT"
@@ -212,10 +212,10 @@ jobs:
               --force-prefers-reduced-motion --window-size=1280,"$3" --virtual-time-budget=12000 \
               --screenshot="/tmp/shots/$1.png" "$2" >/dev/null 2>&1
           }
-          shot en "http://127.0.0.1:4000/blog/$SLUG/" 2600
-          shot list "http://127.0.0.1:4000/blog/" 900
+          shot en "http://127.0.0.1:4000/news/$SLUG/" 2600
+          shot list "http://127.0.0.1:4000/news/" 900
           if [ "$TRANSLATED" = "true" ]; then
-            shot ja "http://127.0.0.1:4000/ja/blog/$SLUG/" 2600
+            shot ja "http://127.0.0.1:4000/ja/news/$SLUG/" 2600
           fi
           ls -la /tmp/shots
 
@@ -236,7 +236,7 @@ jobs:
             git checkout -q -b "$PREVIEW_BRANCH" FETCH_HEAD
           else
             git checkout -q --orphan "$PREVIEW_BRANCH"
-            printf 'Screenshots posted on blog pull requests by the "Blog post from issue" workflow.\n' > README.md
+            printf 'Screenshots posted on news pull requests by the "News post from issue" workflow.\n' > README.md
           fi
           DIR="issue-$ISSUE_NUMBER/$RUN_ID"
           mkdir -p "$DIR" && cp /tmp/shots/*.png "$DIR/"
@@ -265,8 +265,8 @@ jobs:
             "![English post]($BASE/en.png)" \
             "" \
             "$JA_PART" \
-            "### Blog page" \
-            "![Blog list]($BASE/list.png)")"
+            "### News page" \
+            "![News list]($BASE/list.png)")"
           # update the existing preview comment if there is one, so edits do not pile up comments
           PR_NUMBER="$(gh pr view "$PR_URL" --json number --jq .number)"
           COMMENT_ID="$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate \

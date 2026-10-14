@@ -1,6 +1,6 @@
-# Add a Blog Post
+# Add a News Post
 
-The Blog page (https://ithems-math-soc.github.io/blog/) is for short news
+The News page (https://ithems-math-soc.github.io/news/) is for short news
 items: a new paper, a talk, a workshop report, a visitor, a new member, a
 seminar announcement, an award, media coverage, a job opening, or other news
 such as a new grant, project, or collaboration.
@@ -10,15 +10,15 @@ done on GitHub in your browser.
 
 ## Posting (everyone)
 
-1. Open the **New blog post** form:
-   https://github.com/ithems-math-soc/ithems-math-soc.github.io/issues/new?template=blog-post.yml
-   (or go to the repository, click **Issues** → **New issue** → **New blog post**).
-2. In the title box, replace `[Blog] ` with the title of your post.
+1. Open the **News post** form:
+   https://github.com/ithems-math-soc/ithems-math-soc.github.io/issues/new?template=news-post.yml
+   (or go to the repository, click **Issues** → **New issue** → **News post**).
+2. In the title box, replace `[News] ` with the title of your post.
 3. Fill in the fields:
    - **Type** (required): pick one from the list. It is shown as a coloured tag
-     on the Blog page and can be used to filter posts. If nothing fits (for
+     on the News page and can be used to filter posts. If nothing fits (for
      example a new grant, a new project, or a new collaboration), choose
-     **News**.
+     **Others**.
    - **Date**: `YYYY-MM-DD`. Leave empty for today.
    - **Author**: your name as it should appear. Optional.
    - **Link** / **Link label**: an optional URL (paper, seminar page, ...)
@@ -28,10 +28,10 @@ done on GitHub in your browser.
      pull request, unless it is already listed. Check the generated entry in
      `_data/publications.yml`; no Japanese version is needed.
    - **Body** (required): the post itself, in English, written in Markdown.
-     The first paragraph is used as the summary on the Blog page.
+     The first paragraph is used as the summary on the News page.
      To add **photos**, drag and drop the image files into the Body box; GitHub
      uploads them and inserts a link automatically. The first photo in the
-     post is used as its thumbnail on the Blog page. Photos on consecutive lines are
+     post is used as its thumbnail on the News page. Photos on consecutive lines are
      shown side by side on the post page; leave a blank line between photos
      to show them one below the other.
 4. Click **Submit new issue**.
@@ -44,24 +44,24 @@ published yet.
 ## Reviewing and publishing (any team member)
 
 1. Open the pull request linked from the issue. The **Preview** comment
-   shows how the post will look, in English and in Japanese, plus the Blog
+   shows how the post will look, in English and in Japanese, plus the News
    page. No local build is needed.
 2. If something needs a fix, click **Files changed**. You will see:
-   - `_posts/blog/<date>-<slug>.md` – the English post
-   - `_posts/ja/blog/<date>-<slug>.md` – the Japanese version, machine
+   - `_posts/news/<date>-<slug>.md` – the English post
+   - `_posts/ja/news/<date>-<slug>.md` – the Japanese version, machine
      translated by DeepL
-   - `images/blog/<slug>/` – any photos
+   - `images/news/<slug>/` – any photos
    On a file, click the **...** menu → **Edit file**, change the text, and
    **Commit changes** to the same branch (see *Editing the Japanese text*
    below). Bigger changes are easier by editing the original issue, which
    regenerates everything and posts new screenshots.
 3. Click **Merge pull request** → **Confirm merge**. The website rebuilds in a
-   few minutes and the post appears on the Blog page. The issue closes
+   few minutes and the post appears on the News page. The issue closes
    automatically.
 
 ## Editing the Japanese text
 
-The Japanese file (`_posts/ja/blog/<date>-<slug>.md`) is an ordinary text
+The Japanese file (`_posts/ja/news/<date>-<slug>.md`) is an ordinary text
 file and can be edited at any time, before or after publishing. When you do,
 also change the line
 
@@ -89,13 +89,13 @@ Japanese file marked `machine_translation: false`.
 **After it is merged:** either
 
 - edit the issue again – a new pull request with the update is opened, or
-- edit the post file directly on GitHub (`_posts/blog/...` and the matching
-  file in `_posts/ja/blog/`) and open a pull request.
+- edit the post file directly on GitHub (`_posts/news/...` and the matching
+  file in `_posts/ja/news/`) and open a pull request.
 
 ## Deleting a post
 
-Delete both files (`_posts/blog/<date>-<slug>.md` and
-`_posts/ja/blog/<date>-<slug>.md`) and the folder `images/blog/<slug>/` if it
+Delete both files (`_posts/news/<date>-<slug>.md` and
+`_posts/ja/news/<date>-<slug>.md`) and the folder `images/news/<slug>/` if it
 exists, then open a pull request. On GitHub: open the file, click **...** →
 **Delete file**.
 
@@ -111,25 +111,25 @@ exists, then open a pull request. On GitHub: open the file, click **...** →
 
 ### How it works
 
-- `.github/ISSUE_TEMPLATE/blog-post.yml` – the form.
-- `.github/workflows/blog-post.yml` – runs when an issue with the `blog-post`
+- `.github/ISSUE_TEMPLATE/news-post.yml` – the form.
+- `.github/workflows/news-post.yml` – runs when an issue with the `news-post`
   label is opened or edited by a repository collaborator. It calls the script
   below, downsizes attached photos to 1600 px (`downsize_images.py`), commits to a branch
-  `blog/issue-<n>`, opens or updates a pull request, then builds the site,
+  `news/issue-<n>`, opens or updates a pull request, then builds the site,
   screenshots the new post with headless Chrome, and posts the screenshots on
   the pull request. The screenshots are stored on the orphan branch
   `previews` (one folder per issue and run) so they never end up in the
   site; that branch can be deleted and will be recreated.
 - `.github/scripts/issue_to_post.py` – parses the form, downloads attached
-  images into `images/blog/<slug>/`, translates with DeepL, and writes the two
+  images into `images/news/<slug>/`, translates with DeepL, and writes the two
   post files. It records `issue: <n>` in the front matter so edits replace
   the earlier files instead of duplicating them. For Paper posts it also adds
   the paper to `_data/publications.yml` from the DOI in the Link field
   (metadata from the Crossref API), skipping papers that are already listed.
-- `_data/blog_types.yml` – the list of post types and their Japanese labels.
+- `_data/news_types.yml` – the list of post types and their Japanese labels.
   If you change it, change the **Type** dropdown in the form as well.
-- `_includes/blog-list.html`, `_layouts/blog.html`, `_sass/_blog.scss`,
-  `js/blog.js` – the Blog page, post layout, styles, and the filter / search /
+- `_includes/news-list.html`, `_layouts/news.html`, `_sass/_news.scss`,
+  `js/news.js` – the News page, post layout, styles, and the filter / search /
   sort behaviour.
 
 ### One-time setup
@@ -140,13 +140,13 @@ exists, then open a pull request. On GitHub: open the file, click **...** →
    name `DEEPL_API_KEY`, value: an API key from a DeepL account
    (https://www.deepl.com/pro-api — the free plan is enough). Without this
    secret, posts are still created, but in English only.
-3. The `blog-post` label must exist (it does; recreate it if deleted).
+3. The `news-post` label must exist (it does; recreate it if deleted).
 
 ### Switching to publishing without review
 
 When the team is comfortable with the flow, the pull request step can be
-replaced by a direct push to `main`: in `.github/workflows/blog-post.yml`,
-check out `main` instead of `blog/issue-<n>`, push to `main`, and drop the
+replaced by a direct push to `main`: in `.github/workflows/news-post.yml`,
+check out `main` instead of `news/issue-<n>`, push to `main`, and drop the
 "Open or update the pull request" step.
 
 ### Post file format
@@ -156,21 +156,21 @@ produces:
 
 ```yaml
 ---
-layout: blog
+layout: news
 title: "New paper published in PNAS"
 type: Paper
 lang: en
-categories: blog
+categories: news
 author: "Your Name"              # optional
 link: "https://doi.org/..."     # optional
 link_label: "Read the paper"    # optional
-translation_url: /ja/blog/new-paper-published-in-pnas/   # if a Japanese file exists
+translation_url: /ja/news/new-paper-published-in-pnas/   # if a Japanese file exists
 ---
 
 Body text in Markdown.
 ```
 
-The Japanese file lives at the same name under `_posts/ja/blog/` and has
-`lang: ja`, `categories: [ja, blog]`, `site_title: 数理社会科学チーム`,
+The Japanese file lives at the same name under `_posts/ja/news/` and has
+`lang: ja`, `categories: [ja, news]`, `site_title: 数理社会科学チーム`,
 `translation_url` pointing back to the English post, and
 `machine_translation: true` (set to `false` once a person has edited it).

@@ -31,4 +31,4 @@ at the group level. Through this work, we aim to develop a theoretical
 foundation that contributes to the design of more sustainable and resilient
 societies.
 
-{% include blog-latest.html %}
+{% include news-latest.html %}

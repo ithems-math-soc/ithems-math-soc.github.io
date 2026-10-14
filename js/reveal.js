@@ -22,15 +22,15 @@
     '.page-content > ol',
     '.page-content > .page-title',
     '.publication-year > h6',
-    '.blog-latest > h5',
-    '.blog-latest-more',
-    '.blog-list > h5',
-    '.blog-toolbar'
+    '.news-latest > h5',
+    '.news-latest-more',
+    '.news-list > h5',
+    '.news-toolbar'
   ];
   var staggered = [
     '.people-tiles > .people-card',
     '.publication-items > .publication-item',
-    '.blog-items > .blog-item'
+    '.news-items > .news-item'
   ];
 
   var observer = new IntersectionObserver(function (entries) {
