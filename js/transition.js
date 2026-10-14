@@ -53,7 +53,7 @@
     if (window.siteScroll) { window.siteScroll.scrollTo(0, { immediate: true }); window.siteScroll.resize(); }
     else { window.scrollTo(0, 0); }
     if (window.siteReveal) { window.siteReveal(); }
-    if (window.siteBlog) { window.siteBlog(); }
+    if (window.siteNews) { window.siteNews(); }
   }
 
   function go(url, push) {

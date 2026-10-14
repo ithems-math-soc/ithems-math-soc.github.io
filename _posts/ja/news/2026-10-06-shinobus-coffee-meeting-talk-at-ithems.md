@@ -1,16 +1,18 @@
 ---
-layout: "blog"
+layout: "news"
 title: "iTHEMSのコーヒーミーティングで発表しました"
+date: 2026-10-06
 type: "Talk"
 lang: "ja"
-categories: [ja, blog]
+categories: [ja, news]
 site_title: "数理社会科学チーム"
 author: "Shinobu Utsumi"
 link: "https://ithems.riken.jp/ja/about/coffee-meeting"
 link_label: "iTHEMSコーヒーミーティングとは？"
-translation_url: "/blog/shinobus-coffee-meeting-talk-at-ithems/"
+translation_url: "/news/shinobus-coffee-meeting-talk-at-ithems/"
 issue: 21
 machine_translation: true
+redirect_from: /ja/blog/shinobus-coffee-meeting-talk-at-ithems/
 ---
 
 毎週金曜日のお昼に、理研iTHEMSでは「[コーヒーミーティング](https://ithems.riken.jp/en/about/coffee-meeting)」を開催しています。コーヒーミーティングでは、毎週iTHEMSの研究者の中から代表一名が選出され、そのときどきの旬のトピックスや数学にまつわるテーマを選び、15分程度のプレゼンテーションと15〜30分程度の質疑応答・議論を行います。
@@ -33,4 +35,4 @@ machine_translation: true
 
 
 
-![](/images/blog/shinobus-coffee-meeting-talk-at-ithems/image-1.jpg)
+![](/images/news/shinobus-coffee-meeting-talk-at-ithems/image-1.jpg)

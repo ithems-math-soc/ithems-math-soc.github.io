@@ -16,12 +16,12 @@ The website is hosted on GitHub. To make changes, all you need to do is update
 the main branch of this repository. So open a pull request with your changes and
 once it is approved, the website will be updated.
 
-## Posting to the blog
+## Posting news
 
-News items (papers, talks, visitors, seminars, ...) go on the Blog page. You
+News items (papers, talks, visitors, seminars, ...) go on the News page. You
 do not need git for this: fill in the
-[New blog post form](https://github.com/ithems-math-soc/ithems-math-soc.github.io/issues/new?template=blog-post.yml)
-and a pull request is created for you. See [Add a blog post](HowTos/AddBlogPost.md).
+[News post form](https://github.com/ithems-math-soc/ithems-math-soc.github.io/issues/new?template=news-post.yml)
+and a pull request is created for you. See [Add a news post](HowTos/AddNewsPost.md).
 
 
 ## First time contributing to the website?
@@ -37,4 +37,4 @@ A list of HowTo(s) is available. More specifically:
 - [Install & compile the website](HowTos/Installation.md)
 - [Add people](HowTos/AddPeople.md)
 - [Add publication](HowTos/AddPublication.md)
-- [Add a blog post](HowTos/AddBlogPost.md)
+- [Add a news post](HowTos/AddNewsPost.md)

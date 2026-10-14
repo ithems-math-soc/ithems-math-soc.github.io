@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Turn a "blog-post" issue (created from the New blog post form) into Jekyll
+Turn a "news-post" issue (created from the News post form) into Jekyll
 post files for the website.
 
 Input (environment variables):
@@ -10,9 +10,9 @@ Input (environment variables):
   GITHUB_OUTPUT   path of the step-output file (set by GitHub Actions)
 
 Output (files, relative to the repository root):
-  _posts/blog/<date>-<slug>.md       English post (the original text)
-  _posts/ja/blog/<date>-<slug>.md    Japanese post (machine translation)
-  images/blog/<slug>/image-N.<ext>   photos attached to the issue
+  _posts/news/<date>-<slug>.md       English post (the original text)
+  _posts/ja/news/<date>-<slug>.md    Japanese post (machine translation)
+  images/news/<slug>/image-N.<ext>   photos attached to the issue
   _data/publications.yml             for Paper posts: the paper is added to the
                                      list (looked up on Crossref by the DOI in
                                      the Link field) unless it is already there
@@ -37,15 +37,15 @@ from zoneinfo import ZoneInfo
 # The workflow runs this script from a copy outside the checkout, so the
 # repository root comes from the Actions workspace when available.
 ROOT = Path(os.environ.get("GITHUB_WORKSPACE") or Path(__file__).resolve().parents[2])
-EN_DIR = ROOT / "_posts" / "blog"
-JA_DIR = ROOT / "_posts" / "ja" / "blog"
-IMG_DIR = ROOT / "images" / "blog"
-TYPES_FILE = ROOT / "_data" / "blog_types.yml"
+EN_DIR = ROOT / "_posts" / "news"
+JA_DIR = ROOT / "_posts" / "ja" / "news"
+IMG_DIR = ROOT / "images" / "news"
+TYPES_FILE = ROOT / "_data" / "news_types.yml"
 PUBLICATIONS_FILE = ROOT / "_data" / "publications.yml"
-USER_AGENT = "mss-blog-bot (https://github.com/ithems-math-soc/ithems-math-soc.github.io)"
+USER_AGENT = "mss-news-bot (https://github.com/ithems-math-soc/ithems-math-soc.github.io)"
 SITE_URL = "https://ithems-math-soc.github.io"
 
-# Field labels as they appear in .github/ISSUE_TEMPLATE/blog-post.yml.
+# Field labels as they appear in .github/ISSUE_TEMPLATE/news-post.yml.
 FIELDS = {"Type", "Date", "Author", "Link", "Link label", "Body"}
 PREAMBLE = "(above the first field)"
 NO_RESPONSE = "_No response_"
@@ -78,7 +78,7 @@ def set_output(name: str, value: str) -> None:
 
 
 def load_types() -> list[str]:
-    """Read the allowed post types from _data/blog_types.yml (no YAML lib needed)."""
+    """Read the allowed post types from _data/news_types.yml (no YAML lib needed)."""
     types = re.findall(r"^- key:\s*(\S+)", TYPES_FILE.read_text(encoding="utf-8"), flags=re.M)
     if not types:
         fail(f"No post types found in {TYPES_FILE}")
@@ -115,7 +115,7 @@ def slugify(text: str, fallback: str) -> str:
 
 
 def clean_title(raw: str) -> str:
-    title = re.sub(r"^\s*\[blog\]\s*:?\s*", "", raw, flags=re.I).strip()
+    title = re.sub(r"^\s*\[news\]\s*:?\s*", "", raw, flags=re.I).strip()
     return title
 
 
@@ -141,7 +141,7 @@ def front_matter(fields: dict) -> str:
             continue
         if isinstance(value, bool):
             lines.append(f"{key}: {'true' if value else 'false'}")
-        elif isinstance(value, int):
+        elif isinstance(value, (int, datetime.date)):
             lines.append(f"{key}: {value}")
         elif isinstance(value, list):
             lines.append(f"{key}: [{', '.join(value)}]")
@@ -228,7 +228,7 @@ def download_image(url: str, dest_stem: Path) -> Path | None:
         if i:
             time.sleep(3)
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": "mss-blog-bot", **extra})
+            req = urllib.request.Request(url, headers={"User-Agent": "mss-news-bot", **extra})
             with opener.open(req, timeout=60) as resp:
                 data = resp.read()
                 ctype = resp.headers.get_content_type()
@@ -249,7 +249,7 @@ def download_image(url: str, dest_stem: Path) -> Path | None:
 
 def localise_images(body: str, slug: str) -> str:
     """
-    Download images attached to the issue into images/blog/<slug>/ and point the
+    Download images attached to the issue into images/news/<slug>/ and point the
     Markdown at the local copies. The site uses the first image in the body as
     the post's thumbnail, so nothing else is recorded.
     """
@@ -277,7 +277,7 @@ def localise_images(body: str, slug: str) -> str:
         if saved is None:
             return match.group(0)
         rel = saved.relative_to(IMG_DIR).as_posix()
-        return f"![{alt}](/images/blog/{rel})"
+        return f"![{alt}](/images/news/{rel})"
 
     body = re.sub(r"!\[([^\]]*)\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)", replace, body)
 
@@ -336,7 +336,7 @@ def deepl_translate(texts: list[str], api_key: str) -> list[str] | None:
         headers={
             "Authorization": f"DeepL-Auth-Key {api_key}",
             "Content-Type": "application/json",
-            "User-Agent": "mss-blog-bot",
+            "User-Agent": "mss-news-bot",
         },
     )
     try:
@@ -474,7 +474,7 @@ def main() -> None:
 
     title = clean_title(issue.get("title") or "")
     if not title:
-        fail("The issue title is empty. Replace '[Blog] ' with the post title.")
+        fail("The issue title is empty. Replace '[News] ' with the post title.")
 
     form = parse_form(issue.get("body") or "")
     post_type = form.get("Type", "").strip()
@@ -520,8 +520,8 @@ def main() -> None:
 
     body = localise_images(body, slug)
 
-    en_url = f"{SITE_URL}/blog/{slug}/"
-    ja_url = f"{SITE_URL}/ja/blog/{slug}/"
+    en_url = f"{SITE_URL}/news/{slug}/"
+    ja_url = f"{SITE_URL}/ja/news/{slug}/"
 
     translation = None if kept_ja else translate_post(title, body, link_label)
 
@@ -535,26 +535,34 @@ def main() -> None:
     has_ja = bool(translation or kept_ja)
 
     EN_DIR.mkdir(parents=True, exist_ok=True)
+    # The date is written into the front matter (not only the file name) so it
+    # can be changed later by editing the file; Jekyll prefers this value.
     en_fm = {
-        "layout": "blog",
+        "layout": "news",
         "title": title,
+        "date": date,
         "type": post_type,
         "lang": "en",
-        "categories": "blog",
+        "categories": "news",
         "author": author,
         "link": link,
         "link_label": link_label if link else "",
-        "translation_url": f"/ja/blog/{slug}/" if has_ja else "",
+        "translation_url": f"/ja/news/{slug}/" if has_ja else "",
         "issue": number,
     }
     en_path.write_text(front_matter(en_fm) + "\n\n" + body.rstrip() + "\n", encoding="utf-8")
     print(f"wrote {en_path.relative_to(ROOT)}")
 
     if kept_ja:
-        # Same text as before; only the link back to the English post may change.
+        # Same text as before; only the date and the link back to the English
+        # post may change (they come from the issue, like the file name).
         kept_ja = re.sub(
-            r"^translation_url:.*$", f"translation_url: {yaml_str(f'/blog/{slug}/')}", kept_ja, count=1, flags=re.M
+            r"^translation_url:.*$", f"translation_url: {yaml_str(f'/news/{slug}/')}", kept_ja, count=1, flags=re.M
         )
+        if re.search(r"^date:.*$", kept_ja, flags=re.M):
+            kept_ja = re.sub(r"^date:.*$", f"date: {date}", kept_ja, count=1, flags=re.M)
+        else:
+            kept_ja = re.sub(r"^(title:.*)$", rf"\1\ndate: {date}", kept_ja, count=1, flags=re.M)
         JA_DIR.mkdir(parents=True, exist_ok=True)
         ja_path.write_text(kept_ja, encoding="utf-8")
         print(f"kept {ja_path.relative_to(ROOT)} (hand-edited)")
@@ -562,16 +570,17 @@ def main() -> None:
         ja_title, ja_body, ja_label = translation
         JA_DIR.mkdir(parents=True, exist_ok=True)
         ja_fm = {
-            "layout": "blog",
+            "layout": "news",
             "title": ja_title,
+            "date": date,
             "type": post_type,
             "lang": "ja",
-            "categories": ["ja", "blog"],
+            "categories": ["ja", "news"],
             "site_title": "数理社会科学チーム",
             "author": author,
             "link": link,
             "link_label": (ja_label or link_label) if link else "",
-            "translation_url": f"/blog/{slug}/",
+            "translation_url": f"/news/{slug}/",
             "issue": number,
             # Set to false after editing the Japanese text by hand: the file is
             # then kept when the issue is edited, and the disclaimer disappears.

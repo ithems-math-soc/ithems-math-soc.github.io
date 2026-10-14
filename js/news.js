@@ -1,28 +1,28 @@
 /*
- * Blog index: filter by type (several types may be selected; a post matches if
+ * News index: filter by type (several types may be selected; a post matches if
  * it has any of them), search by keyword, sort by date.
  *
- * Works entirely on the post cards already rendered by _includes/blog-list.html
+ * Works entirely on the post cards already rendered by _includes/news-list.html
  * (each card carries data-type / data-date / data-title / data-search), so no
  * extra requests are needed. The current filter is mirrored into the URL
  * (?tag=Paper,Talk&q=...&sort=...) so a filtered view can be shared.
- * Exposed as window.siteBlog so js/transition.js can run it again after
- * swapping in the Blog page; it does nothing on pages without the list.
+ * Exposed as window.siteNews so js/transition.js can run it again after
+ * swapping in the News page; it does nothing on pages without the list.
  */
 (function () {
   'use strict';
 
   function init() {
-    var list = document.getElementById('blog-items');
+    var list = document.getElementById('news-items');
     if (!list || list.dataset.ready) { return; }
     list.dataset.ready = 'true';
 
-    var items = Array.prototype.slice.call(list.querySelectorAll('.blog-item'));
-    var tagButtons = Array.prototype.slice.call(document.querySelectorAll('.blog-tag'));
-    var searchInput = document.getElementById('blog-search');
-    var sortSelect = document.getElementById('blog-sort');
-    var countEl = document.getElementById('blog-count-num');
-    var emptyEl = document.getElementById('blog-empty');
+    var items = Array.prototype.slice.call(list.querySelectorAll('.news-item'));
+    var tagButtons = Array.prototype.slice.call(document.querySelectorAll('.news-tag'));
+    var searchInput = document.getElementById('news-search');
+    var sortSelect = document.getElementById('news-sort');
+    var countEl = document.getElementById('news-count-num');
+    var emptyEl = document.getElementById('news-empty');
 
     var state = { tags: [], q: '', sort: 'newest' };
     var known = tagButtons.map(function (b) { return b.getAttribute('data-tag'); }).filter(Boolean);
@@ -102,5 +102,5 @@
   }
 
   init();
-  window.siteBlog = init;
+  window.siteNews = init;
 })();

@@ -1,14 +1,16 @@
 ---
-layout: "blog"
+layout: "news"
 title: "Shinobu’s Coffee Meeting Talk at iTHEMS"
+date: 2026-10-06
 type: "Talk"
 lang: "en"
-categories: "blog"
+categories: "news"
 author: "Shinobu Utsumi"
 link: "https://ithems.riken.jp/en/about/coffee-meeting"
 link_label: "What's the coffee meeting?"
-translation_url: "/ja/blog/shinobus-coffee-meeting-talk-at-ithems/"
+translation_url: "/ja/news/shinobus-coffee-meeting-talk-at-ithems/"
 issue: 21
+redirect_from: /blog/shinobus-coffee-meeting-talk-at-ithems/
 ---
 
 Every Friday around lunchtime, RIKEN iTHEMS hosts a [Coffee Meeting](https://ithems.riken.jp/en/about/coffee-meeting). Each meeting starts with a short presentation introducing a timely topic.
@@ -29,4 +31,4 @@ As the rise of the earliest civilizations shows, rivers have always been deeply 
 
 
 
-![](/images/blog/shinobus-coffee-meeting-talk-at-ithems/image-1.jpg)
+![](/images/news/shinobus-coffee-meeting-talk-at-ithems/image-1.jpg)

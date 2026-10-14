@@ -1,16 +1,18 @@
 ---
-layout: "blog"
-論文 "Reviving, reproducing, and revisiting Axelrod’s second tournament" が出版されました
+layout: "news"
+title: "論文 \"Reviving, reproducing, and revisiting Axelrod’s second tournament\" が出版されました"
+date: 2026-08-13
 type: "Paper"
 lang: "ja"
-categories: [ja, blog]
+categories: [ja, news]
 site_title: "数理社会科学チーム"
 author: "Nikoleta Glynatsi"
 link: "https://doi.org/10.1038/s44488-026-00016-w"
 link_label: "論文を読む"
-translation_url: "/blog/new-publication-reviving-reproducing-and-revisiting-axelrods/"
+translation_url: "/news/new-publication-reviving-reproducing-and-revisiting-axelrods/"
 issue: 24
 machine_translation: true
+redirect_from: /ja/blog/new-publication-reviving-reproducing-and-revisiting-axelrods/
 ---
 
 論文 "Reviving, reproducing, and revisiting Axelrod’s second tournament" が、『Communications AI & Computing』誌に掲載されました！
