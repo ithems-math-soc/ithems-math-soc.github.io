@@ -61,7 +61,7 @@ body:
     id: link
     attributes:
       label: Link
-      description: "Optional. A URL (paper, seminar page, article, ...) shown as a button at the end of the post."
+      description: "Optional. A URL (paper, seminar page, article, ...) shown as a button at the end of the post. For a Paper, use the DOI link (https://doi.org/...): the paper is then added to the Publications page automatically."
       placeholder: "https://doi.org/..."
 
   - type: input

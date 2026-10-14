@@ -4,11 +4,19 @@
 # Flow:
 #   issue opened/edited  ->  generate _posts/blog/<date>-<slug>.md (English),
 #                            _posts/ja/blog/<date>-<slug>.md (DeepL translation),
-#                            images/blog/<slug>/* (attached photos)
+#                            images/blog/<slug>/* (attached photos, downsized)
+#                            _data/publications.yml (Paper posts: added from the DOI)
 #                        ->  commit to branch blog/issue-<n>, open or update a PR
+#                        ->  build the site, screenshot the new post, and post
+#                            the screenshots on the PR (stored on the
+#                            orphan "previews" branch) so nobody needs a local build
 #                        ->  comment on the issue with the PR link
 #
-# Only issues by repository collaborators are processed.
+# Only issues by repository collaborators are processed. The workflow can also
+# be started by hand (Actions > "Blog post from issue" > Run workflow) with an
+# issue number, which re-processes that issue and refreshes its preview even if
+# nothing changed; this is how changes to the workflow are tested from a branch
+# before they reach main.
 #
 # One-time setup (repository admin):
 #   1. Settings > Actions > General > Workflow permissions:
@@ -21,7 +29,13 @@ name: Blog post from issue
 
 on:
   issues:
-    types: [opened, edited, labeled]
+    types: [opened, edited]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Issue number to (re)process"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -29,18 +43,22 @@ permissions:
   issues: write
 
 concurrency:
-  group: blog-post-${{ github.event.issue.number }}
+  group: blog-post-${{ github.event.issue.number || inputs.issue_number }}
   cancel-in-progress: false
+
+env:
+  PREVIEW_BRANCH: previews
 
 jobs:
   post:
     if: >-
-      (contains(github.event.issue.labels.*.name, 'blog-post') || startsWith(github.event.issue.title, '[Blog]'))
-      && contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association)
+      github.event_name == 'workflow_dispatch'
+      || ((contains(github.event.issue.labels.*.name, 'blog-post') || startsWith(github.event.issue.title, '[Blog]'))
+          && contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association))
     runs-on: ubuntu-latest
     env:
-      ISSUE_NUMBER: ${{ github.event.issue.number }}
-      BRANCH: blog/issue-${{ github.event.issue.number }}
+      ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue_number }}
+      BRANCH: blog/issue-${{ github.event.issue.number || inputs.issue_number }}
       GH_TOKEN: ${{ github.token }}
 
     steps:
@@ -54,13 +72,27 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Load the issue
+        id: issue
+        env:
+          REPO: ${{ github.repository }}
+        run: |
+          gh api "repos/$REPO/issues/$ISSUE_NUMBER" > /tmp/issue.json
+          echo "html_url=$(jq -r .html_url /tmp/issue.json)" >> "$GITHUB_OUTPUT"
+          echo "author=$(jq -r .user.login /tmp/issue.json)" >> "$GITHUB_OUTPUT"
+
       - name: Switch to the branch for this issue
         run: |
+          # keep this workflow's scripts: the issue branch may carry older copies
+          cp -r .github/scripts /tmp/scripts
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
-            # The issue was edited and a branch already exists: build on it.
+            # The issue was edited and a branch already exists: build on it, and
+            # bring in anything merged to main since, so the preview shows the
+            # post on the current site.
             git checkout -B "$BRANCH" "origin/$BRANCH"
+            git merge --no-edit origin/main || { git merge --abort; echo "::warning::could not merge main into $BRANCH; preview may be stale"; }
           else
             git checkout -B "$BRANCH" origin/main
           fi
@@ -68,17 +100,28 @@ jobs:
       - name: Generate the post files
         id: gen
         env:
-          ISSUE_JSON: ${{ toJSON(github.event.issue) }}
           DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
           GITHUB_TOKEN: ${{ github.token }}
-        run: python .github/scripts/issue_to_post.py
+        run: ISSUE_JSON="$(cat /tmp/issue.json)" python /tmp/scripts/issue_to_post.py
+
+      - name: Downsize photos for the web
+        env:
+          SLUG: ${{ steps.gen.outputs.slug }}
+        run: |
+          if [ -d "images/blog/$SLUG" ]; then
+            pip install -q pillow
+            python /tmp/scripts/downsize_images.py "images/blog/$SLUG"
+          fi
 
       - name: Commit and push
         id: push
         env:
           TITLE: ${{ steps.gen.outputs.title }}
         run: |
-          git add -A _posts/blog _posts/ja/blog images/blog
+          # images/blog only exists once a post has photos; git add fails on a missing path
+          for path in _posts/blog _posts/ja/blog images/blog _data/publications.yml; do
+            [ -e "$path" ] && git add -A "$path"
+          done
           if git diff --cached --quiet; then
             echo "Nothing changed."
             echo "changed=false" >> "$GITHUB_OUTPUT"
@@ -90,15 +133,16 @@ jobs:
 
       - name: Open or update the pull request
         id: pr
-        if: steps.push.outputs.changed == 'true'
+        if: steps.push.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         env:
           TITLE: ${{ steps.gen.outputs.title }}
           EN_URL: ${{ steps.gen.outputs.en_url }}
           JA_URL: ${{ steps.gen.outputs.ja_url }}
           TRANSLATED: ${{ steps.gen.outputs.translated }}
           WARNINGS: ${{ steps.gen.outputs.warnings }}
-          ISSUE_URL: ${{ github.event.issue.html_url }}
-          AUTHOR: ${{ github.event.issue.user.login }}
+          PUBLICATION: ${{ steps.gen.outputs.publication }}
+          ISSUE_URL: ${{ steps.issue.outputs.html_url }}
+          AUTHOR: ${{ steps.issue.outputs.author }}
         run: |
           PR_URL="$(gh pr list --head "$BRANCH" --state open --json url --jq '.[0].url // empty')"
           if [ -z "$PR_URL" ]; then
@@ -115,13 +159,15 @@ jobs:
             BODY="$(printf '%s\n' \
               "Blog post submitted by @$AUTHOR via $ISSUE_URL." \
               "" \
-              "After merging, the post will appear at:" \
+              "**How to review:** screenshots of the post are posted below as a comment. Check the text and the Japanese translation there; to fix something, edit the files under **Files changed** (or edit the original issue to regenerate everything), then merge." \
+              "" \
+              "Once merged, the post goes live after a few minutes at these addresses (they do not work before merging):" \
               "- English: $EN_URL" \
               "$JA_LINE" \
               "" \
-              "Review the files in this PR (especially the Japanese translation) and merge when ready." \
-              "To change the text or photos, edit the original issue and this PR will be updated." \
               "If you correct the Japanese file by hand, set \`machine_translation: false\` in its front matter so it is not overwritten." \
+              "" \
+              "$PUBLICATION" \
               "" \
               "$WARN_LINE" \
               "" \
@@ -133,15 +179,114 @@ jobs:
           fi
           echo "url=$PR_URL" >> "$GITHUB_OUTPUT"
 
+      # ---- Preview: build the site with the new post and screenshot it -------
+
+      - name: Set up Ruby
+        if: steps.push.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+
+      - name: Build the site
+        if: steps.push.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          # the lockfile may only list macOS; make sure the runner's platform is in it
+          bundle lock --add-platform x86_64-linux
+          bundle install --quiet --jobs 4
+          printf 'url: http://127.0.0.1:4000\n' > /tmp/preview-config.yml
+          bundle exec jekyll build -q -c _config.yml,/tmp/preview-config.yml -d /tmp/site
+
+      - name: Screenshot the post
+        id: shots
+        if: steps.push.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        env:
+          SLUG: ${{ steps.gen.outputs.slug }}
+          TRANSLATED: ${{ steps.gen.outputs.translated }}
+        run: |
+          (cd /tmp/site && python3 -m http.server 4000 >/dev/null 2>&1 &)
+          sleep 2
+          mkdir -p /tmp/shots
+          shot() {  # name, url, height
+            # reduced motion: no scroll-reveal or smooth scrolling, so everything is visible
+            google-chrome --headless=new --disable-gpu --hide-scrollbars --no-sandbox \
+              --force-prefers-reduced-motion --window-size=1280,"$3" --virtual-time-budget=12000 \
+              --screenshot="/tmp/shots/$1.png" "$2" >/dev/null 2>&1
+          }
+          shot en "http://127.0.0.1:4000/blog/$SLUG/" 2600
+          shot list "http://127.0.0.1:4000/blog/" 900
+          if [ "$TRANSLATED" = "true" ]; then
+            shot ja "http://127.0.0.1:4000/ja/blog/$SLUG/" 2600
+          fi
+          ls -la /tmp/shots
+
+      - name: Publish the screenshots
+        id: previews
+        if: steps.push.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        env:
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          # Screenshots live on an orphan branch so they never end up in the site.
+          mkdir -p /tmp/previews && cd /tmp/previews
+          git init -q
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          if git fetch -q origin "$PREVIEW_BRANCH" 2>/dev/null; then
+            git checkout -q -b "$PREVIEW_BRANCH" FETCH_HEAD
+          else
+            git checkout -q --orphan "$PREVIEW_BRANCH"
+            printf 'Screenshots posted on blog pull requests by the "Blog post from issue" workflow.\n' > README.md
+          fi
+          DIR="issue-$ISSUE_NUMBER/$RUN_ID"
+          mkdir -p "$DIR" && cp /tmp/shots/*.png "$DIR/"
+          git add -A && git commit -q -m "Previews for issue #$ISSUE_NUMBER (run $RUN_ID)"
+          git push -q origin "$PREVIEW_BRANCH"
+          echo "base=https://raw.githubusercontent.com/${REPO}/${PREVIEW_BRANCH}/${DIR}" >> "$GITHUB_OUTPUT"
+
+      - name: Post the screenshots on the pull request
+        if: steps.push.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        env:
+          PR_URL: ${{ steps.pr.outputs.url }}
+          BASE: ${{ steps.previews.outputs.base }}
+          TRANSLATED: ${{ steps.gen.outputs.translated }}
+          REPO: ${{ github.repository }}
+        run: |
+          if [ "$TRANSLATED" = "true" ]; then
+            JA_PART="$(printf '%s\n' "### Japanese (machine translation)" "![Japanese post]($BASE/ja.png)" "")"
+          else
+            JA_PART=""
+          fi
+          BODY="$(printf '%s\n' \
+            "## Preview" \
+            "This is how the post will look once merged (updated $(date -u +'%Y-%m-%d %H:%M') UTC). If something is off, edit the files under **Files changed**, or edit the original issue to regenerate." \
+            "" \
+            "### English" \
+            "![English post]($BASE/en.png)" \
+            "" \
+            "$JA_PART" \
+            "### Blog page" \
+            "![Blog list]($BASE/list.png)")"
+          # update the existing preview comment if there is one, so edits do not pile up comments
+          PR_NUMBER="$(gh pr view "$PR_URL" --json number --jq .number)"
+          COMMENT_ID="$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate \
+            --jq '[.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("## Preview")))] | last | .id // empty')"
+          if [ -n "$COMMENT_ID" ]; then
+            gh api -X PATCH "repos/$REPO/issues/comments/$COMMENT_ID" -f body="$BODY" >/dev/null
+          else
+            gh pr comment "$PR_URL" --body "$BODY"
+          fi
+
+      # ---- Report back ----------------------------------------------------------
+
       - name: Report back on the issue
         if: steps.push.outputs.changed == 'true'
         env:
           PR_URL: ${{ steps.pr.outputs.url }}
           CREATED: ${{ steps.pr.outputs.created }}
-          EN_URL: ${{ steps.gen.outputs.en_url }}
-          JA_URL: ${{ steps.gen.outputs.ja_url }}
           TRANSLATED: ${{ steps.gen.outputs.translated }}
           WARNINGS: ${{ steps.gen.outputs.warnings }}
+          PUBLICATION: ${{ steps.gen.outputs.publication }}
         run: |
           if [ "$CREATED" = "true" ]; then
             FIRST="Thanks! A pull request has been opened for this post: $PR_URL"
@@ -149,9 +294,9 @@ jobs:
             FIRST="The pull request has been updated with your edits: $PR_URL"
           fi
           if [ "$TRANSLATED" = "true" ]; then
-            JA_LINE="- Japanese (machine translation): $JA_URL"
+            JA_LINE="A Japanese version was generated by machine translation; please glance over it in the pull request."
           else
-            JA_LINE="- Japanese version: not generated this time (translation service unavailable). An admin can check the workflow log."
+            JA_LINE="The Japanese version could not be generated this time (translation service unavailable). An admin can check the workflow log."
           fi
           if [ -n "$WARNINGS" ]; then
             WARN_LINE="Note: $WARNINGS"
@@ -161,9 +306,9 @@ jobs:
           gh issue comment "$ISSUE_NUMBER" --body "$(printf '%s\n' \
             "$FIRST" \
             "" \
-            "Once a team member merges it, the post will be live at:" \
-            "- English: $EN_URL" \
+            "Screenshots of the finished post are in the pull request. Once a team member merges it, the post goes live." \
             "$JA_LINE" \
+            "$PUBLICATION" \
             "" \
             "Need to change something? Edit this issue (title, fields, or body) and the pull request will be updated automatically." \
             "" \

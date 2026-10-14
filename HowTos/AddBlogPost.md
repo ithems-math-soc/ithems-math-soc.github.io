@@ -23,6 +23,10 @@ done on GitHub in your browser.
    - **Author**: your name as it should appear. Optional.
    - **Link** / **Link label**: an optional URL (paper, seminar page, ...)
      shown as a button at the end of the post, and the text for that button.
+     For a **Paper**, put the DOI link here (`https://doi.org/...`): the paper
+     is looked up on Crossref and added to the Publications page in the same
+     pull request, unless it is already listed. Check the generated entry in
+     `_data/publications.yml`; no Japanese version is needed.
    - **Body** (required): the post itself, in English, written in Markdown.
      The first paragraph is used as the summary on the Blog page.
      To add **photos**, drag and drop the image files into the Body box; GitHub
@@ -32,22 +36,26 @@ done on GitHub in your browser.
      to show them one below the other.
 4. Click **Submit new issue**.
 
-Within about a minute a bot comments on your issue with a link to a
-**pull request** that contains your post. Nothing is published yet.
+Within a few minutes a bot comments on your issue with a link to a
+**pull request** that contains your post, and posts **screenshots** of the
+finished post (English and Japanese) on that pull request. Nothing is
+published yet.
 
 ## Reviewing and publishing (any team member)
 
-1. Open the pull request linked from the issue.
-2. Click **Files changed**. You will see:
+1. Open the pull request linked from the issue. The **Preview** comment
+   shows how the post will look, in English and in Japanese, plus the Blog
+   page. No local build is needed.
+2. If something needs a fix, click **Files changed**. You will see:
    - `_posts/blog/<date>-<slug>.md` – the English post
    - `_posts/ja/blog/<date>-<slug>.md` – the Japanese version, machine
      translated by DeepL
    - `images/blog/<slug>/` – any photos
-3. Read through the text. If the Japanese translation needs a fix, you can
-   edit it directly: on the file, click the **...** menu → **Edit file**,
-   change the text, and **Commit changes** to the same branch (see
-   *Editing the Japanese text* below).
-4. Click **Merge pull request** → **Confirm merge**. The website rebuilds in a
+   On a file, click the **...** menu → **Edit file**, change the text, and
+   **Commit changes** to the same branch (see *Editing the Japanese text*
+   below). Bigger changes are easier by editing the original issue, which
+   regenerates everything and posts new screenshots.
+3. Click **Merge pull request** → **Confirm merge**. The website rebuilds in a
    few minutes and the post appears on the Blog page. The issue closes
    automatically.
 
@@ -106,12 +114,18 @@ exists, then open a pull request. On GitHub: open the file, click **...** →
 - `.github/ISSUE_TEMPLATE/blog-post.yml` – the form.
 - `.github/workflows/blog-post.yml` – runs when an issue with the `blog-post`
   label is opened or edited by a repository collaborator. It calls the script
-  below, commits to a branch `blog/issue-<n>`, and opens or updates a pull
-  request.
+  below, downsizes attached photos to 1600 px (`downsize_images.py`), commits to a branch
+  `blog/issue-<n>`, opens or updates a pull request, then builds the site,
+  screenshots the new post with headless Chrome, and posts the screenshots on
+  the pull request. The screenshots are stored on the orphan branch
+  `previews` (one folder per issue and run) so they never end up in the
+  site; that branch can be deleted and will be recreated.
 - `.github/scripts/issue_to_post.py` – parses the form, downloads attached
   images into `images/blog/<slug>/`, translates with DeepL, and writes the two
   post files. It records `issue: <n>` in the front matter so edits replace
-  the earlier files instead of duplicating them.
+  the earlier files instead of duplicating them. For Paper posts it also adds
+  the paper to `_data/publications.yml` from the DOI in the Link field
+  (metadata from the Crossref API), skipping papers that are already listed.
 - `_data/blog_types.yml` – the list of post types and their Japanese labels.
   If you change it, change the **Type** dropdown in the form as well.
 - `_includes/blog-list.html`, `_layouts/blog.html`, `_sass/_blog.scss`,

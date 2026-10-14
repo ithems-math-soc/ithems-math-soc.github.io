@@ -14,7 +14,16 @@
       {% if post.author %}<span class="blog-item-author">{{ post.author }}</span>{% endif %}
     </p>
     <h2 class="blog-item-title"><a href="{{ site.url }}{{ post.url }}">{{ post.title }}</a></h2>
-    <p class="blog-item-excerpt">{{ post.excerpt | strip_html | strip_newlines | truncate: 200 }}</p>
+    {% comment %} a post that opens with a photo has an empty excerpt; use the first paragraph with text {% endcomment %}
+    {% assign excerpt = post.excerpt | strip_html | strip_newlines | strip %}
+    {% if excerpt == "" %}
+      {% assign paragraphs = post.content | split: "</p>" %}
+      {% for paragraph in paragraphs %}
+        {% assign text = paragraph | strip_html | strip_newlines | strip %}
+        {% if text != "" %}{% assign excerpt = text %}{% break %}{% endif %}
+      {% endfor %}
+    {% endif %}
+    <p class="blog-item-excerpt">{{ excerpt | truncate: 200 }}</p>
   </div>
   {% comment %} thumbnail: the first image in the post body {% endcomment %}
   {% assign img_parts = post.content | split: '<img' %}
