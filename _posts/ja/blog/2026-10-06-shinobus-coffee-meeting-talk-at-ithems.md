@@ -1,6 +1,6 @@
 ---
 layout: "blog"
-title: "iTHEMSでの「しのぶのコーヒーミーティング・トーク」"
+title: "iTHEMSのコーヒーミーティングで発表しました」"
 type: "Talk"
 lang: "ja"
 categories: [ja, blog]
