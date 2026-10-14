@@ -18,6 +18,7 @@ For my talk, I chose “River Networks,” inspired by the recent headlines abou
 You can find the talk title and abstract below. If you’re interested, feel free to get in touch!
 
 ============================================================
+
 **Title:** ”The Structure of River Networks”
 
 **Abstract:** 
