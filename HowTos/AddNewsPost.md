@@ -53,8 +53,9 @@ published yet.
    - `images/news/<slug>/` – any photos
    On a file, click the **...** menu → **Edit file**, change the text, and
    **Commit changes** to the same branch (see *Editing the Japanese text*
-   below). Bigger changes are easier by editing the original issue, which
-   regenerates everything and posts new screenshots.
+   below). A few minutes later the old **Preview** comment is replaced by a
+   new one with screenshots of the edited post. Bigger changes are easier by
+   editing the original issue, which regenerates everything.
 3. Click **Merge pull request** → **Confirm merge**. The website rebuilds in a
    few minutes and the post appears on the News page. The issue closes
    automatically.
@@ -115,11 +116,16 @@ exists, then open a pull request. On GitHub: open the file, click **...** →
 - `.github/workflows/news-post.yml` – runs when an issue with the `news-post`
   label is opened or edited by a repository collaborator. It calls the script
   below, downsizes attached photos to 1600 px (`downsize_images.py`), commits to a branch
-  `news/issue-<n>`, opens or updates a pull request, then builds the site,
-  screenshots the new post with headless Chrome, and posts the screenshots on
-  the pull request. The screenshots are stored on the orphan branch
-  `previews` (one folder per issue and run) so they never end up in the
-  site; that branch can be deleted and will be recreated.
+  `news/issue-<n>`, opens or updates a pull request, then calls the preview
+  workflow.
+- `.github/workflows/news-preview.yml` – builds the site from a
+  `news/issue-<n>` branch, screenshots the post with headless Chrome, and
+  posts the screenshots on the pull request, deleting the previous Preview
+  comment first. Besides being called by the workflow above, it runs on
+  every push to a `news/issue-<n>` branch, so editing the post files on the
+  pull request also refreshes the screenshots. The screenshots are stored on
+  the orphan branch `previews` (one folder per issue and run) so they never
+  end up in the site; that branch can be deleted and will be recreated.
 - `.github/scripts/issue_to_post.py` – parses the form, downloads attached
   images into `images/news/<slug>/`, translates with DeepL, and writes the two
   post files. It records `issue: <n>` in the front matter so edits replace

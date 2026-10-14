@@ -1,0 +1,169 @@
+# Builds the site from a news/issue-<n> branch, screenshots the post, and puts
+# the screenshots on the pull request as a "Preview" comment.
+#
+# Runs in two ways:
+#   - called by news-post.yml right after it has generated a post from an issue;
+#   - on its own whenever someone pushes to a news/issue-<n> branch, e.g. by
+#     editing a post file under "Files changed" on the pull request. (Pushes
+#     made by the workflow itself use the Actions token and do not trigger
+#     this, so the issue flow does not run it twice.)
+#
+# Each run removes the previous Preview comment and posts a new one at the
+# end of the conversation, so the latest screenshots are always the last thing
+# on the pull request. The screenshots themselves live on the orphan branch
+# "previews" (one folder per issue and run) so they never end up in the site.
+
+name: News post preview
+
+on:
+  push:
+    branches: ["news/issue-*"]
+  workflow_call:
+    inputs:
+      branch:
+        description: "The news/issue-<n> branch to preview"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    # one preview at a time per branch; a run is never cancelled, because a
+    # cancelled call from news-post.yml would be reported as a failure there
+    concurrency:
+      group: news-preview-${{ inputs.branch || github.ref_name }}
+      cancel-in-progress: false
+    env:
+      BRANCH: ${{ inputs.branch || github.ref_name }}
+      PREVIEW_BRANCH: previews
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+
+    steps:
+      - name: Check out the post branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.ref_name }}
+
+      - name: Find the post and its pull request
+        id: post
+        run: |
+          ISSUE_NUMBER="${BRANCH#news/issue-}"
+          # the post files carry "issue: <n>" in their front matter
+          EN_FILE="$(grep -lxE "issue: *$ISSUE_NUMBER" _posts/news/*.md 2>/dev/null | head -1 || true)"
+          if [ -z "$EN_FILE" ]; then
+            echo "::error::no post with 'issue: $ISSUE_NUMBER' found under _posts/news on $BRANCH"
+            exit 1
+          fi
+          SLUG="$(basename "$EN_FILE" .md | sed -E 's/^[0-9]{4}-[0-9]{2}-[0-9]{2}-//')"
+          if grep -lxqE "issue: *$ISSUE_NUMBER" _posts/ja/news/*.md 2>/dev/null; then
+            TRANSLATED=true
+          else
+            TRANSLATED=false
+          fi
+          PR_URL="$(gh pr list --head "$BRANCH" --state open --json url --jq '.[0].url // empty')"
+          if [ -z "$PR_URL" ]; then
+            echo "::warning::no open pull request for $BRANCH; nothing to comment on"
+          fi
+          {
+            echo "issue_number=$ISSUE_NUMBER"
+            echo "slug=$SLUG"
+            echo "translated=$TRANSLATED"
+            echo "pr_url=$PR_URL"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Set up Ruby
+        if: steps.post.outputs.pr_url != ''
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+
+      - name: Build the site
+        if: steps.post.outputs.pr_url != ''
+        run: |
+          # the lockfile may only list macOS; make sure the runner's platform is in it
+          bundle lock --add-platform x86_64-linux
+          bundle install --quiet --jobs 4
+          printf 'url: http://127.0.0.1:4000\n' > /tmp/preview-config.yml
+          bundle exec jekyll build -q -c _config.yml,/tmp/preview-config.yml -d /tmp/site
+
+      - name: Screenshot the post
+        if: steps.post.outputs.pr_url != ''
+        env:
+          SLUG: ${{ steps.post.outputs.slug }}
+          TRANSLATED: ${{ steps.post.outputs.translated }}
+        run: |
+          (cd /tmp/site && python3 -m http.server 4000 >/dev/null 2>&1 &)
+          sleep 2
+          mkdir -p /tmp/shots
+          shot() {  # name, url, height
+            # reduced motion: no scroll-reveal or smooth scrolling, so everything is visible
+            google-chrome --headless=new --disable-gpu --hide-scrollbars --no-sandbox \
+              --force-prefers-reduced-motion --window-size=1280,"$3" --virtual-time-budget=12000 \
+              --screenshot="/tmp/shots/$1.png" "$2" >/dev/null 2>&1
+          }
+          shot en "http://127.0.0.1:4000/news/$SLUG/" 2600
+          shot list "http://127.0.0.1:4000/news/" 900
+          if [ "$TRANSLATED" = "true" ]; then
+            shot ja "http://127.0.0.1:4000/ja/news/$SLUG/" 2600
+          fi
+          ls -la /tmp/shots
+
+      - name: Publish the screenshots
+        id: previews
+        if: steps.post.outputs.pr_url != ''
+        env:
+          ISSUE_NUMBER: ${{ steps.post.outputs.issue_number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          mkdir -p /tmp/previews && cd /tmp/previews
+          git init -q
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          if git fetch -q origin "$PREVIEW_BRANCH" 2>/dev/null; then
+            git checkout -q -b "$PREVIEW_BRANCH" FETCH_HEAD
+          else
+            git checkout -q --orphan "$PREVIEW_BRANCH"
+            printf 'Screenshots posted on news pull requests by the "News post preview" workflow.\n' > README.md
+          fi
+          DIR="issue-$ISSUE_NUMBER/$RUN_ID"
+          mkdir -p "$DIR" && cp /tmp/shots/*.png "$DIR/"
+          git add -A && git commit -q -m "Previews for issue #$ISSUE_NUMBER (run $RUN_ID)"
+          git push -q origin "$PREVIEW_BRANCH"
+          echo "base=https://raw.githubusercontent.com/${REPO}/${PREVIEW_BRANCH}/${DIR}" >> "$GITHUB_OUTPUT"
+
+      - name: Post the screenshots on the pull request
+        if: steps.post.outputs.pr_url != ''
+        env:
+          PR_URL: ${{ steps.post.outputs.pr_url }}
+          BASE: ${{ steps.previews.outputs.base }}
+          TRANSLATED: ${{ steps.post.outputs.translated }}
+        run: |
+          if [ "$TRANSLATED" = "true" ]; then
+            JA_PART="$(printf '%s\n' "### Japanese (machine translation)" "![Japanese post]($BASE/ja.png)" "")"
+          else
+            JA_PART=""
+          fi
+          BODY="$(printf '%s\n' \
+            "## Preview" \
+            "This is how the post will look once merged (updated $(date -u +'%Y-%m-%d %H:%M') UTC). If something is off, edit the files under **Files changed** or edit the original issue; the screenshots are taken again after every change." \
+            "" \
+            "### English" \
+            "![English post]($BASE/en.png)" \
+            "" \
+            "$JA_PART" \
+            "### News page" \
+            "![News list]($BASE/list.png)")"
+          # remove earlier previews so the fresh one is the last thing on the conversation
+          PR_NUMBER="$(gh pr view "$PR_URL" --json number --jq .number)"
+          gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate \
+            --jq '.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("## Preview"))) | .id' \
+          | while read -r id; do
+              gh api -X DELETE "repos/$REPO/issues/comments/$id" >/dev/null
+            done
+          gh pr comment "$PR_URL" --body "$BODY"
