@@ -1,6 +1,7 @@
 ---
 layout: "news"
 title: "Shinobu’s Coffee Meeting Talk at iTHEMS"
+date: 2026-10-06
 type: "Talk"
 lang: "en"
 categories: "news"

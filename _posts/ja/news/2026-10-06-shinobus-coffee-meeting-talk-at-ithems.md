@@ -1,6 +1,7 @@
 ---
 layout: "news"
 title: "iTHEMSのコーヒーミーティングで発表しました」"
+date: 2026-10-06
 type: "Talk"
 lang: "ja"
 categories: [ja, news]

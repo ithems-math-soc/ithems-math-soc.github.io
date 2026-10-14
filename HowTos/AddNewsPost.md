@@ -93,6 +93,11 @@ Japanese file marked `machine_translation: false`.
 - edit the post file directly on GitHub (`_posts/news/...` and the matching
   file in `_posts/ja/news/`) and open a pull request.
 
+To change the **date** of a post without touching the issue, edit the
+`date:` line near the top of both files (English and Japanese). The date in
+the file name does not need to change; the `date:` line wins. If the issue is
+edited later, the date comes from the issue's Date field again.
+
 ## Deleting a post
 
 Delete both files (`_posts/news/<date>-<slug>.md` and
@@ -164,6 +169,7 @@ produces:
 ---
 layout: news
 title: "New paper published in PNAS"
+date: 2026-10-07                # shown on the page; overrides the file name
 type: Paper
 lang: en
 categories: news

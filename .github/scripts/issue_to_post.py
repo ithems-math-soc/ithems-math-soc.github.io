@@ -141,7 +141,7 @@ def front_matter(fields: dict) -> str:
             continue
         if isinstance(value, bool):
             lines.append(f"{key}: {'true' if value else 'false'}")
-        elif isinstance(value, int):
+        elif isinstance(value, (int, datetime.date)):
             lines.append(f"{key}: {value}")
         elif isinstance(value, list):
             lines.append(f"{key}: [{', '.join(value)}]")
@@ -535,9 +535,12 @@ def main() -> None:
     has_ja = bool(translation or kept_ja)
 
     EN_DIR.mkdir(parents=True, exist_ok=True)
+    # The date is written into the front matter (not only the file name) so it
+    # can be changed later by editing the file; Jekyll prefers this value.
     en_fm = {
         "layout": "news",
         "title": title,
+        "date": date,
         "type": post_type,
         "lang": "en",
         "categories": "news",
@@ -551,10 +554,15 @@ def main() -> None:
     print(f"wrote {en_path.relative_to(ROOT)}")
 
     if kept_ja:
-        # Same text as before; only the link back to the English post may change.
+        # Same text as before; only the date and the link back to the English
+        # post may change (they come from the issue, like the file name).
         kept_ja = re.sub(
             r"^translation_url:.*$", f"translation_url: {yaml_str(f'/news/{slug}/')}", kept_ja, count=1, flags=re.M
         )
+        if re.search(r"^date:.*$", kept_ja, flags=re.M):
+            kept_ja = re.sub(r"^date:.*$", f"date: {date}", kept_ja, count=1, flags=re.M)
+        else:
+            kept_ja = re.sub(r"^(title:.*)$", rf"\1\ndate: {date}", kept_ja, count=1, flags=re.M)
         JA_DIR.mkdir(parents=True, exist_ok=True)
         ja_path.write_text(kept_ja, encoding="utf-8")
         print(f"kept {ja_path.relative_to(ROOT)} (hand-edited)")
@@ -564,6 +572,7 @@ def main() -> None:
         ja_fm = {
             "layout": "news",
             "title": ja_title,
+            "date": date,
             "type": post_type,
             "lang": "ja",
             "categories": ["ja", "news"],
