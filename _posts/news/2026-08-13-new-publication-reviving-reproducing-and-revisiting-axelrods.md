@@ -1,14 +1,16 @@
 ---
-layout: "blog"
+layout: "news"
 title: "New publication \"Reviving, reproducing, and revisiting Axelrod’s second tournament\""
+date: 2026-08-13
 type: "Paper"
 lang: "en"
-categories: "blog"
+categories: "news"
 author: "Nikoleta Glynatsi"
 link: "https://doi.org/10.1038/s44488-026-00016-w"
 link_label: "Read the paper"
-translation_url: "/ja/blog/new-publication-reviving-reproducing-and-revisiting-axelrods/"
+translation_url: "/ja/news/new-publication-reviving-reproducing-and-revisiting-axelrods/"
 issue: 24
+redirect_from: /blog/new-publication-reviving-reproducing-and-revisiting-axelrods/
 ---
 
 Our paper, “Reviving, reproducing, and revisiting Axelrod’s second tournament”, has been published in _Communications AI & Computing_!

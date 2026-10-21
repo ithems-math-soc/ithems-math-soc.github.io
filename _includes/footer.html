@@ -1,21 +1,8 @@
 <footer role="contentinfo" id="site-footer">
 	<div class="inner-wrap">
+	{% comment %} the same links as the header menu {% endcomment %}
 	<nav role="navigation" class="menu bottom-menu">
-		<ul class="menu-item">
-		{% if page.lang == 'ja' %}
-			{% assign footer_links = site.data.footer_ja %}
-		{% else %}
-			{% assign footer_links = site.data.footer %}
-		{% endif %}
-		{% for link in footer_links %}
-      {% if link.url contains 'http' %}
-        {% assign domain = '' %}
-        {% else %}
-        {% assign domain = site.url %}
-      {% endif %}
-			<li><a href="{{ domain }}{{ link.url }}" {% if link.url contains 'http' %}target="_blank"{% endif %}>{{ link.title }}</a></li>
-		{% endfor %}
-		</ul>
+		{% include navigation.html %}
 	</nav><!-- /.bottom-menu -->
 	{% assign site_title = page.site_title | default: site.title %}
 	<p class="copyright">&#169; {{ site.time | date: '%Y' }} <a href="{{ site.url }}">{{ site_title }}</a> powered by <a href="http://jekyllrb.com" rel="nofollow">Jekyll</a> + <a href="http://mmistakes.github.io/jekyll-theme-skinny-bones/" rel="nofollow">Skinny Bones</a>.</p>

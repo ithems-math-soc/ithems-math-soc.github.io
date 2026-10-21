@@ -1,22 +1,22 @@
-# Blog post form.
+# News post form.
 #
-# Submitting this form creates an issue labelled "blog-post". The workflow in
-# .github/workflows/blog-post.yml turns that issue into a pull request that
+# Submitting this form creates an issue labelled "news-post". The workflow in
+# .github/workflows/news-post.yml turns that issue into a pull request that
 # adds the post (plus a machine-translated Japanese version) to the website.
 #
 # Field labels (Type, Date, Author, Link, Link label, Body) are read by
 # .github/scripts/issue_to_post.py. If you rename a label here, update the
-# script as well. The Type options must match _data/blog_types.yml.
+# script as well. The Type options must match _data/news_types.yml.
 
-name: "New blog post"
-description: "Post news to the team blog (paper, talk, visitor, seminar, ...). No git needed."
-title: "[Blog] "
-labels: ["blog-post"]
+name: "News post"
+description: "Post news to the website (paper, talk, visitor, seminar, ...). No git needed."
+title: "[News] "
+labels: ["news-post"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for posting! Replace the `[Blog] ` prefix in the title above with the post title, fill in the fields below, and press **Submit new issue**.
+        Thanks for posting! Replace the `[News] ` prefix in the title above with the post title, fill in the fields below, and press **Submit new issue**.
 
         - Write in **English**. A Japanese version is translated automatically.
         - To add **photos**, drag & drop them into the *Body* field.
@@ -27,7 +27,7 @@ body:
     id: type
     attributes:
       label: Type
-      description: What kind of post is this? It is shown as a tag on the Blog page. Use "News" for anything else, e.g. a new grant, a new project, or a new collaboration.
+      description: What kind of post is this? It is shown as a tag on the News page. Use "Others" for anything else, e.g. a new grant, a new project, or a new collaboration.
       options:
         - Paper
         - Article
@@ -39,7 +39,7 @@ body:
         - Award
         - Media
         - Opening
-        - News
+        - Others
     validations:
       required: true
 
@@ -75,7 +75,7 @@ body:
     id: body
     attributes:
       label: Body
-      description: "The post itself, in Markdown. The first paragraph is used as the summary on the Blog page. Drag & drop photos here."
+      description: "The post itself, in Markdown. The first paragraph is used as the summary on the News page. Drag & drop photos here."
       placeholder: |
         Our paper "..." has been published in ...
 
