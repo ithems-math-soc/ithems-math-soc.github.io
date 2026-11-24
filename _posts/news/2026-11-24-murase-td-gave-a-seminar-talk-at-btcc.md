@@ -10,6 +10,6 @@ translation_url: "/ja/news/murase-td-gave-a-seminar-talk-at-btcc/"
 issue: 29
 ---
 
-## Yohsuke Murase’s Seminar Talk at BTCC
+Team Director Yohsuke Murase gave a seminar talk entitled “Exploring the Mechanisms of Society through Mathematics” (社会の仕組みを数理で探る) at the RIKEN CBS–TOYOTA Collaboration Center (BTCC).
 
-Team Director Yohsuke Murase gave a seminar talk at the [[RIKEN CBS–TOYOTA Collaboration Center (BTCC)](https://btcc.riken.jp/)](https://btcc.riken.jp/).
+He introduced the Mathematical Social Science Team and presented recent research on the evolution of cooperation, focusing on strategies in repeated games and the role of social norms and reputation sharing in sustaining cooperation.
